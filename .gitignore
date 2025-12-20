@@ -97,3 +97,11 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+Assets/AssetStoreTools
+Assets/Plugins/Demigiant/
+Assets/Plugins/Demigiant.meta
+Assets/Resources/DOTweenSettings.asset
+Assets/Resources/DOTweenSettings.asset.meta
+TopGun.slnx
+
