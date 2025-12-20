@@ -1,0 +1,46 @@
+{
+    "version": 1,
+    "name": "RideActions",
+    "maps": [
+        {
+            "name": "Plane",
+            "id": "8546d8b3-e258-4f67-b6d9-f8239f66ea8e",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "3e87604f-0dba-48da-ab69-a275d62bda8f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "23a546fb-977f-4426-8151-0d49d4ec823c",
+                    "path": "<Mouse>/scroll/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a78fb738-7f1f-4459-aa06-6e00f21479ed",
+                    "path": "<Mouse>/scroll/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
