@@ -93,35 +93,159 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
             ""id"": ""8546d8b3-e258-4f67-b6d9-f8239f66ea8e"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""Look"",
                     ""type"": ""Value"",
                     ""id"": ""3e87604f-0dba-48da-ab69-a275d62bda8f"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Throttle"",
+                    ""type"": ""Value"",
+                    ""id"": ""cda2a387-2703-4ce5-96df-e2c5233de088"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Roll"",
+                    ""type"": ""Value"",
+                    ""id"": ""a73d27ff-65e5-472e-a8f1-23021755cd64"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3ef60af-feba-462b-95a1-8836caef64ee"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Evade"",
+                    ""type"": ""Button"",
+                    ""id"": ""90e9dea4-d485-45c2-b302-0606b82eb96d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""23a546fb-977f-4426-8151-0d49d4ec823c"",
-                    ""path"": ""<Mouse>/scroll/left"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""e1c0d94c-da30-4b8e-a42e-386c31f39917"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""ef9d07ae-2c8c-4e98-919b-869072305c10"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""7d351984-58c6-4914-ab57-96dbb8bf7b51"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""dc8e6d25-b1ce-4548-98cd-56f27ef1a08f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""4b5204b1-07e4-4e82-a563-0596dd71847e"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""4d59b232-6a10-4b0b-a014-70e811220226"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b356dfee-abec-4b63-a59b-5c13a018cfeb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a78fb738-7f1f-4459-aa06-6e00f21479ed"",
-                    ""path"": ""<Mouse>/scroll/right"",
+                    ""id"": ""c6289ebe-9492-4b3b-8308-9e2e7299c1fa"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""Evade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10c81c50-9b06-4e15-a124-126e6c8caba7"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Evade"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -132,7 +256,11 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
 }");
         // Plane
         m_Plane = asset.FindActionMap("Plane", throwIfNotFound: true);
-        m_Plane_Newaction = m_Plane.FindAction("New action", throwIfNotFound: true);
+        m_Plane_Look = m_Plane.FindAction("Look", throwIfNotFound: true);
+        m_Plane_Throttle = m_Plane.FindAction("Throttle", throwIfNotFound: true);
+        m_Plane_Roll = m_Plane.FindAction("Roll", throwIfNotFound: true);
+        m_Plane_Fire = m_Plane.FindAction("Fire", throwIfNotFound: true);
+        m_Plane_Evade = m_Plane.FindAction("Evade", throwIfNotFound: true);
     }
 
     ~@RideActions()
@@ -213,7 +341,11 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
     // Plane
     private readonly InputActionMap m_Plane;
     private List<IPlaneActions> m_PlaneActionsCallbackInterfaces = new List<IPlaneActions>();
-    private readonly InputAction m_Plane_Newaction;
+    private readonly InputAction m_Plane_Look;
+    private readonly InputAction m_Plane_Throttle;
+    private readonly InputAction m_Plane_Roll;
+    private readonly InputAction m_Plane_Fire;
+    private readonly InputAction m_Plane_Evade;
     /// <summary>
     /// Provides access to input actions defined in input action map "Plane".
     /// </summary>
@@ -226,9 +358,25 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// </summary>
         public PlaneActions(@RideActions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Plane/Newaction".
+        /// Provides access to the underlying input action "Plane/Look".
         /// </summary>
-        public InputAction @Newaction => m_Wrapper.m_Plane_Newaction;
+        public InputAction @Look => m_Wrapper.m_Plane_Look;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/Throttle".
+        /// </summary>
+        public InputAction @Throttle => m_Wrapper.m_Plane_Throttle;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/Roll".
+        /// </summary>
+        public InputAction @Roll => m_Wrapper.m_Plane_Roll;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/Fire".
+        /// </summary>
+        public InputAction @Fire => m_Wrapper.m_Plane_Fire;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/Evade".
+        /// </summary>
+        public InputAction @Evade => m_Wrapper.m_Plane_Evade;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -255,9 +403,21 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlaneActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlaneActionsCallbackInterfaces.Add(instance);
-            @Newaction.started += instance.OnNewaction;
-            @Newaction.performed += instance.OnNewaction;
-            @Newaction.canceled += instance.OnNewaction;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
+            @Throttle.started += instance.OnThrottle;
+            @Throttle.performed += instance.OnThrottle;
+            @Throttle.canceled += instance.OnThrottle;
+            @Roll.started += instance.OnRoll;
+            @Roll.performed += instance.OnRoll;
+            @Roll.canceled += instance.OnRoll;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
+            @Evade.started += instance.OnEvade;
+            @Evade.performed += instance.OnEvade;
+            @Evade.canceled += instance.OnEvade;
         }
 
         /// <summary>
@@ -269,9 +429,21 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// <seealso cref="PlaneActions" />
         private void UnregisterCallbacks(IPlaneActions instance)
         {
-            @Newaction.started -= instance.OnNewaction;
-            @Newaction.performed -= instance.OnNewaction;
-            @Newaction.canceled -= instance.OnNewaction;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
+            @Throttle.started -= instance.OnThrottle;
+            @Throttle.performed -= instance.OnThrottle;
+            @Throttle.canceled -= instance.OnThrottle;
+            @Roll.started -= instance.OnRoll;
+            @Roll.performed -= instance.OnRoll;
+            @Roll.canceled -= instance.OnRoll;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
+            @Evade.started -= instance.OnEvade;
+            @Evade.performed -= instance.OnEvade;
+            @Evade.canceled -= instance.OnEvade;
         }
 
         /// <summary>
@@ -313,11 +485,39 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
     public interface IPlaneActions
     {
         /// <summary>
-        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Look" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Throttle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThrottle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Roll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRoll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Fire" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFire(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Evade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEvade(InputAction.CallbackContext context);
     }
 }
