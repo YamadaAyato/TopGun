@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>　プレイヤーの航空機の実態制御をするクラス　</summary>
+/// <summary> プレイヤーの航空機の実態制御をするクラス </summary>
 [RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerAirCraftController : MonoBehaviour
@@ -25,8 +25,8 @@ public class PlayerAirCraftController : MonoBehaviour
     private Rigidbody _rb;
 
     /// <summary>
-    ///         前進移動の処理をするクラス
-    ///         加速や減速の入力を受け取り、Rigidbodyの速度を更新する
+    ///     前進移動の処理をするクラス
+    ///     加速や減速の入力を受け取り、Rigidbodyの速度を更新する
     /// </summary>
     private void FowardMovement()
     {
@@ -58,6 +58,7 @@ public class PlayerAirCraftController : MonoBehaviour
         {
             Quaternion target = Quaternion.Euler(0f, _rb.rotation.eulerAngles.y, 0f);
 
+            // Lerpは回転角度が大きいと不均一な速度になるのでSlerpを使用
             _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, target, _stabilizeSpeed * Time.fixedDeltaTime));
         }
     }
