@@ -1,16 +1,34 @@
 using UnityEngine;
 
+/// <summary>　プレイヤーの航空機の実態制御をするクラス　</summary>
 public class PlayerAirCraftController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private float _baseSpeed;
+    [SerializeField] private float _maxSpeed;
+    [SerializeField] private float _acceleration;
+    
+    private PlayerInputHandler _inputHandler;
+    private Rigidbody _rb;
+    private float _currentSpeed;
+
+    private void FowardMovement()
     {
-        
+        _currentSpeed += _inputHandler.Throttle * _acceleration * Time.fixedDeltaTime;
+        _currentSpeed = Mathf.Clamp(_currentSpeed, 0f, _maxSpeed);
+
+        Vector3 forwardMovement = transform.forward * _currentSpeed;
+        _rb.linearVelocity = forwardMovement;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        FowardMovement();
+    }
+
+    private void Awake()
+    {
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        _rb = GetComponent<Rigidbody>();
+        _currentSpeed = _baseSpeed;
     }
 }
