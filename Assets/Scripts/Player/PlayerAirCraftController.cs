@@ -14,6 +14,11 @@ public class PlayerAirCraftController : MonoBehaviour
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _acceleration;
 
+    [Header("回転の設定")]
+    [SerializeField] private float _pitchSpeed;
+    [SerializeField] private float _yawSpeed;
+    [SerializeField] private float _rollSpeed;
+
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
 
@@ -30,9 +35,27 @@ public class PlayerAirCraftController : MonoBehaviour
         _rb.linearVelocity = forwardMovement;
     }
 
+    private void Rotation()
+    {
+        Vector2 lookInput = _inputHandler.Look;
+        float rollInput = _inputHandler.Roll;
+
+        //pitch：機首の上下回転
+        //yaw：左右旋回
+        //roll：傾き回転
+        float pitch = lookInput.y * _pitchSpeed * Time.fixedDeltaTime;
+        float yaw = lookInput.x * _yawSpeed * Time.fixedDeltaTime;
+        float roll = rollInput * _rollSpeed * Time.fixedDeltaTime;
+
+        Quaternion deltaRotation = Quaternion.Euler(pitch, yaw, -roll);
+
+        _rb.rotation = _rb.rotation * deltaRotation;
+    }
+
     private void FixedUpdate()
     {
         FowardMovement();
+        Rotation();
     }
 
     private void Awake()
