@@ -19,6 +19,8 @@ public class PlayerAirCraftController : MonoBehaviour
     [SerializeField] private float _yawSpeed;
     [SerializeField] private float _rollSpeed;
 
+    [SerializeField] private float _stabilizeSpeed;
+
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
 
@@ -49,7 +51,15 @@ public class PlayerAirCraftController : MonoBehaviour
 
         Quaternion deltaRotation = Quaternion.Euler(pitch, yaw, -roll);
 
-        _rb.rotation = _rb.rotation * deltaRotation;
+        _rb.MoveRotation(_rb.rotation * deltaRotation);
+
+        // 入力がないなら姿勢を通常状態に戻す
+        if (lookInput == Vector2.zero && Mathf.Approximately(rollInput, 0f))
+        {
+            Quaternion target = Quaternion.Euler(0f, _rb.rotation.eulerAngles.y, 0f);
+
+            _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, target, _stabilizeSpeed * Time.fixedDeltaTime));
+        }
     }
 
     private void FixedUpdate()
