@@ -7,8 +7,8 @@ public class ReadOnlyDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        GUI.enabled = false; // ここで編集不可に設定
+        GUI.enabled = false; // Inspector上のGUI入力を無効化
         EditorGUI.PropertyField(position, property, label);
-        GUI.enabled = true;　// ここで再び編集可能に設定
+        GUI.enabled = true;　// GUIの有効状態を元に戻す
     }
 }
