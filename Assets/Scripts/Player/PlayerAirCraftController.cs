@@ -5,15 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerAirCraftController : MonoBehaviour
 {
+    [Header("表示用")]
+    [ReadOnly, SerializeField] private float _currentSpeed;
+
     [Header("前進移動の設定")]
     [SerializeField] private float _baseSpeed;
     [SerializeField] private float _minSpeed;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _acceleration;
-    
+
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
-    private float _currentSpeed;
 
     /// <summary>
     ///         前進移動の処理をするクラス
