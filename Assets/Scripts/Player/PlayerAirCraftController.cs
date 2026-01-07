@@ -20,6 +20,7 @@ public class PlayerAirCraftController : MonoBehaviour
     [SerializeField] private float _rollSpeed;
 
     [SerializeField] private float _stabilizeSpeed;
+    [SerializeField] private float _rollYawFactor;
 
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
@@ -30,6 +31,7 @@ public class PlayerAirCraftController : MonoBehaviour
     /// </summary>
     private void FowardMovement()
     {
+        // 入力からの速度を計算して更新
         _currentSpeed += _inputHandler.Throttle * _acceleration * Time.fixedDeltaTime;
         _currentSpeed = Mathf.Clamp(_currentSpeed, _minSpeed, _maxSpeed);
 
@@ -42,15 +44,21 @@ public class PlayerAirCraftController : MonoBehaviour
         Vector2 lookInput = _inputHandler.Look;
         float rollInput = _inputHandler.Roll;
 
-        //pitch：機首の上下回転
-        //yaw：左右旋回
-        //roll：傾き回転
+        // 入力からの回転量を計算(それぞれの軸回転量を算出)
+        // pitch：機首の上下回転
+        // yaw：左右旋回
+        // roll：傾き回転
         float pitch = lookInput.y * _pitchSpeed * Time.fixedDeltaTime;
         float yaw = lookInput.x * _yawSpeed * Time.fixedDeltaTime;
         float roll = rollInput * _rollSpeed * Time.fixedDeltaTime;
 
-        Quaternion deltaRotation = Quaternion.Euler(pitch, yaw, -roll);
+        // ロールに応じてヨー回転も追加する
+        // SignedAngleは2つのベクトル間の符号(+.-)付きの角度を返す
+        float rollAngle = Vector3.SignedAngle(transform.up, Vector3.up, transform.forward);
+        float rollYaw = rollAngle * _rollYawFactor * (_currentSpeed / _maxSpeed) * Time.fixedDeltaTime;
 
+        // 回転の差分を計算してRigidbodyに適用
+        Quaternion deltaRotation = Quaternion.Euler(pitch, yaw + rollYaw, -roll);
         _rb.MoveRotation(_rb.rotation * deltaRotation);
 
         // 入力がないなら姿勢を通常状態に戻す
