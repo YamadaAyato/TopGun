@@ -427,7 +427,6 @@ GameObject:
   - component: {fileID: 651060507}
   - component: {fileID: 651060506}
   - component: {fileID: 651060509}
-  - component: {fileID: 651060508}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -493,19 +492,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &651060508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 651060505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLookAt
-  LookAtOffset: {x: 0, y: 1.73, z: 0}
 --- !u!114 &651060509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,9 +635,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1487138742}
+  - component: {fileID: 1487138739}
   - component: {fileID: 1487138741}
   - component: {fileID: 1487138740}
-  - component: {fileID: 1487138739}
   m_Layer: 0
   m_Name: PlayerAircraft
   m_TagString: Untagged
@@ -671,10 +657,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a7ccd5af7ad1d479336f1395c8038a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAirCraftController
+  _currentSpeed: 0
   _baseSpeed: 40
   _minSpeed: 40
   _maxSpeed: 100
   _acceleration: 5
+  _pitchSpeed: 5
+  _yawSpeed: 0
+  _rollSpeed: 80
+  _stabilizeSpeed: 1
+  _rollYawFactor: 2
 --- !u!54 &1487138740
 Rigidbody:
   m_ObjectHideFlags: 0
