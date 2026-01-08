@@ -75,16 +75,16 @@ public class PlayerAirCraftController : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        FowardMovement();
-        Rotation();
-    }
-
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();
         _rb = GetComponent<Rigidbody>();
         _currentSpeed = _baseSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        FowardMovement();
+        Rotation();
     }
 }
