@@ -56,6 +56,8 @@ public class PlayerAirCraftController : MonoBehaviour
         float yaw = lookInput.x * _yawSpeed * Time.fixedDeltaTime;
         float roll = rollInput * _rollSpeed * Time.fixedDeltaTime;
 
+        float currentPitch = _rb.rotation.eulerAngles.x;
+
         // ロールに応じてヨー回転も追加する
         // SignedAngleは2つのベクトル間の符号(+.-)付きの角度を返す
         float rollAngle = Vector3.SignedAngle(transform.up, Vector3.up, transform.forward);
@@ -73,6 +75,22 @@ public class PlayerAirCraftController : MonoBehaviour
             // Lerpは回転角度が大きいと不均一な速度になるのでSlerpを使用
             _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, target, _stabilizeSpeed * Time.fixedDeltaTime));
         }
+    }
+
+    /// <summary>
+    ///     角度を-180〜180度の範囲に正規化する
+    ///     180度を超える場合は-の角度に変換する
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    private float NormalizeAngle(float angle)
+    {
+        if (angle > 180f)
+        {
+            angle -= 360f;
+        }
+        return angle;
+
     }
 
     private void Awake()
