@@ -64,6 +64,7 @@ public class PlayerAirCraftController : MonoBehaviour
         float currentPitch = NormalizeAngle(_rb.rotation.eulerAngles.x);
         float currentRoll = NormalizeAngle(_rb.rotation.eulerAngles.z);
 
+        // ピッチとロールが最大角度を超えないように制限
         if (currentPitch + pitch > _maxPitchAngle || currentPitch + pitch < -_maxPitchAngle)
             pitch = 0f;
         if (currentRoll + roll > _maxRollAngle || currentRoll + roll < -_maxRollAngle)
