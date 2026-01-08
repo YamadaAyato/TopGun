@@ -60,8 +60,9 @@ public class PlayerAirCraftController : MonoBehaviour
         float yaw = lookInput.x * _yawSpeed * Time.fixedDeltaTime;
         float roll = rollInput * _rollSpeed * Time.fixedDeltaTime;
 
-        // 現在のピッチとロール角度を取得して正規化
+        // 現在の角度をそれぞれ取得
         float currentPitch = NormalizeAngle(_rb.rotation.eulerAngles.x);
+        float currentYaw = NormalizeAngle(_rb.rotation.eulerAngles.y);
         float currentRoll = NormalizeAngle(_rb.rotation.eulerAngles.z);
 
         // ピッチとロールが最大角度を超えないように制限
@@ -80,9 +81,9 @@ public class PlayerAirCraftController : MonoBehaviour
         _rb.MoveRotation(_rb.rotation * deltaRotation);
 
         // 入力がないなら姿勢を通常状態に戻す
-        if (lookInput == Vector2.zero && Mathf.Approximately(rollInput, 0f))
+        if (Mathf.Approximately(rollInput, 0f))
         {
-            Quaternion target = Quaternion.Euler(0f, _rb.rotation.eulerAngles.y, 0f);
+            Quaternion target = Quaternion.Euler(currentPitch, currentYaw, 0f);
 
             // Lerpは回転角度が大きいと不均一な速度になるのでSlerpを使用
             _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, target, _stabilizeSpeed * Time.fixedDeltaTime));
