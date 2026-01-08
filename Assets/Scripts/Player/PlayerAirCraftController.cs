@@ -19,6 +19,10 @@ public class PlayerAirCraftController : MonoBehaviour
     [SerializeField] private float _yawSpeed;
     [SerializeField] private float _rollSpeed;
 
+    [Header("角度の制限")]
+    [SerializeField] private float _maxPitchAngle;
+    [SerializeField] private float _maxRollAngle;
+
     [SerializeField] private float _stabilizeSpeed;
     [SerializeField] private float _rollYawFactor;
 
@@ -56,7 +60,14 @@ public class PlayerAirCraftController : MonoBehaviour
         float yaw = lookInput.x * _yawSpeed * Time.fixedDeltaTime;
         float roll = rollInput * _rollSpeed * Time.fixedDeltaTime;
 
-        float currentPitch = _rb.rotation.eulerAngles.x;
+        // 現在のピッチとロール角度を取得して正規化
+        float currentPitch = NormalizeAngle(_rb.rotation.eulerAngles.x);
+        float currentRoll = NormalizeAngle(_rb.rotation.eulerAngles.z);
+
+        if (currentPitch + pitch > _maxPitchAngle || currentPitch + pitch < -_maxPitchAngle)
+            pitch = 0f;
+        if (currentRoll + roll > _maxRollAngle || currentRoll + roll < -_maxRollAngle)
+            roll = 0f;
 
         // ロールに応じてヨー回転も追加する
         // SignedAngleは2つのベクトル間の符号(+.-)付きの角度を返す
