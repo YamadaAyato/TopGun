@@ -26,7 +26,7 @@ public class PlayerAirCraftController : MonoBehaviour
     private Rigidbody _rb;
 
     /// <summary>
-    ///     前進移動の処理をするクラス
+    ///     前進移動の処理をする
     ///     加速や減速の入力を受け取り、Rigidbodyの速度を更新する
     /// </summary>
     private void FowardMovement()
@@ -39,6 +39,10 @@ public class PlayerAirCraftController : MonoBehaviour
         _rb.linearVelocity = forwardMovement;
     }
 
+    /// <summary>
+    ///     機体回転や旋回を処理する
+    ///     回転や機首制御の入力を受け取り、Rigidbodyの回転を更新する
+    /// </summary>
     private void Rotation()
     {
         Vector2 lookInput = _inputHandler.Look;
