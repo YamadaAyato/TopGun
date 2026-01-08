@@ -101,7 +101,6 @@ public class PlayerAirCraftController : MonoBehaviour
             angle -= 360f;
         }
         return angle;
-
     }
 
     private void Awake()
