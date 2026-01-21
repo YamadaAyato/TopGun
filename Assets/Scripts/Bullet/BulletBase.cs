@@ -1,16 +1,23 @@
 using UnityEngine;
 
-public class BulletBase : MonoBehaviour
+public abstract class BulletBase : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("弾設定")]
+    [SerializeField] protected float _bulletSpeed;
+    [SerializeField] protected float _lifeTime;
+
+    protected float _timer;
+
+    protected virtual void Update()
     {
-        
+        this.transform.position += transform.forward * _bulletSpeed * Time.deltaTime;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected abstract void HandleHit(Collider other);
+
+    private void OnTriggerEnter(Collider other)
     {
-        
+        HandleHit(other);
     }
+
 }
