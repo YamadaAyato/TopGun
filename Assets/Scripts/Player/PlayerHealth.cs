@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 ///     プレイヤーのHP管理をするクラス
 /// </summary>
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour,IDamegeble
 {
     /// <summary>
     /// ダメージを与えられるか返す
@@ -22,8 +22,6 @@ public class PlayerHealth : MonoBehaviour
         _isInvincible = value;
     }
 
-    /// <summary> ダメージ処理をする。 </summary>
-    /// <param name="damage"> ダメージ </param>
     public void TakeDamage(int damage)
     {
         _currentHealth -= damage;
@@ -31,10 +29,15 @@ public class PlayerHealth : MonoBehaviour
 
         if (_currentHealth <= 0)
         {
-            // TODO:死亡時処理
-            _currentHealth = 0;
-            Debug.Log("プレイヤー死亡");
+            Die();
         }
+    }
+
+    public void Die()
+    {        
+        // TODO:死亡時処理
+        _currentHealth = 0;
+        Debug.Log("プレイヤー死亡");
     }
 
     private void Awake()
