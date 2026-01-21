@@ -1,6 +1,4 @@
-using UnityEngine;
-
-public class IDamegeble
+public interface IDamegeble
 {
-    
+    void TakeDamaged(int damage);
 }
