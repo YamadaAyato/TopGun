@@ -15,6 +15,13 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField, ReadOnly] private int _currentHealth;
     [SerializeField] private int _maxHealth;
 
+    /// <summary> 無敵判定を切り替える </summary>
+    /// <param name="value"></param>
+    public void SetInvincible(bool value)
+    {
+        _isInvincible = value;
+    }
+
     /// <summary> ダメージ処理をする。 </summary>
     /// <param name="damage"> ダメージ </param>
     public void TakeDamage(int damage)
@@ -22,7 +29,7 @@ public class PlayerHealth : MonoBehaviour
         _currentHealth -= damage;
         Debug.Log($"プレイヤーに{damage}ダメージ、現在HP{_currentHealth}");
 
-        if(_currentHealth <= 0)
+        if (_currentHealth <= 0)
         {
             // TODO:死亡時処理
             _currentHealth = 0;
