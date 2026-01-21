@@ -1,11 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+///     プレイヤーのHP関係の処理をするクラス
+/// </summary>
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
     [SerializeField, ReadOnly] private int _currentHealth;
     [SerializeField] private int _health;
 
+    /// <summary> ダメージ処理をする。 </summary>
+    /// <param name="damage"> ダメージ </param>
     public void TakeDamage(int damage)
     {
         _health -= damage;
