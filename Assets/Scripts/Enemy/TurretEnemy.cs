@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class TurretEnemy : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Transform _target;
+    [SerializeField] private Transform _muzzle;
+    [SerializeField] private EnemyBullet _bulletPrefab;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private float _fireInterval;
+    [SerializeField] private int _poolSize;
+
+    private ObjectPool<EnemyBullet> _bulletPool;
+    private float _timer;
+
+    private void Update()
     {
-        
+
     }
 }
