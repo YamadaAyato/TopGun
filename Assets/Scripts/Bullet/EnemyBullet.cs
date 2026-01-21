@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     敵の銃弾処理をするクラス
+/// </summary>
 public class EnemyBullet : BulletBase
 {
     [SerializeField] private int _damage;
