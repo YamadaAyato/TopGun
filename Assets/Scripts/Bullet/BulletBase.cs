@@ -15,7 +15,11 @@ public abstract class BulletBase : MonoBehaviour
     {
         this.transform.position += transform.forward * _bulletSpeed * Time.deltaTime;
 
-        _timer += Time.deltaTime
+        _timer += Time.deltaTime;
+        if (_timer >= _lifeTime)
+        {
+            Release();
+        }
     }
     
     /// <summary> 銃弾HIt時の処理をする。 </summary>
@@ -26,4 +30,9 @@ public abstract class BulletBase : MonoBehaviour
         HandleHit(other);
     }
 
+    /// <summary> 銃弾消滅処理 </summary>
+    protected void Release()
+    {
+        Destroy(this.gameObject);
+    }
 }
