@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-///     プレイヤーのHP関係の処理をするクラス
+///     プレイヤーのHP管理をするクラス
 /// </summary>
 public class PlayerHealth : MonoBehaviour
 {
@@ -13,20 +13,25 @@ public class PlayerHealth : MonoBehaviour
 
     [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
     [SerializeField, ReadOnly] private int _currentHealth;
-    [SerializeField] private int _health;
+    [SerializeField] private int _maxHealth;
 
     /// <summary> ダメージ処理をする。 </summary>
     /// <param name="damage"> ダメージ </param>
     public void TakeDamage(int damage)
     {
-        _health -= damage;
-        Debug.Log($"プレイヤーに{damage}ダメージ、現在HP{_health}");
+        _currentHealth -= damage;
+        Debug.Log($"プレイヤーに{damage}ダメージ、現在HP{_currentHealth}");
 
-        if(_health <= 0)
+        if(_currentHealth <= 0)
         {
             // TODO:死亡時処理
-            _health = 0;
+            _currentHealth = 0;
             Debug.Log("プレイヤー死亡");
         }
+    }
+
+    private void Awake()
+    {
+        _currentHealth = _maxHealth;
     }
 }
