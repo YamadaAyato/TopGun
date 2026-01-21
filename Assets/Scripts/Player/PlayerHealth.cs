@@ -5,6 +5,12 @@ using UnityEngine;
 /// </summary>
 public class PlayerHealth : MonoBehaviour
 {
+    /// <summary>
+    /// ダメージを与えられるか返す
+    /// 無敵がtrueの時Hitできるため逆を返す
+    /// </summary>
+    public bool CanBeHit => !_isInvincible;
+
     [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
     [SerializeField, ReadOnly] private int _currentHealth;
     [SerializeField] private int _health;
