@@ -1,16 +1,36 @@
 using UnityEngine;
+using System;
 
-public class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, IDamegeble
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField, ReadOnly] private int _currentHp;
+    [SerializeField] private int _maxHp;
+
+    Action<EnemyBase> _onRelease;
+
+    public void Spawn(Action<EnemyBase> onRelease)
     {
-        
+        _onRelease = onRelease;
+        _currentHp = _maxHp;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(int damage)
     {
-        
+        _currentHp -= damage;
+
+        if (_currentHp <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        _currentHp = 0;
+    }
+
+    protected void Release()
+    {
+        _onRelease?.Invoke(this);
     }
 }
