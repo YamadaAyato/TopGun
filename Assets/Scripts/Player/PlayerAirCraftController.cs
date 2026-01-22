@@ -81,7 +81,7 @@ public class PlayerAirCraftController : MonoBehaviour
         _rb.MoveRotation(_rb.rotation * deltaRotation);
 
         // 入力がないなら姿勢を通常状態に戻す
-        // 2 つの浮動小数点値を比較し、近似している場合は true を返します
+        // Approximatelyは2つの浮動小数点値を比較し、近似している場合は true を返します
         if (Mathf.Approximately(rollInput, 0f))
         {
             Quaternion target = Quaternion.Euler(currentPitch, currentYaw, 0f);
