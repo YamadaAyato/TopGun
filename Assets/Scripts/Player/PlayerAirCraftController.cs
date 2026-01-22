@@ -1,6 +1,8 @@
 using UnityEngine;
 
-/// <summary> プレイヤーの航空機の実態制御をするクラス </summary>
+/// <summary> 
+///     プレイヤーの航空機の実態制御をするクラス
+/// </summary>
 [RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerAirCraftController : MonoBehaviour
