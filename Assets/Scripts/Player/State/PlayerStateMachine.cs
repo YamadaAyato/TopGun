@@ -1,6 +1,8 @@
 using UnityEngine;
 
-/// <summary>　プレイヤーの状態を管理するクラス　</summary>
+/// <summary>　
+///     プレイヤーの状態を管理するクラス　
+/// </summary>
 public class PlayerStateMachine : MonoBehaviour
 {
     private IPlayerState _currentState;
