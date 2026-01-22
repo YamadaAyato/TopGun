@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,30 @@ public abstract class BulletBase : MonoBehaviour
     [SerializeField] protected float _lifeTime;
 
     protected float _timer;
+    private Action<BulletBase> _onRelease;
+
+    public void Spawn(Action<BulletBase> onRelese)
+    {
+        _onRelease = onRelese;
+        _timer = 0;
+        OnSpawned();
+    }
+
+    protected void OnSpawned() { }
+    
+    /// <summary> 銃弾HIt時の処理をする。 </summary>
+    protected abstract void HandleHit(Collider other);
+
+    /// <summary> 銃弾消滅処理 </summary>
+    protected void Release()
+    {
+        _onRelease?.Invoke(this);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        HandleHit(other);
+    }
 
     protected virtual void Update()
     {
@@ -20,19 +45,5 @@ public abstract class BulletBase : MonoBehaviour
         {
             Release();
         }
-    }
-    
-    /// <summary> 銃弾HIt時の処理をする。 </summary>
-    protected abstract void HandleHit(Collider other);
-
-    private void OnTriggerEnter(Collider other)
-    {
-        HandleHit(other);
-    }
-
-    /// <summary> 銃弾消滅処理 </summary>
-    protected void Release()
-    {
-        Destroy(this.gameObject);
     }
 }
