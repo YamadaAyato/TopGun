@@ -35,11 +35,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamegeble
     }
 
     /// <summary>
-    /// 自身が役目を終えたことを通知し、
-    /// 生成時に渡された解放コールバックを呼び出す。
+    ///     自身が役目を終えたことを通知し、
+    ///     生成時に渡された解放コールバックを呼び出す。
     /// </summary>
     protected void Release()
     {
         _onRelease?.Invoke(this);
     }
+
+    /// <summary> スポーン時のイベント </summary>
+    protected virtual void OnSpawned() { }
 }
