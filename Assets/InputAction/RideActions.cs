@@ -136,6 +136,15 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""FlipEvade"",
+                    ""type"": ""Button"",
+                    ""id"": ""61c289da-1643-45aa-b4bc-9157023acb00"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -259,6 +268,17 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
                     ""action"": ""Evade"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bfe5c495-48e7-4c5e-bb1f-3af861e8da9e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FlipEvade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -272,6 +292,7 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         m_Plane_Roll = m_Plane.FindAction("Roll", throwIfNotFound: true);
         m_Plane_Fire = m_Plane.FindAction("Fire", throwIfNotFound: true);
         m_Plane_Evade = m_Plane.FindAction("Evade", throwIfNotFound: true);
+        m_Plane_FlipEvade = m_Plane.FindAction("FlipEvade", throwIfNotFound: true);
     }
 
     ~@RideActions()
@@ -357,6 +378,7 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Plane_Roll;
     private readonly InputAction m_Plane_Fire;
     private readonly InputAction m_Plane_Evade;
+    private readonly InputAction m_Plane_FlipEvade;
     /// <summary>
     /// Provides access to input actions defined in input action map "Plane".
     /// </summary>
@@ -388,6 +410,10 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Plane/Evade".
         /// </summary>
         public InputAction @Evade => m_Wrapper.m_Plane_Evade;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/FlipEvade".
+        /// </summary>
+        public InputAction @FlipEvade => m_Wrapper.m_Plane_FlipEvade;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -429,6 +455,9 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
             @Evade.started += instance.OnEvade;
             @Evade.performed += instance.OnEvade;
             @Evade.canceled += instance.OnEvade;
+            @FlipEvade.started += instance.OnFlipEvade;
+            @FlipEvade.performed += instance.OnFlipEvade;
+            @FlipEvade.canceled += instance.OnFlipEvade;
         }
 
         /// <summary>
@@ -455,6 +484,9 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
             @Evade.started -= instance.OnEvade;
             @Evade.performed -= instance.OnEvade;
             @Evade.canceled -= instance.OnEvade;
+            @FlipEvade.started -= instance.OnFlipEvade;
+            @FlipEvade.performed -= instance.OnFlipEvade;
+            @FlipEvade.canceled -= instance.OnFlipEvade;
         }
 
         /// <summary>
@@ -530,5 +562,12 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEvade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FlipEvade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFlipEvade(InputAction.CallbackContext context);
     }
 }
