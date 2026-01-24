@@ -50,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "FlipEvade",
+                    "type": "Button",
+                    "id": "61c289da-1643-45aa-b4bc-9157023acb00",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -173,6 +182,17 @@
                     "action": "Evade",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "bfe5c495-48e7-4c5e-bb1f-3af861e8da9e",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FlipEvade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
