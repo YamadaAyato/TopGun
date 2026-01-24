@@ -44,12 +44,12 @@
                 },
                 {
                     "name": "Evade",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "90e9dea4-d485-45c2-b302-0606b82eb96d",
-                    "expectedControlType": "",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -142,26 +142,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "c6289ebe-9492-4b3b-8308-9e2e7299c1fa",
+                    "name": "1D Axis",
+                    "id": "1d83a0b0-877d-43d9-a532-a25601f4b421",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Evade",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Negative",
+                    "id": "6319a80f-8f5f-499d-ad23-ed75df0b87e1",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Evade",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "10c81c50-9b06-4e15-a124-126e6c8caba7",
+                    "name": "Positive",
+                    "id": "9e04399d-b506-4749-89ea-9a3e62ffc4d3",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Evade",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 }
             ]
         }
