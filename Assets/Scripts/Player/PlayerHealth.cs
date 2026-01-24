@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 ///     プレイヤーのHP管理をするクラス
 /// </summary>
-public class PlayerHealth : MonoBehaviour,IDamegeble
+public class PlayerHealth : MonoBehaviour,IDamageable
 {
     /// <summary>
     /// ダメージを与えられるか返す
