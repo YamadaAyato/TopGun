@@ -24,14 +24,14 @@ public class TurretEnemy : EnemyBase
         enemyBullet.transform.position = _muzzle.position;
 
         Vector3 dir = (_targetPlayer.transform.position - this.transform.position).normalized;
-        enemyBullet.transform.rotation = Quaternion.LookRotation(dir,Vector3.up);
+        enemyBullet.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
-        //enemyBullet.Spawn(ReturnBullet);
+        enemyBullet.Spawn(ReturnBullet);
     }
 
-    private void ReturnBullet(EnemyBullet enemyBullet)
+    private void ReturnBullet(BulletBase enemyBullet)
     {
-        _bulletPool.Release(enemyBullet);
+        _bulletPool.Release((EnemyBullet)enemyBullet);
     }
 
     private void Awake()
