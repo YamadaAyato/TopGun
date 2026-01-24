@@ -15,8 +15,44 @@ public class PlayerInputHandler : MonoBehaviour
     // Q/Eキーの回避入力の方向管理用(-1: Qキー押下, 0: 押下なし, 1: Eキー押下)
     private int _sideEvadeDirPressed;
 
-    // Spaceキーの回避入力のフラグ管理用
-    private bool _flipEvadePressed;
+    private int _sideEvadeFrame;
+
+    // Spaceキーの回避入力のフレーム管理用(押下されたフレームを保持)
+    private int _flipEvadeFrame = -1;
+
+    /// <summary>
+    ///     そのフレームで押されていたら、方向付きで左右回避入力を消費する
+    /// </summary>
+    /// <returns></returns>
+    public int ConsumeSideEvadeInput()
+    {
+        if(_sideEvadeFrame != Time.frameCount)
+        {
+            // 押されたフレームでなければ0を返す
+            return 0;
+        }
+
+        // 消費したらリセット
+        _sideEvadeFrame = -1;
+        int dir = _sideEvadeDirPressed;
+        _sideEvadeDirPressed = 0;
+        return dir;
+    }
+
+    /// <summary>
+    ///     宙返り回避が押されたフレームかどうかを判定し、消費する
+    /// </summary>
+    /// <returns></returns>
+    public bool ConsumeFlipEvadeInput()
+    {
+        if (_flipEvadeFrame == Time.frameCount)
+        {
+            // 消費したらリセット
+            _flipEvadeFrame = -1;
+            return true;
+        }
+        return false;
+    }
 
     #region Input Callbacks
     private void OnLook(InputAction.CallbackContext context) => Look = context.ReadValue<Vector2>();
@@ -44,16 +80,17 @@ public class PlayerInputHandler : MonoBehaviour
         if (dir != 0)
         {
             _sideEvadeDirPressed = dir;
+           _sideEvadeFrame = Time.frameCount;
         }
     }
 
     /// <summary>
-    ///     宙返り回避の押した瞬間をフラグで保持する
+    ///     宙返り回避の押した瞬間をフレームで保持する
     /// </summary>
     /// <param name="context"></param>
     private void OnFlipEvade(InputAction.CallbackContext context)
     {
-        _flipEvadePressed = true;
+        _flipEvadeFrame = Time.frameCount;
     }
     #endregion
 
