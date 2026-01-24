@@ -114,7 +114,7 @@ public class PlayerInputHandler : MonoBehaviour
         _rideActions.Plane.Fire.canceled += OnFireCanceled;
 
         _rideActions.Plane.Evade.performed += OnSideEvade;
-        _rideActions.Plane.Evade.performed += OnFlipEvade;
+        _rideActions.Plane.FlipEvade.performed += OnFlipEvade;
 
         _rideActions.Enable();
     }
@@ -134,7 +134,7 @@ public class PlayerInputHandler : MonoBehaviour
         _rideActions.Plane.Fire.canceled -= OnFireCanceled;
 
         _rideActions.Plane.Evade.performed -= OnSideEvade;
-        _rideActions.Plane.Evade.performed -= OnFlipEvade;
+        _rideActions.Plane.FlipEvade.performed -= OnFlipEvade;
 
         _rideActions.Disable();
     }
