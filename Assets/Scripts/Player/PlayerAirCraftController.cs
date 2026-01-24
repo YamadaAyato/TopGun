@@ -7,6 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerAirCraftController : MonoBehaviour
 {
+    public bool DisableControl { get; set; }
+
     [Header("表示用")]
     [ReadOnly, SerializeField] private float _currentSpeed;
 
@@ -117,6 +119,8 @@ public class PlayerAirCraftController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (DisableControl) return;
+
         FowardMovement();
         Rotation();
     }
