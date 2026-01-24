@@ -4,7 +4,7 @@ using System;
 /// <summary>
 ///     敵の基底クラス
 /// </summary>
-public abstract class EnemyBase : MonoBehaviour, IDamegeble
+public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     [SerializeField, ReadOnly] private int _currentHp;
     [SerializeField] private int _maxHp;
