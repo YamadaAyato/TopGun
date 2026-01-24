@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     タレット型の敵クラス
+/// </summary>
 public class TurretEnemy : EnemyBase
 {
     [SerializeField] private EnemyBullet _bulletPrefab;
@@ -7,6 +10,7 @@ public class TurretEnemy : EnemyBase
     [SerializeField] private float _fireInterval;
     [SerializeField] private int _bulletPoolSize;
 
+    // デバッグ用で仮のシリアライズ
     [SerializeField] private PlayerHealth _targetPlayer;
 
     private ObjectPool<EnemyBullet> _bulletPool;
@@ -18,11 +22,16 @@ public class TurretEnemy : EnemyBase
         _timer = 0f;
     }
 
+    /// <summary>
+    ///     銃弾をプールから取得して発射する
+    /// </summary>
     private void Fire()
     {
+        // 銃弾をプールから取得して、銃口に
         EnemyBullet enemyBullet = _bulletPool.Get();
         enemyBullet.transform.position = _muzzle.position;
 
+        // 方向を定めて銃弾を回転させる
         Vector3 dir = (_targetPlayer.transform.position - this.transform.position).normalized;
         enemyBullet.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
