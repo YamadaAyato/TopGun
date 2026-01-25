@@ -41,43 +41,6 @@ public class PlayerEvadeController : MonoBehaviour
     private Quaternion _visualBaseLocalRot;
     private EvadeType _currnntEvadeType;
 
-    private void Awake()
-    {
-        _inputHandler = GetComponent<PlayerInputHandler>();
-        _airCraftController = GetComponent<PlayerAirCraftController>();
-        _health = GetComponent<PlayerHealth>();
-        _rb = GetComponent<Rigidbody>();
-    }
-
-    private void Update()
-    {
-        // タイマー処理
-        if (_evadeCooldownTimer > 0f)
-            _evadeCooldownTimer -= Time.deltaTime;
-
-        if (_isEvading)
-        {
-            _evadeTimer += Time.deltaTime;
-            if (_evadeTimer >= _evadeDuration)
-                EndEvade();
-            return;
-        }
-
-        if (_evadeCooldownTimer > 0f) return;
-
-        TryStartFlipEvade();
-        TryStartBallelRollEvade();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_isEvading) return;
-
-        UpdateEvadePosition();
-        _rb.MoveRotation(_startRbRot);
-        UpdateVisualSpin();
-    }
-
     /// <summary>
     ///     回避の進度を求めて移動させる
     /// </summary>
@@ -216,5 +179,42 @@ public class PlayerEvadeController : MonoBehaviour
 
         // 回避開始位置＋回避開始姿勢で回したローカル位置
         return _startPos + (_startRot * localPos);
+    }
+
+    private void Awake()
+    {
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        _airCraftController = GetComponent<PlayerAirCraftController>();
+        _health = GetComponent<PlayerHealth>();
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        // タイマー処理
+        if (_evadeCooldownTimer > 0f)
+            _evadeCooldownTimer -= Time.deltaTime;
+
+        if (_isEvading)
+        {
+            _evadeTimer += Time.deltaTime;
+            if (_evadeTimer >= _evadeDuration)
+                EndEvade();
+            return;
+        }
+
+        if (_evadeCooldownTimer > 0f) return;
+
+        TryStartFlipEvade();
+        TryStartBallelRollEvade();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_isEvading) return;
+
+        UpdateEvadePosition();
+        _rb.MoveRotation(_startRbRot);
+        UpdateVisualSpin();
     }
 }
