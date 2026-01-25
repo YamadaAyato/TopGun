@@ -13,7 +13,9 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField] private float _radius;
 
     [SerializeField] private float _pivotDistace;
-    [SerializeField] private float _pivotHeightOffset;
+    [SerializeField] private float _pivotHeightOffsetCommon;
+    [SerializeField] private float _pivotHeightOffsetSideEvade;
+    [SerializeField] private float _pivotHeightOffsetFlipEvade;
 
     private PlayerInputHandler _inputHandler;
     private PlayerAirCraftController _airCraftController;
@@ -27,7 +29,7 @@ public class PlayerEvadeController : MonoBehaviour
     private int _sideDir;
 
     private Vector3 _pivot;
-    private Vector3 _startPosition;
+    private Vector3 _startOffset;
     private EvadeType _currentEvadeType;
 
     private void TryStartSideEvade()
@@ -59,6 +61,7 @@ public class PlayerEvadeController : MonoBehaviour
         _airCraftController.DisableControl = true;
 
         _health.SetInvincible(true);
+        PrepareOrbit(type);
 
         Debug.Log("Evade Started: " + type.ToString());
     }
@@ -69,6 +72,53 @@ public class PlayerEvadeController : MonoBehaviour
         _airCraftController.DisableControl = false;
         _health.SetInvincible(false);
         Debug.Log("Evade Ended");
+    }
+
+    private void PrepareOrbit(EvadeType evadeType)
+    {
+        switch (evadeType)
+        {
+            case EvadeType.Side:
+                PrepareSideorbit();
+                break;
+            case EvadeType.Flip:
+                PrepareFlipOrbit();
+                break;
+        }
+
+        _rb.MovePosition(_pivot + _startOffset);
+    }
+
+    private void PrepareSideorbit()
+    {
+        Vector3 side = transform.right * _sideDir;
+
+        _pivot = _rb.position + side * _pivotHeightOffsetSideEvade
+            + Vector3.up * _pivotHeightOffsetCommon;
+
+        Vector3 offset = _rb.position - _pivot;
+        _startOffset = offset.normalized * _radius;
+    }
+
+    private void PrepareFlipOrbit()
+    {
+        _pivot = _rb.position + Vector3.up * _pivotHeightOffsetFlipEvade;
+        Vector3 offset = _rb.position - _pivot;
+        _startOffset = offset.normalized * _radius;
+    }
+
+    private void UpdateOrbitMovement()
+    {
+        float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
+        float angle = 360f * t;
+
+        Vector3 axis = GetOrbitAxis();
+        Quaternion rot = Quaternion.AngleAxis(angle, axis);
+
+        Vector3 newOffset = rot * _startOffset;
+        Vector3 newPos = _pivot + newOffset;
+
+        _rb.MovePosition(newPos);
     }
 
     private void UpdateCooldownTimer()
@@ -86,6 +136,16 @@ public class PlayerEvadeController : MonoBehaviour
         {
             EndEvade();
         }
+    }
+
+    private Vector3 GetOrbitAxis()
+    {
+        return _currentEvadeType switch
+        {
+            EvadeType.Side => transform.forward,
+            EvadeType.Flip => transform.right,
+            _ => transform.forward
+        };
     }
 
     private void Awake()
@@ -108,5 +168,11 @@ public class PlayerEvadeController : MonoBehaviour
 
         TryStartSideEvade();
         TryStartFlipEvade();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_isEvading) return;
+        UpdateOrbitMovement();
     }
 }
