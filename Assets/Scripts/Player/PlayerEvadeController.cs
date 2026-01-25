@@ -12,10 +12,13 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField] private float _evadeCooldown;
     [SerializeField] private float _radius;
 
-    [SerializeField] private float _pivotDistace;
-    [SerializeField] private float _pivotHeightOffsetCommon;
-    [SerializeField] private float _pivotHeightOffsetSideEvade;
-    [SerializeField] private float _pivotHeightOffsetFlipEvade;
+    [SerializeField] private float _loopHeight;
+    [SerializeField] private float _sideTravelDistance;
+    [SerializeField] private float _flipTravelDistance;
+    [SerializeField] private float _turnSpeed;
+
+    [SerializeField] private float _flipPitchMax;
+    [SerializeField] private float _flipPitchFollwSpeed;
 
     private PlayerInputHandler _inputHandler;
     private PlayerAirCraftController _airCraftController;
@@ -27,10 +30,12 @@ public class PlayerEvadeController : MonoBehaviour
     private float _evadeCooldownTimer;
 
     private int _sideDir;
-
-    private Vector3 _pivot;
-    private Vector3 _startOffset;
     private EvadeType _currentEvadeType;
+
+    private Vector3 _startPos;
+    private Vector3 _travel;
+    private Vector3 _prevPos;
+    private Quaternion _flipYawLookRotation;
 
     private void TryStartSideEvade()
     {
@@ -59,8 +64,18 @@ public class PlayerEvadeController : MonoBehaviour
         _evadeCooldownTimer = _evadeCooldown;
 
         _airCraftController.DisableControl = true;
-
         _health.SetInvincible(true);
+
+        _startPos = _rb.position;
+
+        _prevPos = _rb.position;
+        if (type == EvadeType.Flip)
+        {
+            // Flip中はYawを固定して、Pitch(X)だけ動かす
+            Vector3 fwd = transform.forward;
+            _flipYawLookRotation = Quaternion.LookRotation(fwd, Vector3.up);
+        }
+
         PrepareOrbit(type);
 
         Debug.Log("Evade Started: " + type.ToString());
@@ -79,46 +94,32 @@ public class PlayerEvadeController : MonoBehaviour
         switch (evadeType)
         {
             case EvadeType.Side:
-                PrepareSideorbit();
+                _travel = transform.right * (_sideDir * _sideTravelDistance);
                 break;
             case EvadeType.Flip:
-                PrepareFlipOrbit();
+                _travel = transform.forward * _flipTravelDistance;
                 break;
         }
-
-        _rb.MovePosition(_pivot + _startOffset);
     }
 
-    private void PrepareSideorbit()
-    {
-        Vector3 side = transform.right * _sideDir;
-
-        _pivot = _rb.position + side * _pivotHeightOffsetSideEvade
-            + Vector3.up * _pivotHeightOffsetCommon;
-
-        Vector3 offset = _rb.position - _pivot;
-        _startOffset = offset.normalized * _radius;
-    }
-
-    private void PrepareFlipOrbit()
-    {
-        _pivot = _rb.position + Vector3.up * _pivotHeightOffsetFlipEvade;
-        Vector3 offset = _rb.position - _pivot;
-        _startOffset = offset.normalized * _radius;
-    }
-
-    private void UpdateOrbitMovement()
+    private void UpdateLoopMovement()
     {
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
-        float angle = 360f * t;
+        float angle = Mathf.PI * 2f * t;
 
-        Vector3 axis = GetOrbitAxis();
-        Quaternion rot = Quaternion.AngleAxis(angle, axis);
+        Vector3 basePos = _startPos + _travel * t;
 
-        Vector3 newOffset = rot * _startOffset;
-        Vector3 newPos = _pivot + newOffset;
+        float side = Mathf.Sin(angle) * _radius;
+        float up = (1f - Mathf.Cos(angle)) * _loopHeight;
 
+        Vector3 offset = transform.forward * side + transform.up * up;
+        Vector3 newPos = basePos + offset;
         _rb.MovePosition(newPos);
+
+        if(_currentEvadeType == EvadeType.Flip)
+        {
+            ApplyFlipOrientation(newPos);
+        }
     }
 
     private void UpdateCooldownTimer()
@@ -142,10 +143,33 @@ public class PlayerEvadeController : MonoBehaviour
     {
         return _currentEvadeType switch
         {
-            EvadeType.Side => transform.forward,
-            EvadeType.Flip => transform.right,
-            _ => transform.forward
+            EvadeType.Side => transform.right,
+            EvadeType.Flip => transform.forward,
+            _ => transform.right
         };
+    }
+
+    private void ApplyFlipOrientation(Vector3 newPos)
+    {
+        Vector3 vel = (newPos - _prevPos) / Time.fixedDeltaTime;
+        _prevPos = newPos;
+
+
+        if (vel.sqrMagnitude < 0.0001f) return;
+
+        // Yaw固定座標に変換して pitch を求める
+        Vector3 localVel = Quaternion.Inverse(_flipYawLookRotation) * vel;
+
+        // forward(z) と up(y) の比からピッチ角（度）を作る
+        float pitch = Mathf.Atan2(localVel.y, localVel.z) * Mathf.Rad2Deg;
+
+        // 暴れ防止
+        pitch = Mathf.Clamp(pitch, -_flipPitchMax, _flipPitchMax);
+
+        // Yaw固定 + Pitchのみ
+        Quaternion targetRot = _flipYawLookRotation * Quaternion.Euler(pitch, 0f, 0f);
+
+        _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, targetRot, _flipPitchFollwSpeed * Time.fixedDeltaTime));
     }
 
     private void Awake()
@@ -173,6 +197,6 @@ public class PlayerEvadeController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!_isEvading) return;
-        UpdateOrbitMovement();
+        UpdateLoopMovement();
     }
 }
