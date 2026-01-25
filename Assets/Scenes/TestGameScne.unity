@@ -2333,6 +2333,7 @@ MonoBehaviour:
   _visual: {fileID: 1246745771}
   _flipTurns: 1
   _flipSpline: {fileID: 1516894416}
+  _ballelRollSpline: {fileID: 1402247501}
   _evadeDuration: 1.2
   _evadeCooldown: 1
   _useKinematicDuringEvade: 1
