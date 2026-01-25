@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Splines;
 
+/// <summary>
+///     回避動作を制御するクラス
+/// </summary>
 public class PlayerEvadeController : MonoBehaviour
 {
     [SerializeField] private Transform _visual;
