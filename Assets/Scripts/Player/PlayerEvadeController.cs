@@ -6,9 +6,17 @@ using UnityEngine.Splines;
 /// </summary>
 public class PlayerEvadeController : MonoBehaviour
 {
+    private enum EvadeType
+    {
+        None,
+        Flipping,
+        BallelRolling
+    }
+
     [SerializeField] private Transform _visual;
     [SerializeField] private float _flipTurns;
     [SerializeField] private SplineContainer _flipSpline;
+    [SerializeField] private SplineContainer _ballelRollSpline;
     [SerializeField] private float _evadeDuration;
     [SerializeField] private float _evadeCooldown;
     [SerializeField] private bool _useKinematicDuringEvade;
@@ -22,12 +30,15 @@ public class PlayerEvadeController : MonoBehaviour
     private float _evadeTimer;
     private float _evadeCooldownTimer;
 
+    private int _sideDir;
+
     private Vector3 _startPos;
     private Quaternion _startRot;
     private Quaternion _startRbRot;
     private Quaternion _visualBaseLocalRot;
 
     private bool _prevKinematic;
+    private EvadeType _currnntEvadeType;
 
     private void Awake()
     {
@@ -53,10 +64,8 @@ public class PlayerEvadeController : MonoBehaviour
         if (_evadeCooldownTimer > 0f) return;
         if (_flipSpline == null) return;
 
-        if (_inputHandler.ConsumeFlipEvadeInput())
-        {
-            StartFlipEvade();
-        }
+        TryStartFlipEvade();
+        TryStartBallelRollEvade();
     }
 
     private void FixedUpdate()
@@ -83,13 +92,49 @@ public class PlayerEvadeController : MonoBehaviour
 
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
 
-        float spinAngle = 360f * _flipTurns * t;
+        if (_currnntEvadeType == EvadeType.Flipping)
+        {
+            // Flip：X軸回転（宙返り）
+            float angle = 360f * _flipTurns * t;
+            _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-angle, 0f, 0f);
+        }
+        else if (_currnntEvadeType == EvadeType.BallelRolling)
+        {
+            // Side：Z軸回転（ロール）
+            float angle = 360f * _flipTurns * t;
 
-        _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-spinAngle, 0f, 0f);
+            // 右回避なら回転方向も合わせて反転（見た目を自然にする）
+            angle *= (_sideDir == 0) ? 1 : _sideDir;
+
+            _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(0f, 0f, -angle);
+        }
     }
 
-    private void StartFlipEvade()
+    private void TryStartFlipEvade()
     {
+        if (_flipSpline == null) return;
+
+        if (_inputHandler.ConsumeFlipEvadeInput())
+        {
+            StartEvade(EvadeType.Flipping);
+            Debug.Log("Flip回避開始！");
+        }
+    }
+
+    private void TryStartBallelRollEvade()
+    {
+        if (_ballelRollSpline == null) return;
+        int dir = _inputHandler.ConsumeSideEvadeInput();
+
+        if (dir == 0) return;
+        _sideDir = dir;
+        StartEvade(EvadeType.BallelRolling);
+        Debug.Log("Ballel Roll回避開始！");
+    }
+
+    private void StartEvade(EvadeType type)
+    {
+        _currnntEvadeType = type;
         _isEvading = true;
         _evadeTimer = 0f;
         _evadeCooldownTimer = _evadeCooldown;
@@ -109,8 +154,6 @@ public class PlayerEvadeController : MonoBehaviour
             _prevKinematic = _rb.isKinematic;
             _rb.isKinematic = true;
         }
-
-        Debug.Log("Flip回避開始！！");
     }
 
     private void EndEvade()
@@ -126,12 +169,28 @@ public class PlayerEvadeController : MonoBehaviour
         if (_visual != null)
             _visual.localRotation = _visualBaseLocalRot;
 
+        _currnntEvadeType = EvadeType.None;
         Debug.Log("Flip回避終了！");
     }
 
     private Vector3 EvaluateWorldPos(float t)
     {
-        Vector3 localPos = _flipSpline.Spline.EvaluatePosition(t);
+        Vector3 localPos;
+
+        if (_currnntEvadeType == EvadeType.Flipping)
+        {
+            localPos = _flipSpline.Spline.EvaluatePosition(t);
+        }
+        else // Side
+        {
+            localPos = _ballelRollSpline.Spline.EvaluatePosition(t);
+
+            // ★右回避はX反転で左テンプレSplineを使い回す
+            if (_sideDir > 0)
+                localPos.x *= -1f;
+        }
+
+        // 回避開始位置＋回避開始姿勢で回したローカル位置
         return _startPos + (_startRot * localPos);
     }
 }
