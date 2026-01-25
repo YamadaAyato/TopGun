@@ -39,7 +39,7 @@ public class PlayerEvadeController : MonoBehaviour
     private Quaternion _startRot;
     private Quaternion _startRbRot;
     private Quaternion _visualBaseLocalRot;
-    private EvadeType _currnntEvadeType;
+    private EvadeType _currntEvadeType;
 
     /// <summary>
     ///     回避の進度を求めて移動させる
@@ -60,13 +60,13 @@ public class PlayerEvadeController : MonoBehaviour
 
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
 
-        if (_currnntEvadeType == EvadeType.Flipping)
+        if (_currntEvadeType == EvadeType.Flipping)
         {
             // X軸回転（宙返り）
             float angle = 360f * _turns * t;
             _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-angle, 0f, 0f);
         }
-        else if (_currnntEvadeType == EvadeType.BallelRolling)
+        else if (_currntEvadeType == EvadeType.BallelRolling)
         {
             // Z軸回転（ロール）
             float angle = 360f * _turns * t;
@@ -111,7 +111,7 @@ public class PlayerEvadeController : MonoBehaviour
     /// <param name="type"></param>
     private void StartEvade(EvadeType type)
     {
-        _currnntEvadeType = type;
+        _currntEvadeType = type;
         _isEvading = true;
         _evadeTimer = 0f;
         _evadeCooldownTimer = _evadeCooldown;
@@ -150,7 +150,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (_visual != null)
             _visual.localRotation = _visualBaseLocalRot;
 
-        _currnntEvadeType = EvadeType.None;
+        _currntEvadeType = EvadeType.None;
         Debug.Log("Flip回避終了！");
     }
 
@@ -165,7 +165,7 @@ public class PlayerEvadeController : MonoBehaviour
         Vector3 localPos;
 
         // EvaluatePosition(t) は、そのSpline上の t地点の位置を返す
-        if (_currnntEvadeType == EvadeType.Flipping)
+        if (_currntEvadeType == EvadeType.Flipping)
         {
             localPos = _flipSpline.Spline.EvaluatePosition(t);
         }
