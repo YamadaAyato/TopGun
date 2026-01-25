@@ -186,8 +186,7 @@ public class PlayerEvadeController : MonoBehaviour
         {
             localPos = _ballelRollSpline.Spline.EvaluatePosition(t);
 
-            // ★右回避はX反転で左テンプレSplineを使い回す
-            if (_sideDir > 0)
+            if (_sideDir < 0)
                 localPos.x *= -1f;
         }
 
