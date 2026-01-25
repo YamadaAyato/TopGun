@@ -107,7 +107,7 @@ public class PlayerEvadeController : MonoBehaviour
             _rb.isKinematic = true;
         }
 
-        Debug.Log("Flip Evade Started");
+        Debug.Log("Flip回避開始！！");
     }
 
     private void EndEvade()
@@ -123,7 +123,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (_visual != null)
             _visual.localRotation = _visualBaseLocalRot;
 
-        Debug.Log("Flip Evade Ended");
+        Debug.Log("Flip回避終了！");
     }
 
     private Vector3 EvaluateWorldPos(float t)
