@@ -19,7 +19,7 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField, Tooltip("バレルロール用のスプライン")] private SplineContainer _ballelRollSpline;
 
     [Header("回転動作設定")]
-    [SerializeField, Tooltip("1回避での回転回数")] private float _flipTurns;
+    [SerializeField, Tooltip("1回避での回転回数")] private float _turns;
     [SerializeField, Tooltip("回避時間")] private float _evadeDuration;
     [SerializeField, Tooltip("次の回避までのクールダウン")] private float _evadeCooldown;
     [SerializeField, Tooltip("回避中に物理影響を使うか")] private bool _useKinematicDuringEvade;
@@ -96,13 +96,13 @@ public class PlayerEvadeController : MonoBehaviour
         if (_currnntEvadeType == EvadeType.Flipping)
         {
             // Flip：X軸回転（宙返り）
-            float angle = 360f * _flipTurns * t;
+            float angle = 360f * _turns * t;
             _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-angle, 0f, 0f);
         }
         else if (_currnntEvadeType == EvadeType.BallelRolling)
         {
             // Side：Z軸回転（ロール）
-            float angle = 360f * _flipTurns * t;
+            float angle = 360f * _turns * t;
 
             // 右回避なら回転方向も合わせて反転（見た目を自然にする）
             angle *= (_sideDir == 0) ? 1 : _sideDir;
