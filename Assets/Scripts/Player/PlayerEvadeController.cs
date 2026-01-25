@@ -13,31 +13,32 @@ public class PlayerEvadeController : MonoBehaviour
         BallelRolling
     }
 
-    [SerializeField] private Transform _visual;
-    [SerializeField] private float _flipTurns;
-    [SerializeField] private SplineContainer _flipSpline;
-    [SerializeField] private SplineContainer _ballelRollSpline;
-    [SerializeField] private float _evadeDuration;
-    [SerializeField] private float _evadeCooldown;
-    [SerializeField] private bool _useKinematicDuringEvade;
+    [Header("参照")]
+    [SerializeField, Tooltip("モデル")] private Transform _visual;
+    [SerializeField, Tooltip("フリップ用のスプライン")] private SplineContainer _flipSpline;
+    [SerializeField, Tooltip("バレルロール用のスプライン")] private SplineContainer _ballelRollSpline;
+
+    [Header("回転動作設定")]
+    [SerializeField, Tooltip("1回避での回転回数")] private float _flipTurns;
+    [SerializeField, Tooltip("回避時間")] private float _evadeDuration;
+    [SerializeField, Tooltip("次の回避までのクールダウン")] private float _evadeCooldown;
+    [SerializeField, Tooltip("回避中に物理影響を使うか")] private bool _useKinematicDuringEvade;
 
     private PlayerInputHandler _inputHandler;
     private PlayerAirCraftController _airCraftController;
     private PlayerHealth _health;
     private Rigidbody _rb;
 
+    private bool _prevKinematic;
     private bool _isEvading;
     private float _evadeTimer;
     private float _evadeCooldownTimer;
-
     private int _sideDir;
 
     private Vector3 _startPos;
     private Quaternion _startRot;
     private Quaternion _startRbRot;
     private Quaternion _visualBaseLocalRot;
-
-    private bool _prevKinematic;
     private EvadeType _currnntEvadeType;
 
     private void Awake()
