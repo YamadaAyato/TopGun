@@ -51,6 +51,7 @@ public class PlayerEvadeController : MonoBehaviour
 
     private void Update()
     {
+        // タイマー処理
         if (_evadeCooldownTimer > 0f)
             _evadeCooldownTimer -= Time.deltaTime;
 
@@ -74,9 +75,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (!_isEvading) return;
 
         UpdateEvadePosition();
-
         _rb.MoveRotation(_startRbRot);
-
         UpdateVisualSpin();
     }
 
