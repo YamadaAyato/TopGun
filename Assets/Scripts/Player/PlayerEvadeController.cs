@@ -64,7 +64,6 @@ public class PlayerEvadeController : MonoBehaviour
         }
 
         if (_evadeCooldownTimer > 0f) return;
-        if (_flipSpline == null) return;
 
         TryStartFlipEvade();
         TryStartBallelRollEvade();
@@ -86,6 +85,9 @@ public class PlayerEvadeController : MonoBehaviour
         _rb.MovePosition(pos);
     }
 
+    /// <summary>
+    ///     モデルだけを回転し演出する
+    /// </summary>
     private void UpdateVisualSpin()
     {
         if (_visual == null) return;
@@ -94,18 +96,17 @@ public class PlayerEvadeController : MonoBehaviour
 
         if (_currnntEvadeType == EvadeType.Flipping)
         {
-            // Flip：X軸回転（宙返り）
+            // X軸回転（宙返り）
             float angle = 360f * _turns * t;
             _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-angle, 0f, 0f);
         }
         else if (_currnntEvadeType == EvadeType.BallelRolling)
         {
-            // Side：Z軸回転（ロール）
+            // Z軸回転（ロール）
             float angle = 360f * _turns * t;
 
-            // 右回避なら回転方向も合わせて反転（見た目を自然にする）
+            // 回避の方向に合わせて回転方向を反転
             angle *= (_sideDir == 0) ? 1 : _sideDir;
-
             _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(0f, 0f, -angle);
         }
     }
@@ -132,6 +133,10 @@ public class PlayerEvadeController : MonoBehaviour
         Debug.Log("Ballel Roll回避開始！");
     }
 
+    /// <summary>
+    ///     回避開始時の初期化処理等をする
+    /// </summary>
+    /// <param name="type"></param>
     private void StartEvade(EvadeType type)
     {
         _currnntEvadeType = type;
@@ -139,16 +144,17 @@ public class PlayerEvadeController : MonoBehaviour
         _evadeTimer = 0f;
         _evadeCooldownTimer = _evadeCooldown;
 
+        // 通常移動を停止、無敵ON
         _airCraftController.DisableControl = true;
         _health.SetInvincible(true);
 
+        // スプラインをワールド化するための基準を保存
         _startPos = _rb.position;
         _startRot = transform.rotation;
-
         _startRbRot = _rb.rotation;
-
         _visualBaseLocalRot = _visual != null ? _visual.localRotation : Quaternion.identity;
 
+        // 回避中は物理の影響受けないように
         if (_useKinematicDuringEvade)
         {
             _prevKinematic = _rb.isKinematic;
@@ -156,6 +162,9 @@ public class PlayerEvadeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     回避終了時の戻し処理をする
+    /// </summary>
     private void EndEvade()
     {
         _isEvading = false;
@@ -173,6 +182,11 @@ public class PlayerEvadeController : MonoBehaviour
         Debug.Log("Flip回避終了！");
     }
 
+    /// <summary>
+    ///     どのスプラインを使うか判定し
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
     private Vector3 EvaluateWorldPos(float t)
     {
         Vector3 localPos;
@@ -181,7 +195,7 @@ public class PlayerEvadeController : MonoBehaviour
         {
             localPos = _flipSpline.Spline.EvaluatePosition(t);
         }
-        else // Side
+        else
         {
             localPos = _ballelRollSpline.Spline.EvaluatePosition(t);
 
