@@ -78,6 +78,9 @@ public class PlayerEvadeController : MonoBehaviour
         UpdateVisualSpin();
     }
 
+    /// <summary>
+    ///     回避の進度を求めて移動させる
+    /// </summary>
     private void UpdateEvadePosition()
     {
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
@@ -111,6 +114,9 @@ public class PlayerEvadeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     フリップ回避が実行できるか確認と呼び出しをする
+    /// </summary>
     private void TryStartFlipEvade()
     {
         if (_flipSpline == null) return;
@@ -122,6 +128,9 @@ public class PlayerEvadeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     バレルロール回避が実行できるか確認と呼び出しをする
+    /// </summary>
     private void TryStartBallelRollEvade()
     {
         if (_ballelRollSpline == null) return;
@@ -183,7 +192,8 @@ public class PlayerEvadeController : MonoBehaviour
     }
 
     /// <summary>
-    ///     どのスプラインを使うか判定し
+    ///     どのスプラインを使うかの判定をする
+    ///     t地点でのスプライン上の現在位置を返す
     /// </summary>
     /// <param name="t"></param>
     /// <returns></returns>
@@ -191,6 +201,7 @@ public class PlayerEvadeController : MonoBehaviour
     {
         Vector3 localPos;
 
+        // EvaluatePosition(t) は、そのSpline上の t地点の位置を返す
         if (_currnntEvadeType == EvadeType.Flipping)
         {
             localPos = _flipSpline.Spline.EvaluatePosition(t);
