@@ -7,7 +7,7 @@ public class TimeDilationController : MonoBehaviour
 {
     [Tooltip("元の FixedUpdate の間隔を保存する変数")] private float _baseFixedDeltaTime;
     [Tooltip("タイムスケールに影響されないタイマー")] private float _timerUnscaled;
-    private float _targetScale;
+    [Tooltip("今は使っていないが補間など使うときのために")] private float _targetScale;
     private float _durationUnscaled;
     private bool _playing;
 
