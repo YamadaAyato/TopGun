@@ -49,6 +49,8 @@ public class TimeDilationController : MonoBehaviour
         if (!_playing) return;
 
         _timerUnscaled += Time.unscaledDeltaTime;
+
+        // 適用させる時間を超えたら元に戻す
         if (_timerUnscaled >= _durationUnscaled)
         {
             _playing = false;
