@@ -11,8 +11,14 @@ public class TimeDilationController : MonoBehaviour
     private float _durationUnscaled;
     private bool _playing;
 
+    /// <summary>
+    ///     初期化処理を行い、スロー演出を呼ぶ
+    /// </summary>
+    /// <param name="targetScale"> 適用させるタイムスケールの値 </param>
+    /// <param name="durationUnscaled"> 適用させる時間 </param>
     public void Play(float targetScale, float durationUnscaled)
     {
+        // 変数への格納とターマーの初期化
         _targetScale = targetScale;
         _durationUnscaled = durationUnscaled;
         _timerUnscaled = 0f;
@@ -21,6 +27,10 @@ public class TimeDilationController : MonoBehaviour
         ApplyScale(_targetScale);
     }
 
+    /// <summary>
+    ///     スロー演出の適用をする
+    /// </summary>
+    /// <param name="scale"> 適用させるタイムスケールの値 </param>
     private void ApplyScale(float scale)
     {
         Time.timeScale = scale;
@@ -37,6 +47,7 @@ public class TimeDilationController : MonoBehaviour
     private void Update()
     {
         if (!_playing) return;
+
         _timerUnscaled += Time.unscaledDeltaTime;
         if (_timerUnscaled >= _durationUnscaled)
         {
