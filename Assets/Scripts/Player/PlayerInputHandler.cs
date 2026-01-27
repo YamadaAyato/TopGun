@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,8 @@ public class PlayerInputHandler : MonoBehaviour
     public float Throttle { get; private set; }
     public float Roll { get; private set; }
     public bool FirePressed { get; private set; }
+
+    public event Action FirePerformed;
 
     private RideActions _rideActions;
 
@@ -61,7 +64,11 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnThrottleCanceled(InputAction.CallbackContext context) => Throttle = 0f;
     private void OnRoll(InputAction.CallbackContext context) => Roll = context.ReadValue<float>();
     private void OnRollCanceled(InputAction.CallbackContext context) => Roll = 0f;
-    private void OnFire(InputAction.CallbackContext context) => FirePressed = true;
+    private void OnFire(InputAction.CallbackContext context)
+    {
+        FirePressed = true;
+        FirePerformed?.Invoke();
+    }
     private void OnFireCanceled(InputAction.CallbackContext context) => FirePressed = false;
 
     /// ===========これより下は押した瞬間のみ保持するもの==========
