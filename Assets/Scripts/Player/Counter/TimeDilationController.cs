@@ -1,13 +1,15 @@
 using UnityEngine;
 
+/// <summary>
+///     TimeScaleの管理を行うクラス
+/// </summary>
 public class TimeDilationController : MonoBehaviour
 {
-    private float _baseFixedDeltaTime;
-    private bool _playing;
-    private float _timerUnscaled;
-
+    [Tooltip("元の FixedUpdate の間隔を保存する変数")] private float _baseFixedDeltaTime;
+    [Tooltip("タイムスケールに影響されないタイマー")] private float _timerUnscaled;
     private float _targetScale;
     private float _durationUnscaled;
+    private bool _playing;
 
     public void Play(float targetScale, float durationUnscaled)
     {
@@ -23,6 +25,8 @@ public class TimeDilationController : MonoBehaviour
     {
         Time.timeScale = scale;
         Time.fixedDeltaTime = _baseFixedDeltaTime * scale;
+
+        Debug.Log($"TimeScale : {Time.timeScale}, FixedDeltaTime : {Time.fixedDeltaTime}");
     }
 
     private void Awake()
