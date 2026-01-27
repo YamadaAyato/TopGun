@@ -7,8 +7,8 @@ public class PlayerCounterGunner : MonoBehaviour
 {
     [SerializeField] private TimeDilationController _timeDlicon;
     [SerializeField] private Transform _muzzle;
-    [SerializeField] private int _counterCost;
-    [SerializeField] private float _counterColdown;
+    [SerializeField,Tooltip("反撃に使うコスト")] private int _counterCost;
+    [SerializeField,Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
 
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
