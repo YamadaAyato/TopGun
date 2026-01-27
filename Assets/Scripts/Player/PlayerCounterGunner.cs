@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     反撃用のガンナーを管理するクラス
+/// </summary>
 public class PlayerCounterGunner : MonoBehaviour
 {
     [SerializeField] private TimeDilationController _timeDlicon;
@@ -11,6 +14,9 @@ public class PlayerCounterGunner : MonoBehaviour
     private PlayerInputHandler _inputHandler;
     private float _counterCooldownTimer;
 
+    /// <summary>
+    ///     反撃入力があったときの処理をする
+    /// </summary>
     private void OnFirePerformed()
     {
         if (_timeDlicon == null) return;
@@ -20,11 +26,15 @@ public class PlayerCounterGunner : MonoBehaviour
         TryCounterAttack();
     }
 
+    /// <summary>
+    ///     反撃攻撃を試みる
+    /// </summary>
     private void TryCounterAttack()
     {
         if (_counterToken.CurrentToken < _counterCost) return;
-        Debug.Log("カウンター攻撃発動!");
+
         // カウンター攻撃処理
+        Debug.Log("カウンター攻撃発動!");
         _counterToken.UseToken(_counterCost);
 
         // クールダウンタイマーのリセット
