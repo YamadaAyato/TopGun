@@ -5,6 +5,8 @@ using UnityEngine;
 /// </summary>
 public class TimeDilationController : MonoBehaviour
 {
+    public bool IsPlaying => _playing;
+
     [Tooltip("元の FixedUpdate の間隔を保存する変数")] private float _baseFixedDeltaTime;
     [Tooltip("タイムスケールに影響されないタイマー")] private float _timerUnscaled;
     [Tooltip("今は使っていないが補間など使うときのために")] private float _targetScale;
