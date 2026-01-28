@@ -33,6 +33,10 @@ public abstract class BulletBase : MonoBehaviour
     protected void Release()
     {
         _onRelease?.Invoke(this);
+
+        _onRelease = null;
+        _shooter = null;
+        _timer = 0;
     }
 
     private void OnTriggerEnter(Collider other)
