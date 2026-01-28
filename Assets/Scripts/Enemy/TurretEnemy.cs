@@ -35,7 +35,7 @@ public class TurretEnemy : EnemyBase
         Vector3 dir = (_targetPlayer.transform.position - this.transform.position).normalized;
         enemyBullet.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
-        enemyBullet.Spawn(ReturnBullet);
+        enemyBullet.Spawn(ReturnBullet, this.transform);
     }
 
     private void ReturnBullet(BulletBase enemyBullet)
