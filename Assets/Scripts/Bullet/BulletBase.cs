@@ -16,9 +16,9 @@ public abstract class BulletBase : MonoBehaviour
     protected float _timer;
     private Action<BulletBase> _onRelease;
 
-    public void Spawn(Action<BulletBase> onRelese,Transform parent)
+    public void Spawn(Action<BulletBase> onRelease,Transform parent)
     {
-        _onRelease = onRelese;
+        _onRelease = onRelease;
         _shooter = parent;
         _timer = 0;
         OnSpawned();
