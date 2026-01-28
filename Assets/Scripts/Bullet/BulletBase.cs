@@ -6,16 +6,20 @@ using UnityEngine;
 /// </summary>
 public abstract class BulletBase : MonoBehaviour
 {
+    public Transform Shooter => _shooter;
+
     [Header("弾設定")]
     [SerializeField] protected float _bulletSpeed;
     [SerializeField] protected float _lifeTime;
 
+    protected Transform _shooter;
     protected float _timer;
     private Action<BulletBase> _onRelease;
 
-    public void Spawn(Action<BulletBase> onRelese)
+    public void Spawn(Action<BulletBase> onRelese,Transform parent)
     {
         _onRelease = onRelese;
+        _shooter = parent;
         _timer = 0;
         OnSpawned();
     }
