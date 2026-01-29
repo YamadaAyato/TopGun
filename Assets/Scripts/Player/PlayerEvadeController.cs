@@ -16,6 +16,7 @@ public class PlayerEvadeController : MonoBehaviour
     [Header("参照")]
     [SerializeField] private JustEvadeDetector _justEvadeDetector;
     [SerializeField] private CounterToken _counterToken;
+    [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private TimeDilationController _timeDilationController;
     [SerializeField, Tooltip("モデル")] private Transform _visual;
     [SerializeField, Tooltip("フリップ用のスプライン")] private SplineContainer _flipSpline;
@@ -28,7 +29,7 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField, Tooltip("回避中に物理影響を使うか")] private bool _useKinematicDuringEvade;
 
     [SerializeField] private float _justEvadeTimeDilationScale;
-    [SerializeField] private float _justEvadeTimeDilationDuration; 
+    [SerializeField] private float _justEvadeTimeDilationDuration;
 
     private PlayerInputHandler _inputHandler;
     private PlayerAirCraftController _airCraftController;
@@ -164,12 +165,12 @@ public class PlayerEvadeController : MonoBehaviour
 
     private void TryJustEvade()
     {
-        bool isJustEvade = _justEvadeDetector.IsJustEvade(transform.position);
-        if (isJustEvade)
+        if (_justEvadeDetector.TryGetClosestBullet(transform.position, out var bullet))
         {
             Debug.Log("ジャスト回避成功！");
-            _counterToken.AddToken(1);
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
+            _counterToken.AddToken(1);
+            _targetMemory?.SetBullet(bullet);
         }
     }
 
