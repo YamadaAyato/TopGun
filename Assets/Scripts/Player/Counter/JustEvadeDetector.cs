@@ -8,23 +8,24 @@ public class JustEvadeDetector : MonoBehaviour
 {
     [SerializeField] private float _justDistance;
 
-    private readonly HashSet<Transform> _bullets = new();
+    private readonly HashSet<BulletBase> _bullets = new();
 
-    /// <summary>
-    ///     現在ジャスト距離に弾があるか
-    /// </summary>
-    /// <param name="playerPos"></param>
-    /// <returns></returns>
-    public bool IsJustEvade(Vector3 playerPos)
+
+    public bool TryGetClosestBullet(Vector3 playerPos, out BulletBase closest)
     {
-        foreach (var bullet in _bullets)
+        closest = null;
+        float bestSqr = float.PositiveInfinity;
+
+        foreach (var b in _bullets)
         {
-            if (Vector3.Distance(bullet.position, playerPos) <= _justDistance)
+            float sqr = (b.transform.position - playerPos).sqrMagnitude;
+            if (sqr <= _justDistance * _justDistance && sqr < bestSqr)
             {
-                return true;
+                bestSqr = sqr;
+                closest = b;
             }
         }
-        return false;
+        return closest != null;
     }
 
     // ======================追加と削除======================
@@ -33,7 +34,10 @@ public class JustEvadeDetector : MonoBehaviour
     {
         if (other.CompareTag("EnemyBullet"))
         {
-            _bullets.Add(other.transform);
+            if(other.TryGetComponent<BulletBase>(out var bullet))
+            {
+                _bullets.Add(bullet);
+            }
         }
     }
 
@@ -41,7 +45,10 @@ public class JustEvadeDetector : MonoBehaviour
     {
         if (other.CompareTag("EnemyBullet"))
         {
-            _bullets.Remove(other.transform);
+            if (other.TryGetComponent<BulletBase>(out var bullet))
+            {
+                _bullets.Remove(bullet);
+            }
         }
     }
 }
