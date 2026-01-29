@@ -9,6 +9,7 @@ public abstract class BulletBase : MonoBehaviour
     public Transform Shooter => _shooter;
 
     [Header("弾設定")]
+    [SerializeField] protected int _damage;
     [SerializeField] protected float _bulletSpeed;
     [SerializeField] protected float _lifeTime;
 
@@ -16,7 +17,7 @@ public abstract class BulletBase : MonoBehaviour
     protected float _timer;
     private Action<BulletBase> _onRelease;
 
-    public void Spawn(Action<BulletBase> onRelease,Transform parent)
+    public void Spawn(Action<BulletBase> onRelease, Transform parent)
     {
         _onRelease = onRelease;
         _shooter = parent;
@@ -24,8 +25,8 @@ public abstract class BulletBase : MonoBehaviour
         OnSpawned();
     }
 
-    protected void OnSpawned() { }
-    
+    protected virtual void OnSpawned() { }
+
     /// <summary> 銃弾HIt時の処理をする。 </summary>
     protected abstract void HandleHit(Collider other);
 
