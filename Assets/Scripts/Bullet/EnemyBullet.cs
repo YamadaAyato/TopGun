@@ -5,8 +5,6 @@ using UnityEngine;
 /// </summary>
 public class EnemyBullet : BulletBase
 {
-    [SerializeField] private int _damage;
-
     protected override void HandleHit(Collider other)
     {
         if(other.TryGetComponent<PlayerHealth>(out PlayerHealth hit))
