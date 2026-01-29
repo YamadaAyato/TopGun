@@ -6,9 +6,12 @@ using UnityEngine;
 public class PlayerCounterGunner : MonoBehaviour
 {
     [SerializeField] private TimeDilationController _timeDlicon;
+    [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private Transform _muzzle;
-    [SerializeField,Tooltip("反撃に使うコスト")] private int _counterCost;
-    [SerializeField,Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
+    [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
+
+    [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
+    [SerializeField, Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
 
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
@@ -20,7 +23,7 @@ public class PlayerCounterGunner : MonoBehaviour
     private void OnFirePerformed()
     {
         if (_timeDlicon == null) return;
-        if(!_timeDlicon.IsPlaying) return;
+        if (!_timeDlicon.IsPlaying) return;
 
         if (_counterCooldownTimer > 0f) return;
         TryCounterAttack();
@@ -32,13 +35,23 @@ public class PlayerCounterGunner : MonoBehaviour
     private void TryCounterAttack()
     {
         if (_counterToken.CurrentToken < _counterCost) return;
+        Transform target = _targetMemory.CurrentTarget;
+
+        if (target == null) return;
 
         // カウンター攻撃処理
         Debug.Log("カウンター攻撃発動!");
         _counterToken.UseToken(_counterCost);
 
+        Vector3 dir = (target.position - _muzzle.position).normalized;
+        Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+
+        PlayerCounterBullet bullet = Instantiate(_counterBulletPrefab, _muzzle.position, rot);
+        bullet.SetTarget(target);
+
         // クールダウンタイマーのリセット
         _counterCooldownTimer = _counterColdown;
+        _targetMemory.Clear();
     }
 
     private void Awake()
@@ -51,7 +64,7 @@ public class PlayerCounterGunner : MonoBehaviour
     {
         if (_counterCooldownTimer > 0f)
         {
-            _counterCooldownTimer -= Time.deltaTime;
+            _counterCooldownTimer -= Time.unscaledDeltaTime;
         }
     }
 
@@ -64,4 +77,4 @@ public class PlayerCounterGunner : MonoBehaviour
     {
         _inputHandler.FirePerformed -= OnFirePerformed;
     }
-}   
+}
