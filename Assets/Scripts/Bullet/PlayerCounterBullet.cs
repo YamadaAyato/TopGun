@@ -4,15 +4,10 @@ using UnityEngine;
 public class PlayerCounterBullet : BulletBase
 {
     [Header("ホーミング設定")]
-    [SerializeField] private float _turnSpeed;
-    [SerializeField] private float _homingDuration;
-    [SerializeField] private float _maxSeekAngle;
-
-    [Header("挙動補助")]
+    [SerializeField, Tooltip("追尾旋回速度")] private float _turnSpeed;
+    [SerializeField, Tooltip("ホーミングする最大時間")] private float _homingDuration;
+    [SerializeField, Tooltip("追尾できる角度制限")] private float _maxSeekAngle;
     [SerializeField] private float _initialForwardTime;
-    [SerializeField] private float _hitRadius;
-    [SerializeField] private float _arriveSlowdownRadius;
-    [SerializeField] private float _minSpeedFactorNear;
 
     private Transform _target;
     private float _homingTimer;
@@ -67,20 +62,6 @@ public class PlayerCounterBullet : BulletBase
             return;
         }
 
-        if (_target != null && _hitRadius > 0f)
-        {
-            float dist = Vector3.Distance(_rb.position, _target.position);
-            if (dist <= _hitRadius)
-            {
-                if (_target.TryGetComponent<EnemyBase>(out var enemy))
-                {
-                    enemy.TakeDamage(_damage);
-                }
-                Release();
-                return;
-            }
-        }
-
         bool canHome = _target != null;
         if (_homingDuration > 0f)
         {
@@ -117,14 +98,6 @@ public class PlayerCounterBullet : BulletBase
         _rb.MoveRotation(nextRot);
 
         float speedNow = _bulletSpeed;
-
-        if (_target != null && _arriveSlowdownRadius > 0f)
-        {
-            float dist = Vector3.Distance(_rb.position, _target.position);
-            float k = Mathf.Clamp01(dist / _arriveSlowdownRadius);
-            float factor = Mathf.Lerp(_minSpeedFactorNear, 1f, k);
-            speedNow *= factor;
-        }
 
         Vector3 moveDir = isForwardPhase ? _launchForward : (nextRot * Vector3.forward);
         Vector3 nextPos = _rb.position + moveDir * speedNow * Time.fixedDeltaTime;
