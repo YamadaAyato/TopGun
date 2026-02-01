@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1622567223585281701}
   - component: {fileID: 4531425964541739683}
   - component: {fileID: 5542356620062231549}
+  - component: {fileID: 8806729491111522896}
   m_Layer: 0
   m_Name: PlayerCounterBullet
   m_TagString: Untagged
@@ -130,6 +131,37 @@ MonoBehaviour:
   _damage: 3
   _bulletSpeed: 100
   _lifeTime: 20
-  _turnSpeed: 100
-  _hormingDuration: 30
+  _turnSpeed: 180
+  _homingDuration: 20
   _maxSeekAngle: 180
+  _initialForwardTime: 1
+  _hitRadius: 1
+  _arriveSlowdownRadius: 6
+  _minSpeedFactorNear: 0.35
+--- !u!54 &8806729491111522896
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9135079957140966225}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
