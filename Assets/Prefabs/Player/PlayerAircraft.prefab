@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753e81bebbdf2d94b8a54ca255bf6c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerEvadeController
-  _justEvadeDetector: {fileID: 0}
+  _justEvadeDetector: {fileID: 2626101090251449041}
   _counterToken: {fileID: 5455549600328658655}
   _targetMemory: {fileID: 0}
   _timeDilationController: {fileID: 0}
@@ -359,6 +359,9 @@ MonoBehaviour:
   _counterBulletPrefab: {fileID: 5542356620062231549, guid: 4606db101c0d6334cb9f37d29e86c1e9, type: 3}
   _counterCost: 1
   _counterColdown: 2
+  _burstCount: 8
+  _ringRadius: 10
+  _angleJitter: 20
 --- !u!54 &7916438253898034262
 Rigidbody:
   m_ObjectHideFlags: 0
