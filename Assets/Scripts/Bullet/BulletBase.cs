@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public abstract class BulletBase : MonoBehaviour
 {
+    /// <summary> 撃ちてのTransformを取得する </summary>
     public Transform Shooter => _shooter;
 
     [Header("弾設定")]
@@ -25,6 +26,7 @@ public abstract class BulletBase : MonoBehaviour
         OnSpawned();
     }
 
+    /// <summary> 各クラスでのスポーン時処理をする </summary>
     protected virtual void OnSpawned() { }
 
     /// <summary> 銃弾HIt時の処理をする。 </summary>
