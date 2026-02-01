@@ -10,7 +10,7 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
     [SerializeField] private Transform _muzzle;
-
+    [SerializeField] private int _poolInitCount;
 
     [Header("反撃設定")]
     [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
@@ -23,6 +23,8 @@ public class PlayerCounterGunner : MonoBehaviour
     private PlayerInputHandler _inputHandler;
     private float _counterCooldownTimer;
 
+    private ObjectPool<PlayerCounterBullet> _bulletPool;
+
     /// <summary>
     ///     反撃入力があったときの処理をする
     /// </summary>
@@ -30,8 +32,8 @@ public class PlayerCounterGunner : MonoBehaviour
     {
         if (_timeDlicon == null) return;
         if (!_timeDlicon.IsPlaying) return;
-
         if (_counterCooldownTimer > 0f) return;
+
         TryCounterAttack();
     }
 
@@ -44,10 +46,11 @@ public class PlayerCounterGunner : MonoBehaviour
         Transform target = _targetMemory.CurrentTarget;
 
         if (target == null) return;
-
         Debug.Log("カウンター攻撃発動!");
+
         _counterToken.UseToken(_counterCost);
 
+        // リング状に弾を複数生成する
         for (int i = 0; i < _burstCount; i++)
         {
             float rad = (Mathf.PI * 2f) * (i / (float)_burstCount);
@@ -70,10 +73,13 @@ public class PlayerCounterGunner : MonoBehaviour
                 0f
             );
 
-            PlayerCounterBullet bullet = Instantiate(_counterBulletPrefab, spawnPos, rot);
+            PlayerCounterBullet bullet = _bulletPool.Get();
+
+            Transform bt = bullet.transform;
+            bt.SetPositionAndRotation(spawnPos, rot);
 
 
-            bullet.Spawn(null, transform);
+            bullet.Spawn(ReturnToPool, transform);
             bullet.SetTarget(target, _muzzle.forward);
         }
 
@@ -82,10 +88,18 @@ public class PlayerCounterGunner : MonoBehaviour
         _targetMemory.Clear();
     }
 
+
+    private void ReturnToPool(BulletBase bullet)
+    {
+        _bulletPool.Release((PlayerCounterBullet)bullet);
+    }
+
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();
         _counterToken = GetComponent<CounterToken>();
+
+        _bulletPool = new ObjectPool<PlayerCounterBullet>(_counterBulletPrefab, _muzzle, _poolInitCount);
     }
 
     private void Update()
