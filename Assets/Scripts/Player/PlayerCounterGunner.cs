@@ -10,7 +10,6 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
     [SerializeField] private Transform _muzzle;
-    [SerializeField] private int _poolInitCount;
 
     [Header("反撃設定")]
     [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
@@ -18,6 +17,7 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField, Tooltip("何発撃つか")] private int _burstCount;
     [SerializeField, Tooltip("リング状にずらす半径")] private float _ringRadius;
     [SerializeField, Tooltip("撃つ向きを散らす角度")] private float _angleJitter;
+    [SerializeField, Tooltip("弾のPoolカウント")] private int _poolInitCount;
 
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
@@ -88,7 +88,10 @@ public class PlayerCounterGunner : MonoBehaviour
         _targetMemory.Clear();
     }
 
-
+    /// <summary>
+    ///     プールに銃弾を返す
+    /// </summary>
+    /// <param name="bullet"></param>
     private void ReturnToPool(BulletBase bullet)
     {
         _bulletPool.Release((PlayerCounterBullet)bullet);
