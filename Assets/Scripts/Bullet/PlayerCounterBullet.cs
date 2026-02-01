@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     プレイヤーの反撃用ホーミング弾の挙動を管理するクラス
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerCounterBullet : BulletBase
 {
