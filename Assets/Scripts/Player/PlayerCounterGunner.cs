@@ -5,17 +5,19 @@ using UnityEngine;
 /// </summary>
 public class PlayerCounterGunner : MonoBehaviour
 {
+    [Header("参照")]
     [SerializeField] private TimeDilationController _timeDlicon;
     [SerializeField] private CounterTargetMemory _targetMemory;
-    [SerializeField] private Transform _muzzle;
     [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
+    [SerializeField] private Transform _muzzle;
 
+
+    [Header("反撃設定")]
     [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
     [SerializeField, Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
-
-    [SerializeField] private int _burstCount;
-    [SerializeField] private float _ringRadius;
-    [SerializeField] private float _angleJitter;
+    [SerializeField, Tooltip("何発撃つか")] private int _burstCount;
+    [SerializeField, Tooltip("リング状にずらす半径")] private float _ringRadius;
+    [SerializeField, Tooltip("撃つ向きを散らす角度")] private float _angleJitter;
 
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
@@ -72,7 +74,7 @@ public class PlayerCounterGunner : MonoBehaviour
 
 
             bullet.Spawn(null, transform);
-            bullet.SetTarget(target,_muzzle.forward);
+            bullet.SetTarget(target, _muzzle.forward);
         }
 
         // クールダウンタイマーのリセット
