@@ -10,7 +10,7 @@ public class PlayerCounterBullet : BulletBase
     [SerializeField, Tooltip("追尾旋回速度")] private float _turnSpeed;
     [SerializeField, Tooltip("ホーミングする最大時間")] private float _homingDuration;
     [SerializeField, Tooltip("追尾できる角度制限")] private float _maxSeekAngle;
-    [SerializeField] private float _initialForwardTime;
+    [SerializeField, Tooltip("前方へ発射する時間")] private float _initialForwardTime;
 
     private Transform _target;
     private float _homingTimer;
