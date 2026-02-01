@@ -19,6 +19,11 @@ public class PlayerCounterBullet : BulletBase
     private Quaternion _launchRotation;
     private Vector3 _launchForward;
 
+    /// <summary>
+    ///     ターゲットを設定する
+    /// </summary>
+    /// <param name="target"> 狙う敵 </param>
+    /// <param name="shooterForward"> 撃ち手の前方 </param>
     public void SetTarget(Transform target, Vector3 shooterForward)
     {
         _target = target;
@@ -34,9 +39,7 @@ public class PlayerCounterBullet : BulletBase
         _rb.isKinematic = true;
 
         _launchRotation = _rb.rotation;
-
-        if (_launchForward.sqrMagnitude < 0.0001f)
-            _launchForward = transform.forward;
+        _launchForward = transform.forward;
     }
 
     protected override void HandleHit(Collider other)
