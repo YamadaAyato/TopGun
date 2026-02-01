@@ -13,6 +13,10 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
     [SerializeField, Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
 
+    [SerializeField] private int _burstCount;
+    [SerializeField] private float _ringRadius;
+    [SerializeField] private float _angleJitter;
+
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
     private float _counterCooldownTimer;
@@ -39,15 +43,37 @@ public class PlayerCounterGunner : MonoBehaviour
 
         if (target == null) return;
 
-        // カウンター攻撃処理
         Debug.Log("カウンター攻撃発動!");
         _counterToken.UseToken(_counterCost);
 
-        Vector3 dir = (target.position - _muzzle.position).normalized;
-        Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+        for (int i = 0; i < _burstCount; i++)
+        {
+            float rad = (Mathf.PI * 2f) * (i / (float)_burstCount);
 
-        PlayerCounterBullet bullet = Instantiate(_counterBulletPrefab, _muzzle.position, rot);
-        bullet.SetTarget(target);
+            Vector3 offset =
+                _muzzle.right * (Mathf.Cos(rad) * _ringRadius) +
+                _muzzle.up * (Mathf.Sin(rad) * _ringRadius);
+
+            Vector3 spawnPos = _muzzle.position + offset;
+
+            Vector3 dir = (target.position - spawnPos);
+            if (dir.sqrMagnitude < 0.0001f) dir = _muzzle.forward;
+            dir.Normalize();
+
+            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+
+            rot *= Quaternion.Euler(
+                Random.Range(-_angleJitter, _angleJitter),
+                Random.Range(-_angleJitter, _angleJitter),
+                0f
+            );
+
+            PlayerCounterBullet bullet = Instantiate(_counterBulletPrefab, spawnPos, rot);
+
+
+            bullet.Spawn(null, transform);
+            bullet.SetTarget(target,_muzzle.forward);
+        }
 
         // クールダウンタイマーのリセット
         _counterCooldownTimer = _counterColdown;
