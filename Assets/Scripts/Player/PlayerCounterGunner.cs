@@ -16,7 +16,6 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField, Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
     [SerializeField, Tooltip("何発撃つか")] private int _burstCount;
     [SerializeField, Tooltip("リング状にずらす半径")] private float _ringRadius;
-    [SerializeField, Tooltip("撃つ向きを散らす角度")] private float _angleJitter;
     [SerializeField, Tooltip("弾のPoolカウント")] private int _poolInitCount;
 
     private CounterToken _counterToken;
@@ -61,22 +60,10 @@ public class PlayerCounterGunner : MonoBehaviour
 
             Vector3 spawnPos = _muzzle.position + offset;
 
-            Vector3 dir = (target.position - spawnPos);
-            if (dir.sqrMagnitude < 0.0001f) dir = _muzzle.forward;
-            dir.Normalize();
-
-            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
-
-            rot *= Quaternion.Euler(
-                Random.Range(-_angleJitter, _angleJitter),
-                Random.Range(-_angleJitter, _angleJitter),
-                0f
-            );
+            Quaternion rot = Quaternion.LookRotation(_muzzle.forward, Vector3.up);
 
             PlayerCounterBullet bullet = _bulletPool.Get();
-
-            Transform bt = bullet.transform;
-            bt.SetPositionAndRotation(spawnPos, rot);
+            bullet.transform.SetPositionAndRotation(spawnPos, rot);
 
 
             bullet.Spawn(ReturnToPool, transform);
