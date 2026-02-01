@@ -61,6 +61,7 @@ public class PlayerCounterBullet : BulletBase
 
     private void FixedUpdate()
     {
+        // 寿命管理
         _timer += Time.fixedDeltaTime;
         if (_timer >= _lifeTime)
         {
@@ -68,6 +69,7 @@ public class PlayerCounterBullet : BulletBase
             return;
         }
 
+        // ホーミング処理
         bool canHome = _target != null;
         if (_homingDuration > 0f)
         {
@@ -75,6 +77,7 @@ public class PlayerCounterBullet : BulletBase
             if (_homingTimer > _homingDuration) canHome = false;
         }
 
+        // 前進フェーズ管理
         _forwardTimer += Time.fixedDeltaTime;
         bool isForwardPhase = (_forwardTimer < _initialForwardTime);
 
@@ -82,6 +85,7 @@ public class PlayerCounterBullet : BulletBase
 
         if (isForwardPhase)
         {
+            // 発射直後は撃ち手の向きで直進
             nextRot = _launchRotation;
         }
         else if (canHome)
@@ -91,9 +95,12 @@ public class PlayerCounterBullet : BulletBase
             {
                 Vector3 dir = toTarget.normalized;
 
+                // 目標方向と現在の前方ベクトルの角度を計算
                 float angle = Vector3.Angle(transform.forward, dir);
+                // 角度が制限内ならば回転を行う
                 if (angle <= _maxSeekAngle)
                 {
+                    // 目標方向への回転を計算
                     Quaternion desired = Quaternion.LookRotation(dir, Vector3.up);
                     float maxStep = _turnSpeed * Time.fixedDeltaTime;
                     nextRot = Quaternion.RotateTowards(_rb.rotation, desired, maxStep);
@@ -102,9 +109,9 @@ public class PlayerCounterBullet : BulletBase
         }
 
         _rb.MoveRotation(nextRot);
-
         float speedNow = _bulletSpeed;
 
+        // フェーズによって移動方向を決定
         Vector3 moveDir = isForwardPhase ? _launchForward : (nextRot * Vector3.forward);
         Vector3 nextPos = _rb.position + moveDir * speedNow * Time.fixedDeltaTime;
         _rb.MovePosition(nextPos);
