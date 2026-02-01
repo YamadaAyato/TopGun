@@ -42,6 +42,7 @@ public class PlayerCounterGunner : MonoBehaviour
     private void TryCounterAttack()
     {
         if (_counterToken.CurrentToken < _counterCost) return;
+        // ターゲットを取得
         Transform target = _targetMemory.CurrentTarget;
 
         if (target == null) return;
@@ -52,20 +53,23 @@ public class PlayerCounterGunner : MonoBehaviour
         // リング状に弾を複数生成する
         for (int i = 0; i < _burstCount; i++)
         {
+            // 円周上の位置を計算
             float rad = (Mathf.PI * 2f) * (i / (float)_burstCount);
 
+            // 円状の初期位置を計算して、発射位置を決定
             Vector3 offset =
                 _muzzle.right * (Mathf.Cos(rad) * _ringRadius) +
                 _muzzle.up * (Mathf.Sin(rad) * _ringRadius);
-
             Vector3 spawnPos = _muzzle.position + offset;
 
+            // 発射方向を計算
             Quaternion rot = Quaternion.LookRotation(_muzzle.forward, Vector3.up);
 
+            // 銃弾を生成して発射
             PlayerCounterBullet bullet = _bulletPool.Get();
             bullet.transform.SetPositionAndRotation(spawnPos, rot);
 
-
+            // 銃弾にターゲットをセット
             bullet.Spawn(ReturnToPool, transform);
             bullet.SetTarget(target, _muzzle.forward);
         }
