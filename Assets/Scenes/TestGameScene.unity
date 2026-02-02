@@ -206,8 +206,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 3, z: 10}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3, z: -11.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -280,7 +280,7 @@ MonoBehaviour:
     Enabled: 0
     DefaultMode: 2
   DefaultBlend:
-    Style: 1
+    Style: 0
     Time: 0.2
     CustomCurve:
       serializedVersion: 2
@@ -668,8 +668,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
-    Enabled: 0
-    m_Value: 0
+    Enabled: 1
+    m_Value: 10
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -2191,7 +2191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
-    Enabled: 0
+    Enabled: 1
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
@@ -2283,6 +2283,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerAircraft
       objectReference: {fileID: 0}
+    - target: {fileID: 8545664744608147519, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+      propertyPath: _rearCamera
+      value: 
+      objectReference: {fileID: 1688198774}
+    - target: {fileID: 8545664744608147519, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+      propertyPath: _frontCamera
+      value: 
+      objectReference: {fileID: 651060506}
     - target: {fileID: 8638521208331954471, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
