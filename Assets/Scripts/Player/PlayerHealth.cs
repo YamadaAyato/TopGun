@@ -43,5 +43,6 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     private void Awake()
     {
         _currentHealth = _maxHealth;
+        PlayerLocator.Instance.Register(this);
     }
 }
