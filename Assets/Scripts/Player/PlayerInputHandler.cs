@@ -10,8 +10,10 @@ public class PlayerInputHandler : MonoBehaviour
     public float Throttle { get; private set; }
     public float Roll { get; private set; }
     public bool FirePressed { get; private set; }
+    public bool RearView => _rearView;
 
     public event Action FirePerformed;
+    public event Action<bool> RearViewPerformed;
 
     private RideActions _rideActions;
 
@@ -22,6 +24,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     // Spaceキーの回避入力のフレーム管理用(押下されたフレームを保持)
     private int _flipEvadeFrame = -1;
+
+    private bool _rearView;
 
     /// <summary>
     ///     そのフレームで押されていたら、方向付きで左右回避入力を消費する
@@ -71,6 +75,12 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void OnFireCanceled(InputAction.CallbackContext context) => FirePressed = false;
 
+    private void OnRearView(InputAction.CallbackContext context)
+    {
+        _rearView = !_rearView;
+        RearViewPerformed?.Invoke(_rearView);
+    }
+
     /// ===========これより下は押した瞬間のみ保持するもの==========
 
     /// <summary>
@@ -111,6 +121,8 @@ public class PlayerInputHandler : MonoBehaviour
         _rideActions.Plane.Look.performed += OnLook;
         _rideActions.Plane.Look.canceled += OnLookCanceled;
 
+        _rideActions.Plane.RearView.performed += OnRearView;
+
         _rideActions.Plane.Throttle.performed += OnThrottle;
         _rideActions.Plane.Throttle.canceled += OnThrottleCanceled;
 
@@ -130,6 +142,8 @@ public class PlayerInputHandler : MonoBehaviour
     {
         _rideActions.Plane.Look.performed -= OnLook;
         _rideActions.Plane.Look.canceled -= OnLookCanceled;
+
+        _rideActions.Plane.RearView.performed -= OnRearView;
 
         _rideActions.Plane.Throttle.performed -= OnThrottle;
         _rideActions.Plane.Throttle.canceled -= OnThrottleCanceled;
