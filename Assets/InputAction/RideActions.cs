@@ -145,6 +145,15 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RearView"",
+                    ""type"": ""Button"",
+                    ""id"": ""4cd1f38a-3ec7-4ea8-8461-dea15cd4e63a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -279,6 +288,17 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
                     ""action"": ""FlipEvade"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""938d7add-b5e8-497d-8d5a-a47d953d5a06"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RearView"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -293,6 +313,7 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         m_Plane_Fire = m_Plane.FindAction("Fire", throwIfNotFound: true);
         m_Plane_Evade = m_Plane.FindAction("Evade", throwIfNotFound: true);
         m_Plane_FlipEvade = m_Plane.FindAction("FlipEvade", throwIfNotFound: true);
+        m_Plane_RearView = m_Plane.FindAction("RearView", throwIfNotFound: true);
     }
 
     ~@RideActions()
@@ -379,6 +400,7 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Plane_Fire;
     private readonly InputAction m_Plane_Evade;
     private readonly InputAction m_Plane_FlipEvade;
+    private readonly InputAction m_Plane_RearView;
     /// <summary>
     /// Provides access to input actions defined in input action map "Plane".
     /// </summary>
@@ -414,6 +436,10 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Plane/FlipEvade".
         /// </summary>
         public InputAction @FlipEvade => m_Wrapper.m_Plane_FlipEvade;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/RearView".
+        /// </summary>
+        public InputAction @RearView => m_Wrapper.m_Plane_RearView;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -458,6 +484,9 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
             @FlipEvade.started += instance.OnFlipEvade;
             @FlipEvade.performed += instance.OnFlipEvade;
             @FlipEvade.canceled += instance.OnFlipEvade;
+            @RearView.started += instance.OnRearView;
+            @RearView.performed += instance.OnRearView;
+            @RearView.canceled += instance.OnRearView;
         }
 
         /// <summary>
@@ -487,6 +516,9 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
             @FlipEvade.started -= instance.OnFlipEvade;
             @FlipEvade.performed -= instance.OnFlipEvade;
             @FlipEvade.canceled -= instance.OnFlipEvade;
+            @RearView.started -= instance.OnRearView;
+            @RearView.performed -= instance.OnRearView;
+            @RearView.canceled -= instance.OnRearView;
         }
 
         /// <summary>
@@ -569,5 +601,12 @@ public partial class @RideActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnFlipEvade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RearView" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRearView(InputAction.CallbackContext context);
     }
 }
