@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 435967466559893693}
   - component: {fileID: 5455549600328658655}
   - component: {fileID: 1045355265100068966}
+  - component: {fileID: 8545664744608147519}
   - component: {fileID: 7916438253898034262}
   m_Layer: 0
   m_Name: PlayerAircraft
@@ -362,6 +363,20 @@ MonoBehaviour:
   _burstCount: 8
   _ringRadius: 20
   _poolInitCount: 40
+--- !u!114 &8545664744608147519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3208383679940933132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9db24d4305c3ec4dace46abfd64fd27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraSwicher
+  _frontCamera: {fileID: 0}
+  _rearCamera: {fileID: 0}
 --- !u!54 &7916438253898034262
 Rigidbody:
   m_ObjectHideFlags: 0
