@@ -355,13 +355,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCounterGunner
   _timeDlicon: {fileID: 0}
   _targetMemory: {fileID: 0}
-  _muzzle: {fileID: 2529495213675249973}
   _counterBulletPrefab: {fileID: 5542356620062231549, guid: 4606db101c0d6334cb9f37d29e86c1e9, type: 3}
+  _muzzle: {fileID: 2529495213675249973}
   _counterCost: 1
   _counterColdown: 2
   _burstCount: 8
-  _ringRadius: 10
-  _angleJitter: 20
+  _ringRadius: 20
+  _poolInitCount: 40
 --- !u!54 &7916438253898034262
 Rigidbody:
   m_ObjectHideFlags: 0
