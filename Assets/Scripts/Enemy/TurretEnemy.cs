@@ -10,9 +10,6 @@ public class TurretEnemy : EnemyBase
     [SerializeField] private float _fireInterval;
     [SerializeField] private int _bulletPoolSize;
 
-    // デバッグ用で仮のシリアライズ
-    [SerializeField] private PlayerHealth _targetPlayer;
-
     private ObjectPool<EnemyBullet> _bulletPool;
     private float _timer;
 
@@ -30,9 +27,10 @@ public class TurretEnemy : EnemyBase
         // 銃弾をプールから取得して、銃口に
         EnemyBullet enemyBullet = _bulletPool.Get();
         enemyBullet.transform.position = _muzzle.position;
+        Transform player = PlayerLocator.Instance.PlayerTransform;
 
         // 方向を定めて銃弾を回転させる
-        Vector3 dir = (_targetPlayer.transform.position - this.transform.position).normalized;
+        Vector3 dir = (player.transform.position - this.transform.position).normalized;
         enemyBullet.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
         enemyBullet.Spawn(ReturnBullet, this.transform);
