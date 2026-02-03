@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-///     プレイヤーの反撃用ホーミング弾の挙動を管理するクラス
+///     プレイヤーのカウンターホーミング弾クラス
 /// </summary>
 public class PlayerCounterBullet : HomingBulletBase
 {
