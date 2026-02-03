@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class TurretBurstEnemy : TurretEnemyBase
 {
+    [Header("連射タレット設定")]
     [SerializeField, Tooltip("直線弾")] private EnemyBullet _bulletPrefab;
     [SerializeField, Tooltip("連射数")] private int _burstCount;
     [SerializeField, Tooltip("連射間隔")] private float _burstInterval;
