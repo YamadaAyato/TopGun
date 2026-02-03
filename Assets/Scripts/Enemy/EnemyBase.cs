@@ -23,7 +23,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         _currentHp -= damage;
-
+        Debug.Log($"{this.name} took {damage} damage. Current HP: {_currentHp}/{_maxHp}");
         if (_currentHp <= 0)
         {
             Die();
