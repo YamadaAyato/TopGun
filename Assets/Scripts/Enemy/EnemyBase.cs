@@ -6,6 +6,7 @@ using System;
 /// </summary>
 public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
+    [Header("HP設定")]
     [SerializeField, ReadOnly] private int _currentHp;
     [SerializeField] private int _maxHp;
 
