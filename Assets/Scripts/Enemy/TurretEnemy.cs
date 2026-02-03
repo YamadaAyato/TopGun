@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-///     タレット型の敵クラス
+///     単発タレット型の敵クラス
 /// </summary>
 public class TurretEnemy : TurretEnemyBase
 {
