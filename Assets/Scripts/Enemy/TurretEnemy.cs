@@ -5,6 +5,7 @@ using UnityEngine;
 /// </summary>
 public class TurretEnemy : TurretEnemyBase
 {
+    [Header("単発タレット設定")]
     [SerializeField] private EnemyBullet _bulletPrefab;
     [SerializeField] private int _bulletPoolSize;
 
