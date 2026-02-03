@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     ホーミング弾の基底クラス
+/// </summary>
 public abstract class HomingBulletBase : BulletBase
 {
     [Header("ホーミング設定")]
