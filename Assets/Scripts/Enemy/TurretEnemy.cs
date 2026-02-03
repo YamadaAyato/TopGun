@@ -10,12 +10,10 @@ public class TurretEnemy : TurretEnemyBase
     [SerializeField] private int _bulletPoolSize;
 
     private ObjectPool<EnemyBullet> _bulletPool;
-    private float _timer;
 
     protected override void OnSpawned()
     {
         base.OnSpawned();
-        _timer = 0f;
     }
 
     protected override void FireAtPlayer(Transform player)
