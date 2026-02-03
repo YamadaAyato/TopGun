@@ -54,17 +54,20 @@ public class TurretBurstEnemy : TurretEnemyBase
     {
         EnemyBullet bullet = _bulletPool.Get();
 
+        // 弾の初期位置と回転を設定
         bullet.transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
         Vector3 toPlayer = (player.position - _muzzle.position).normalized;
 
         if (_spreadAngle > 0f)
         {
+            // ばらつきを加える
             float randomY = Random.Range(-_spreadAngle, _spreadAngle);
             float randomX = Random.Range(-_spreadAngle, _spreadAngle);
             Quaternion spreadRotation = Quaternion.Euler(randomX, randomY, 0f);
             toPlayer = spreadRotation * toPlayer;
         }
 
+        // 弾の向きをプレイヤー方向に設定
         bullet.transform.rotation = Quaternion.LookRotation(toPlayer, Vector3.up);
         bullet.Spawn(ReturnBullet, this.transform);
     }
