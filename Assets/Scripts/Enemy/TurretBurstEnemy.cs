@@ -1,13 +1,16 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+///     連射するタレット型の敵クラス
+/// </summary>
 public class TurretBurstEnemy : TurretEnemyBase
 {
-    [SerializeField] private EnemyBullet _bulletPrefab;
-    [SerializeField] private int _burstCount;
-    [SerializeField] private float _burstInterval;
-    [SerializeField] private int _bulletPoolSize;
-    [SerializeField] private float _spreadAngle;
+    [SerializeField, Tooltip("直線弾")] private EnemyBullet _bulletPrefab;
+    [SerializeField, Tooltip("連射数")] private int _burstCount;
+    [SerializeField, Tooltip("連射間隔")] private float _burstInterval;
+    [SerializeField, Tooltip("弾のプールサイズ")] private int _bulletPoolSize;
+    [SerializeField, Tooltip("弾のばらつき")] private float _spreadAngle;
 
     private ObjectPool<EnemyBullet> _bulletPool;
     private Coroutine _burstCoroutine;
@@ -26,16 +29,27 @@ public class TurretBurstEnemy : TurretEnemyBase
         }
     }
 
+    /// <summary>
+    ///     連射を行うコルーチン
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     private IEnumerator BurstFireCoroutine(Transform player)
     {
+        // 連射回数分発射
         for (int i = 0; i < _burstCount; i++)
         {
             ShootOnce(player);
+            // 連射間隔待機
             yield return new WaitForSeconds(_burstInterval);
         }
         _burstCoroutine = null;
     }
 
+    /// <summary>
+    ///     一つの弾を発射する
+    /// </summary>
+    /// <param name="player"></param>
     private void ShootOnce(Transform player)
     {
         EnemyBullet bullet = _bulletPool.Get();
@@ -56,6 +70,10 @@ public class TurretBurstEnemy : TurretEnemyBase
         bullet.Spawn(ReturnBullet, this.transform);
     }
 
+    /// <summary>
+    ///     弾をプールに戻す
+    /// </summary>
+    /// <param name="enemyBullet"></param>
     private void ReturnBullet(BulletBase enemyBullet)
     {
         _bulletPool.Release((EnemyBullet)enemyBullet);
