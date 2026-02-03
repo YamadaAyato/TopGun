@@ -3,11 +3,9 @@ using UnityEngine;
 /// <summary>
 ///     タレット型の敵クラス
 /// </summary>
-public class TurretEnemy : EnemyBase
+public class TurretEnemy : TurretEnemyBase
 {
     [SerializeField] private EnemyBullet _bulletPrefab;
-    [SerializeField] private Transform _muzzle;
-    [SerializeField] private float _fireInterval;
     [SerializeField] private int _bulletPoolSize;
 
     private ObjectPool<EnemyBullet> _bulletPool;
@@ -19,18 +17,14 @@ public class TurretEnemy : EnemyBase
         _timer = 0f;
     }
 
-    /// <summary>
-    ///     銃弾をプールから取得して発射する
-    /// </summary>
-    private void Fire()
+    protected override void FireAtPlayer(Transform player)
     {
         // 銃弾をプールから取得して、銃口に
         EnemyBullet enemyBullet = _bulletPool.Get();
         enemyBullet.transform.position = _muzzle.position;
-        Transform player = PlayerLocator.Instance.PlayerTransform;
 
         // 方向を定めて銃弾を回転させる
-        Vector3 dir = (player.transform.position - this.transform.position).normalized;
+        Vector3 dir = (player.transform.position - _muzzle.position).normalized;
         enemyBullet.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
         enemyBullet.Spawn(ReturnBullet, this.transform);
@@ -44,15 +38,5 @@ public class TurretEnemy : EnemyBase
     private void Awake()
     {
         _bulletPool = new ObjectPool<EnemyBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
-    }
-
-    private void Update()
-    {
-        _timer += Time.deltaTime;
-        if (_timer > _fireInterval)
-        {
-            _timer = 0f;
-            Fire();
-        }
     }
 }
