@@ -59,9 +59,8 @@ public class TurretBurstEnemy : TurretEnemyBase
 
         if (_spreadAngle > 0f)
         {
-            float halfSpread = _spreadAngle / 2f;
-            float randomY = Random.Range(-halfSpread, halfSpread);
-            float randomX = Random.Range(-halfSpread, halfSpread);
+            float randomY = Random.Range(-_spreadAngle, _spreadAngle);
+            float randomX = Random.Range(-_spreadAngle, _spreadAngle);
             Quaternion spreadRotation = Quaternion.Euler(randomX, randomY, 0f);
             toPlayer = spreadRotation * toPlayer;
         }
