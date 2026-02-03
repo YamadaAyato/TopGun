@@ -5,6 +5,7 @@ using UnityEngine;
 /// </summary>
 public abstract class TurretEnemyBase : EnemyBase
 {
+    [Header("タレット共通設定")]
     [SerializeField, Tooltip("銃口")] protected Transform _muzzle;
     [SerializeField, Tooltip("プレイヤーを見つける距離")] protected float _range;
     [SerializeField, Range(0f, 180f), Tooltip("視野角")] protected float _fovAngle;
