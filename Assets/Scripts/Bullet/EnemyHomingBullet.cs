@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     敵のホーミング弾クラス
+/// </summary>
 public class EnemyHomingBullet : HomingBulletBase
 {
     protected override void HandleHit(Collider other)
