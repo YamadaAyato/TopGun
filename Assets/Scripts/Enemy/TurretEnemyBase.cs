@@ -43,7 +43,7 @@ public abstract class TurretEnemyBase : EnemyBase
     /// <returns></returns>
     protected bool IsPlayerInRange(Transform player)
     {
-        float distance = Vector3.Distance(this.transform.position, player.position);
+        float distance = Vector3.Distance(_muzzle.position, player.position);
         return distance <= _range;
     }
 
@@ -54,7 +54,7 @@ public abstract class TurretEnemyBase : EnemyBase
     /// <returns></returns>
     protected bool IsPlayerInFov(Transform player)
     {
-        Vector3 toPlayer = (player.position - this.transform.position).normalized;
+        Vector3 toPlayer = (player.position - _muzzle.position).normalized;
         // タレットの前方とプレイヤーへの方向との角度を計算
         float angle = Vector3.Angle(this.transform.forward, toPlayer);
         return angle <= _fovAngle * 0.5f;
