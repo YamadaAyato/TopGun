@@ -45,4 +45,9 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         _currentHealth = _maxHealth;
         PlayerLocator.Instance.Register(this);
     }
+
+    private void OnDisable()
+    {
+        PlayerLocator.Instance.Unregister();
+    }
 }
