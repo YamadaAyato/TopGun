@@ -1,18 +1,22 @@
 using UnityEngine;
 
+/// <summary>
+///     ホーミング弾を撃つタレット型敵クラス
+/// </summary>
 public class TurretHomingEnemy : TurretEnemyBase
 {
     [Header("ホーミングタレット設定")]
     [SerializeField] private EnemyHomingBullet _bullet;
-    [SerializeField] private int _bulletPoolSize;
+    [SerializeField, Tooltip("弾のプールサイズ")] private int _bulletPoolSize;
+    [SerializeField, Tooltip("タレット自体の回転速度")] private float _rotationSpeed;
 
-    [SerializeField] private float _lockOnTime;
-    [SerializeField] private float _rotationSpeed;
+    [Header("ロックオン設定")]
+    [SerializeField, Tooltip("撃つのに必要なロックオン時間")] private float _lockOnTime;
+    [SerializeField, ReadOnly] private float _lockOnTimer;
 
     private ObjectPool<EnemyHomingBullet> _bulletPool;
     private bool _canStartLock;
     private bool _isLocking;
-    private float _lockOnTimer;
 
     protected override void OnSpawned()
     {
