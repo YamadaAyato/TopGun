@@ -35,12 +35,20 @@ public class TurretHomingEnemy : TurretEnemyBase
         bullet.SetTarget(player, _muzzle.forward);
     }
 
+    /// <summary>
+    ///     タレットをターゲットに向けてy軸回転させる
+    /// </summary>
+    /// <param name="target"></param>
     private void RotateTurret(Transform target)
     {
+        // ターゲットへの方向ベクトルを計算
         Vector3 dir = target.position - this.transform.position;
+        // y軸回転のみとするため、y成分を0にする
         dir.y = 0;
 
+        // 目標の回転を計算
         Quaternion desired = Quaternion.LookRotation(dir.normalized, Vector3.up);
+        // 現在の回転から目標の回転へ徐々に回転させる
         transform.rotation = Quaternion.RotateTowards(
             transform.rotation,
             desired,
@@ -48,6 +56,10 @@ public class TurretHomingEnemy : TurretEnemyBase
         );
     }
 
+    /// <summary>
+    ///     弾をプールに返す
+    /// </summary>
+    /// <param name="bullet"></param>
     private void ReturnBullet(BulletBase bullet)
     {
         _bulletPool.Release((EnemyHomingBullet)bullet);
@@ -56,16 +68,19 @@ public class TurretHomingEnemy : TurretEnemyBase
     protected override void Update()
     {
         _timer += Time.deltaTime;
-        _canStartLock = _timer >= _fireInterval;
 
+        // 発射可能かどうかの判定
+        _canStartLock = _timer >= _fireInterval;
         bool hasPlayer =
             TryGetPlayer(out Transform player) &&
             IsPlayerInRange(player) &&
             IsPlayerInFov(player) &&
             HasLineOfSight(player);
 
+        // ロックオン処理
         if (hasPlayer && _canStartLock)
         {
+            // ロックオン開始
             if (!_isLocking)
             {
                 _isLocking = true;
@@ -75,6 +90,7 @@ public class TurretHomingEnemy : TurretEnemyBase
             _lockOnTimer += Time.deltaTime;
             RotateTurret(player);
 
+            // ロックオン完了で発射
             if (_lockOnTimer >= _lockOnTime)
             {
                 FireAtPlayer(player);
@@ -85,6 +101,7 @@ public class TurretHomingEnemy : TurretEnemyBase
         }
         else
         {
+            // ロックオン解除
             _isLocking = false;
             _lockOnTimer = 0f;
         }
