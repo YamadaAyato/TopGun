@@ -35,7 +35,7 @@ public class TurretHomingEnemy : TurretEnemyBase
         bullet.SetTarget(player, _muzzle.forward);
     }
 
-    private void Rotate(Transform target)
+    private void RotateTurret(Transform target)
     {
         Vector3 dir = target.position - this.transform.position;
         dir.y = 0;
@@ -73,7 +73,7 @@ public class TurretHomingEnemy : TurretEnemyBase
             }
 
             _lockOnTimer += Time.deltaTime;
-            Rotate(player);
+            RotateTurret(player);
 
             if (_lockOnTimer >= _lockOnTime)
             {
