@@ -1887,7 +1887,7 @@ MonoBehaviour:
   _yawSpreadAngle: 10
   _pitchSpreadAngle: 10
   _initSpeed: 10
-  _spawnJitter: 10
+  _spawnJitter: 1
 --- !u!1 &1516894415
 GameObject:
   m_ObjectHideFlags: 0
