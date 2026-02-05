@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 ///     銃弾の基底クラス
 /// </summary>
-public abstract class BulletBase : MonoBehaviour
+public abstract class BulletBase : MonoBehaviour,IKillableBullet
 {
     /// <summary> 撃ちてのTransformを取得する </summary>
     public Transform Shooter => _shooter;
@@ -24,6 +24,11 @@ public abstract class BulletBase : MonoBehaviour
         _shooter = parent;
         _timer = 0;
         OnSpawned();
+    }
+
+    public void Kill(Vector3 hitPoint)
+    {
+        Release();
     }
 
     /// <summary> 各クラスでのスポーン時処理をする </summary>
