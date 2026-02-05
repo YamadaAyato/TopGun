@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 ///     ホーミング弾の基底クラス
 /// </summary>
-public abstract class HomingBulletBase : BulletBase
+public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
 {
     [Header("ホーミング設定")]
     [SerializeField, Tooltip("追尾旋回速度")] private float _turnSpeed;
@@ -11,7 +11,8 @@ public abstract class HomingBulletBase : BulletBase
     [SerializeField, Tooltip("追尾できる角度制限")] private float _maxSeekAngle;
     [SerializeField, Tooltip("前方へ発射する時間")] private float _initialForwardTime;
 
-    private Transform _target;
+    private Transform _defaultTarget;
+    private Transform _decoyTarget;
     private float _homingTimer;
     private float _forwardTimer;
     private Rigidbody _rb;
@@ -25,9 +26,22 @@ public abstract class HomingBulletBase : BulletBase
     /// <param name="shooterForward"> 撃ち手の前方 </param>
     public void SetTarget(Transform target, Vector3 shooterForward)
     {
-        _target = target;
+        _defaultTarget = target;
         _launchForward = shooterForward.sqrMagnitude > 0.0001f ? shooterForward.normalized : transform.forward;
     }
+
+    public void SetDecoyTarget(Transform decoyTransform)
+    {
+        _decoyTarget = decoyTransform;
+    }
+
+    public void ClearDecoyTarget(Transform decoyTransform)
+    {
+        if (_decoyTarget == decoyTransform)
+            _decoyTarget = null;
+    }
+
+    private Transform _currentTarget => _decoyTarget != null ? _decoyTarget : _defaultTarget;
 
     protected override void OnSpawned()
     {
@@ -51,8 +65,10 @@ public abstract class HomingBulletBase : BulletBase
             return;
         }
 
+        Transform target = _currentTarget;
+
         // ホーミング処理
-        bool canHome = _target != null;
+        bool canHome = _defaultTarget != null;
         if (_homingDuration > 0f)
         {
             _homingTimer += Time.fixedDeltaTime;
@@ -72,7 +88,7 @@ public abstract class HomingBulletBase : BulletBase
         }
         else if (canHome)
         {
-            Vector3 toTarget = _target.position - _rb.position;
+            Vector3 toTarget = _currentTarget.position - _rb.position;
             if (toTarget.sqrMagnitude > 0.0001f)
             {
                 Vector3 dir = toTarget.normalized;
