@@ -11,6 +11,10 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
     [SerializeField, Tooltip("追尾できる角度制限")] private float _maxSeekAngle;
     [SerializeField, Tooltip("前方へ発射する時間")] private float _initialForwardTime;
 
+    [Header("デコイ吸い込み")]
+    [SerializeField, Tooltip("デコイ中は移動方向もターゲットへ向けるか")]
+    private bool _decoySnapMoveToTarget = true;
+
     private Transform _defaultTarget;
     private Transform _decoyTarget;
     private float _homingTimer;
@@ -67,7 +71,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
 
         Transform target = _currentTarget;
 
-        // ホーミング処理
+        // ホーミング可能か
         bool canHome = target != null;
         if (_homingDuration > 0f)
         {
@@ -79,39 +83,71 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
         _forwardTimer += Time.fixedDeltaTime;
         bool isForwardPhase = (_forwardTimer < _initialForwardTime);
 
+        // 初期化
         Quaternion nextRot = _rb.rotation;
+        Vector3 dir = Vector3.zero;
+        bool hasDir = false;
 
         if (isForwardPhase)
         {
             // 発射直後は撃ち手の向きで直進
             nextRot = _launchRotation;
         }
-        else if (canHome)
+        else if (canHome && !isForwardPhase)
         {
             Vector3 toTarget = target.position - _rb.position;
             if (toTarget.sqrMagnitude > 0.0001f)
             {
-                Vector3 dir = toTarget.normalized;
+                dir = toTarget.normalized;
+                hasDir = true;
 
-                // 目標方向と現在の前方ベクトルの角度を計算
-                float angle = Vector3.Angle(transform.forward, dir);
-                // 角度が制限内ならば回転を行う
-                if (angle <= _maxSeekAngle)
+                // 目標方向への回転を計算
+                Quaternion desired = Quaternion.LookRotation(dir, Vector3.up);
+
+                if (_decoyTarget != null)
                 {
-                    // 目標方向への回転を計算
-                    Quaternion desired = Quaternion.LookRotation(dir, Vector3.up);
-                    float maxStep = _turnSpeed * Time.fixedDeltaTime;
+                    // デコイ吸い込み中は即座に目標方向へ向ける
+                    nextRot = desired;
+                }
+                else
+                {
+                    // 目標方向と現在の前方ベクトルの角度を計算
+                    Vector3 currentForward = _rb.rotation * Vector3.forward;
+                    float angle = Vector3.Angle(currentForward, dir);
+
+                    // 0〜maxSeekAngleを 1〜0 に落とす（範囲外は0）
+                    float t = Mathf.InverseLerp(_maxSeekAngle, 0f, angle);
+                    float weight = Mathf.Clamp01(t);
+
+                    // 完全に0にしたくない最低値を持たせる
+                    // 調整用
+                    float minWeight = 0.15f;
+                    weight = Mathf.Lerp(minWeight, 1f, weight);
+
+                    float maxStep = _turnSpeed * weight * Time.fixedDeltaTime;
                     nextRot = Quaternion.RotateTowards(_rb.rotation, desired, maxStep);
                 }
             }
         }
 
         _rb.MoveRotation(nextRot);
-        float speedNow = _bulletSpeed;
 
+        Vector3 moveDir;
         // フェーズによって移動方向を決定
-        Vector3 moveDir = isForwardPhase ? _launchForward : (nextRot * Vector3.forward);
-        Vector3 nextPos = _rb.position + moveDir * speedNow * Time.fixedDeltaTime;
+        if (isForwardPhase)
+        {
+            moveDir = _launchForward;
+        }
+        else if (_decoyTarget != null && _decoySnapMoveToTarget && hasDir)
+        {
+            moveDir = dir;
+        }
+        else
+        {
+            moveDir = nextRot * Vector3.forward;
+        }
+
+        Vector3 nextPos = _rb.position + moveDir * _bulletSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(nextPos);
     }
 
