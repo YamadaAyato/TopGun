@@ -68,7 +68,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
         Transform target = _currentTarget;
 
         // ホーミング処理
-        bool canHome = _defaultTarget != null;
+        bool canHome = target != null;
         if (_homingDuration > 0f)
         {
             _homingTimer += Time.fixedDeltaTime;
@@ -88,7 +88,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
         }
         else if (canHome)
         {
-            Vector3 toTarget = _currentTarget.position - _rb.position;
+            Vector3 toTarget = target.position - _rb.position;
             if (toTarget.sqrMagnitude > 0.0001f)
             {
                 Vector3 dir = toTarget.normalized;
