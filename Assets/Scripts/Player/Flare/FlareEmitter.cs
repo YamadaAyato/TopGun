@@ -36,8 +36,6 @@ public class FlareEmitter : MonoBehaviour
 
             if (flareObj.TryGetComponent<Rigidbody>(out var rb))
             {
-                rb.useGravity = false;
-                rb.isKinematic = false;
                 rb.linearVelocity = dir * _initSpeed;
             }
         }
