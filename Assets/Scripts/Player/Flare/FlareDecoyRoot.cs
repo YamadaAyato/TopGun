@@ -26,6 +26,7 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
         if (_detonated) return;
         _detonated = true;
 
+        Debug.Log("Flare Decoy Detonated");
         bullet?.Kill(hitPoint);
 
         var bullets = Physics.OverlapSphere
@@ -61,7 +62,7 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
 
     private void Update()
     {
-        _lifeTime += Time.deltaTime;
+        _timer += Time.deltaTime;
         if (_timer >= _lifeTime)
         {
             Destroy(this.gameObject);
