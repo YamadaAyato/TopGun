@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class FlareCore : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private FlareDecoyRoot _flareDecoyRoot;
+
+    private void Awake()
     {
-        
+        _flareDecoyRoot = GetComponentInParent<FlareDecoyRoot>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.TryGetComponent<IKillableBullet>(out IKillableBullet bullet))
+        {
+            _flareDecoyRoot.Detonate(transform.position, bullet);
+        }
     }
 }
