@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IKillableBullet
+public interface IKillableBullet
 {
-    
+    void Kill(Vector3 hitPoint);
 }
