@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class IDecoyAttractable
+public interface IDecoyAttractable
 {
-    
+    void SetDecoyTarget(Transform decoyTransform);
+    void ClearDecoyTarget(Transform decoyTransform);
 }
