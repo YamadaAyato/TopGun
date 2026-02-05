@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     フレアの本体コライダー
+/// </summary>
 public class FlareCore : MonoBehaviour
 {
     private FlareDecoyRoot _flareDecoyRoot;
