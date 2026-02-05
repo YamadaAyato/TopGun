@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     弾を検知してデコイターゲットを設定するコライダー
+/// </summary>
 public class BulletDetectingFlareColider : MonoBehaviour
 {
     private FlareDecoyRoot _flareDecoyRoot;
