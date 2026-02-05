@@ -18,6 +18,7 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField] private CounterToken _counterToken;
     [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private TimeDilationController _timeDilationController;
+    [SerializeField] private FlareEmitter _flareEmitter;
     [SerializeField, Tooltip("モデル")] private Transform _visual;
     [SerializeField, Tooltip("フリップ用のスプライン")] private SplineContainer _flipSpline;
     [SerializeField, Tooltip("バレルロール用のスプライン")] private SplineContainer _ballelRollSpline;
@@ -171,6 +172,13 @@ public class PlayerEvadeController : MonoBehaviour
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
             _counterToken.AddToken(1);
             _targetMemory?.SetBullet(bullet);
+
+            // ホーミング弾を回避した場合の特別処理
+            bool isHoming = bullet.GetComponent<EnemyHomingBullet>() != null;
+            if (isHoming)
+            {
+                _flareEmitter?.EmitFlare();
+            }
         }
     }
 
