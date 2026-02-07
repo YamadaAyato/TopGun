@@ -18,10 +18,10 @@ public abstract class BulletBase : MonoBehaviour,IKillableBullet
     protected float _timer;
     private Action<BulletBase> _onRelease;
 
-    public void Spawn(Action<BulletBase> onRelease, Transform parent)
+    public void Spawn(Action<BulletBase> onRelease, Transform shooter)
     {
         _onRelease = onRelease;
-        _shooter = parent;
+        _shooter = shooter;
         _timer = 0;
         OnSpawned();
     }
