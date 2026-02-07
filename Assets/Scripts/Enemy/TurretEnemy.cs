@@ -6,10 +6,10 @@ using UnityEngine;
 public class TurretEnemy : TurretEnemyBase
 {
     [Header("単発タレット設定")]
-    [SerializeField] private EnemyBullet _bulletPrefab;
+    [SerializeField] private EnemyStraightBullet _bulletPrefab;
     [SerializeField] private int _bulletPoolSize;
 
-    private ObjectPool<EnemyBullet> _bulletPool;
+    private ObjectPool<EnemyStraightBullet> _bulletPool;
 
     protected override void OnSpawned()
     {
@@ -19,7 +19,7 @@ public class TurretEnemy : TurretEnemyBase
     protected override void FireAtPlayer(Transform player)
     {
         // 銃弾をプールから取得して、銃口に
-        EnemyBullet enemyBullet = _bulletPool.Get();
+        EnemyStraightBullet enemyBullet = _bulletPool.Get();
         enemyBullet.transform.position = _muzzle.position;
 
         // 方向を定めて銃弾を回転させる
@@ -31,11 +31,11 @@ public class TurretEnemy : TurretEnemyBase
 
     private void ReturnBullet(BulletBase enemyBullet)
     {
-        _bulletPool.Release((EnemyBullet)enemyBullet);
+        _bulletPool.Release((EnemyStraightBullet)enemyBullet);
     }
 
     private void Awake()
     {
-        _bulletPool = new ObjectPool<EnemyBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
+        _bulletPool = new ObjectPool<EnemyStraightBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
     }
 }
