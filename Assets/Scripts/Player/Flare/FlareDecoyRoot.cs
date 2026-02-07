@@ -6,7 +6,7 @@ using UnityEngine;
 public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
 {
     [Header("フレア設定")]
-    [SerializeField] private float _lifeTime = 5f;
+    [SerializeField] private float _lifeTime;
     [SerializeField] private float _blastRadius;
 
     [Header("各レイヤー設定")]
