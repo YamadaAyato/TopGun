@@ -60,6 +60,6 @@ public class TurretBurstEnemy : TurretEnemyBase
             toPlayer = (spreadRotation * toPlayer).normalized;
         }
 
-        _shooter.FireStraight(this.transform, toPlayer);
+        _shooter.FireBurst(this.transform, toPlayer);
     }
 }
