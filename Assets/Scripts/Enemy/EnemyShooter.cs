@@ -1,16 +1,18 @@
 using UnityEngine;
 
-public class EnemyShooter : MonoBehaviour
+public enum EnemyShooterType
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    Straight,
+    Homing,
+    Random
+}
 
-    // Update is called once per frame
-    void Update()
+public class EnemyShooter : MonoBehaviour, IEnemyShooter
+{
+
+
+    public void Fire(Transform shooter, Transform target)
     {
-        
+        throw new System.NotImplementedException();
     }
 }
