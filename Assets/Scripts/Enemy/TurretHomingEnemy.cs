@@ -14,7 +14,6 @@ public class TurretHomingEnemy : TurretEnemyBase
     [SerializeField, Tooltip("撃つのに必要なロックオン時間")] private float _lockOnTime;
     [SerializeField, ReadOnly] private float _lockOnTimer;
 
-    private ObjectPool<EnemyHomingBullet> _bulletPool;
     private bool _canStartLock;
     private bool _isLocking;
 
@@ -28,11 +27,7 @@ public class TurretHomingEnemy : TurretEnemyBase
 
     protected override void FireAtPlayer(Transform player)
     {
-        EnemyHomingBullet bullet = _bulletPool.Get();
-
-        bullet.transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
-        bullet.Spawn(ReturnBullet, this.transform);
-        bullet.SetTarget(player, _muzzle.forward);
+        _shooter.Fire(this.transform, player);
     }
 
     /// <summary>
@@ -54,15 +49,6 @@ public class TurretHomingEnemy : TurretEnemyBase
             desired,
             _rotationSpeed * Time.deltaTime
         );
-    }
-
-    /// <summary>
-    ///     弾をプールに返す
-    /// </summary>
-    /// <param name="bullet"></param>
-    private void ReturnBullet(BulletBase bullet)
-    {
-        _bulletPool.Release((EnemyHomingBullet)bullet);
     }
 
     protected override void Update()
@@ -105,10 +91,5 @@ public class TurretHomingEnemy : TurretEnemyBase
             _isLocking = false;
             _lockOnTimer = 0f;
         }
-    }
-
-    private void Awake()
-    {
-        _bulletPool = new ObjectPool<EnemyHomingBullet>(_bullet, this.transform, _bulletPoolSize);
     }
 }
