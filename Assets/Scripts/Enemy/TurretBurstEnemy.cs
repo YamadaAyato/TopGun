@@ -7,19 +7,15 @@ using UnityEngine;
 public class TurretBurstEnemy : TurretEnemyBase
 {
     [Header("連射タレット設定")]
-    [SerializeField, Tooltip("直線弾")] private EnemyStraightBullet _bulletPrefab;
     [SerializeField, Tooltip("連射数")] private int _burstCount;
     [SerializeField, Tooltip("連射間隔")] private float _burstInterval;
-    [SerializeField, Tooltip("弾のプールサイズ")] private int _bulletPoolSize;
     [SerializeField, Tooltip("弾のばらつき")] private float _spreadAngle;
 
-    private ObjectPool<EnemyStraightBullet> _bulletPool;
     private Coroutine _burstCoroutine;
 
     protected override void OnSpawned()
     {
         base.OnSpawned();
-        _bulletPool = new ObjectPool<EnemyStraightBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
     }
 
     protected override void FireAtPlayer(Transform player)
@@ -53,10 +49,6 @@ public class TurretBurstEnemy : TurretEnemyBase
     /// <param name="player"></param>
     private void ShootOnce(Transform player)
     {
-        EnemyStraightBullet bullet = _bulletPool.Get();
-
-        // 弾の初期位置と回転を設定
-        bullet.transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
         Vector3 toPlayer = (player.position - _muzzle.position).normalized;
 
         if (_spreadAngle > 0f)
@@ -65,25 +57,9 @@ public class TurretBurstEnemy : TurretEnemyBase
             float randomY = Random.Range(-_spreadAngle, _spreadAngle);
             float randomX = Random.Range(-_spreadAngle, _spreadAngle);
             Quaternion spreadRotation = Quaternion.Euler(randomX, randomY, 0f);
-            toPlayer = spreadRotation * toPlayer;
+            toPlayer = (spreadRotation * toPlayer).normalized;
         }
 
-        // 弾の向きをプレイヤー方向に設定
-        bullet.transform.rotation = Quaternion.LookRotation(toPlayer, Vector3.up);
-        bullet.Spawn(ReturnBullet, this.transform);
-    }
-
-    /// <summary>
-    ///     弾をプールに戻す
-    /// </summary>
-    /// <param name="enemyBullet"></param>
-    private void ReturnBullet(BulletBase enemyBullet)
-    {
-        _bulletPool.Release((EnemyStraightBullet)enemyBullet);
-    }
-
-    private void Awake()
-    {
-        _bulletPool = new ObjectPool<EnemyStraightBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
+        _shooter.FireStraight(this.transform, toPlayer);
     }
 }
