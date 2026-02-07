@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 ///     タレット敵の基底クラス
 /// </summary>
+[RequireComponent(typeof(EnemyShooter))]
 public abstract class TurretEnemyBase : EnemyBase
 {
     [Header("タレット共通設定")]
@@ -13,6 +14,7 @@ public abstract class TurretEnemyBase : EnemyBase
     [SerializeField, Tooltip("判定レイヤー")] protected LayerMask _layerMask;
 
     protected float _timer;
+    protected EnemyShooter _shooter;
 
     protected override void OnSpawned()
     {
@@ -80,6 +82,11 @@ public abstract class TurretEnemyBase : EnemyBase
             }
         }
         return true;
+    }
+
+    protected virtual void Awake()
+    {
+        _shooter = GetComponent<EnemyShooter>();
     }
 
     protected virtual void Update()
