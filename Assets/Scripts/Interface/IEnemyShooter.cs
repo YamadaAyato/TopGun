@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IEnemyShooter
+public interface IEnemyShooter
 {
-    
+    void Fire(Transform shooter, Transform target);
 }
