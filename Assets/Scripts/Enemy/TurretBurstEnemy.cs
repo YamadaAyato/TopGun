@@ -7,19 +7,19 @@ using UnityEngine;
 public class TurretBurstEnemy : TurretEnemyBase
 {
     [Header("連射タレット設定")]
-    [SerializeField, Tooltip("直線弾")] private EnemyBullet _bulletPrefab;
+    [SerializeField, Tooltip("直線弾")] private EnemyStraightBullet _bulletPrefab;
     [SerializeField, Tooltip("連射数")] private int _burstCount;
     [SerializeField, Tooltip("連射間隔")] private float _burstInterval;
     [SerializeField, Tooltip("弾のプールサイズ")] private int _bulletPoolSize;
     [SerializeField, Tooltip("弾のばらつき")] private float _spreadAngle;
 
-    private ObjectPool<EnemyBullet> _bulletPool;
+    private ObjectPool<EnemyStraightBullet> _bulletPool;
     private Coroutine _burstCoroutine;
 
     protected override void OnSpawned()
     {
         base.OnSpawned();
-        _bulletPool = new ObjectPool<EnemyBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
+        _bulletPool = new ObjectPool<EnemyStraightBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
     }
 
     protected override void FireAtPlayer(Transform player)
@@ -53,7 +53,7 @@ public class TurretBurstEnemy : TurretEnemyBase
     /// <param name="player"></param>
     private void ShootOnce(Transform player)
     {
-        EnemyBullet bullet = _bulletPool.Get();
+        EnemyStraightBullet bullet = _bulletPool.Get();
 
         // 弾の初期位置と回転を設定
         bullet.transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
@@ -79,11 +79,11 @@ public class TurretBurstEnemy : TurretEnemyBase
     /// <param name="enemyBullet"></param>
     private void ReturnBullet(BulletBase enemyBullet)
     {
-        _bulletPool.Release((EnemyBullet)enemyBullet);
+        _bulletPool.Release((EnemyStraightBullet)enemyBullet);
     }
 
     private void Awake()
     {
-        _bulletPool = new ObjectPool<EnemyBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
+        _bulletPool = new ObjectPool<EnemyStraightBullet>(_bulletPrefab, this.transform, _bulletPoolSize);
     }
 }
