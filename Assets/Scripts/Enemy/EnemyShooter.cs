@@ -61,7 +61,12 @@ public class EnemyShooter : MonoBehaviour, IEnemyShooter
         }
     }
 
-    public void FireStraight(Transform shooter, Vector3 dir)
+    /// <summary>
+    ///     連射用にdirを指定して発射する
+    /// </summary>
+    /// <param name="shooter"></param>
+    /// <param name="dir"></param>
+    public void FireBurst(Transform shooter, Vector3 dir)
     {
         if (_muzzle == null || shooter == null) return;
         if (ProjectileService.Instance == null) return;
