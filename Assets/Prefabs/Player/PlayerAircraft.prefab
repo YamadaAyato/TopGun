@@ -179,6 +179,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JustEvadeDetector
   _justDistance: 8
+--- !u!1 &2963988579891811174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3949187521422796848}
+  m_Layer: 0
+  m_Name: FlareMuzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3949187521422796848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2963988579891811174}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8638521208331954471}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3003967699349333429
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,11 +257,12 @@ GameObject:
   - component: {fileID: 5455549600328658655}
   - component: {fileID: 1045355265100068966}
   - component: {fileID: 8545664744608147519}
+  - component: {fileID: 2008454426548394256}
   - component: {fileID: 7916438253898034262}
   - component: {fileID: 881227027278117849}
   m_Layer: 0
   m_Name: PlayerAircraft
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -252,6 +284,8 @@ Transform:
   - {fileID: 2529495213675249973}
   - {fileID: 5432415397154319486}
   - {fileID: 1369921740978174578}
+  - {fileID: 3949187521422796848}
+  - {fileID: 1134949952552075543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4101384962271015075
@@ -269,7 +303,7 @@ MonoBehaviour:
   _currentSpeed: 0
   _baseSpeed: 10
   _minSpeed: 10
-  _maxSpeed: 10
+  _maxSpeed: 30
   _acceleration: 5
   _pitchSpeed: 5
   _yawSpeed: 0
@@ -321,6 +355,7 @@ MonoBehaviour:
   _counterToken: {fileID: 5455549600328658655}
   _targetMemory: {fileID: 0}
   _timeDilationController: {fileID: 0}
+  _flareEmitter: {fileID: 2008454426548394256}
   _visual: {fileID: 1719643219621493761}
   _flipSpline: {fileID: 0}
   _ballelRollSpline: {fileID: 0}
@@ -378,6 +413,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraSwicher
   _frontCamera: {fileID: 0}
   _rearCamera: {fileID: 0}
+--- !u!114 &2008454426548394256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3208383679940933132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78db9259818cde44f97a5259d71246ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlareEmitter
+  _flareMuzzle: {fileID: 3949187521422796848}
+  _flarePrefab: {fileID: 2383628923983408509, guid: 6cb28f744c5d97f4297b17b1ff75259d, type: 3}
+  _count: 3
+  _yawSpreadAngle: 10
+  _pitchSpreadAngle: 10
+  _initSpeed: 10
+  _spawnJitter: 1
 --- !u!54 &7916438253898034262
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -426,6 +480,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4452501004702911982
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1134949952552075543}
+  m_Layer: 0
+  m_Name: LookToTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1134949952552075543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4452501004702911982}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8638521208331954471}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1177655125298109418
 PrefabInstance:
   m_ObjectHideFlags: 0
