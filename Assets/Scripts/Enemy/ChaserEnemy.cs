@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     プレイヤーに追従してくる敵クラス
+/// </summary>
 public class ChaserEnemy : EnemyBase
 {
     [Header("現在の移動速度")]
