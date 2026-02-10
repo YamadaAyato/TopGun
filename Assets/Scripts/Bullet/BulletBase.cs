@@ -40,6 +40,10 @@ public abstract class BulletBase : MonoBehaviour,IKillableBullet
     /// <summary> 銃弾消滅処理 </summary>
     protected void Release()
     {
+        ProjectileService.Instance.SpawnExplosion(
+            ExplosionType.Small,
+            this.transform
+        );
         _onRelease?.Invoke(this);
 
         _onRelease = null;
