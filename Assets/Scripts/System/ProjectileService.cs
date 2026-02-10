@@ -10,15 +10,23 @@ public class ProjectileService : MonoBehaviour
     [Header("参照")]
     [SerializeField] private EnemyStraightBullet _straightBulletPrefab;
     [SerializeField] private EnemyHomingBullet _homingBulletPrefab;
+    [SerializeField] private ExplosionFx _smallExplosionEffectPrefab;
+    [SerializeField] private ExplosionFx _bigExplosionEffectPrefab;
     [SerializeField, Tooltip("直線弾の親")] private Transform _straightParent;
     [SerializeField, Tooltip("ホーミング弾の親")] private Transform _homingParent;
+    [SerializeField, Tooltip("小さい爆発エフェクトの親")] private Transform _smallExplosionEffectParent;
+    [SerializeField, Tooltip("大きい爆発エフェクトの親")] private Transform _bigExplosionEffectParent;
 
     [Header("プールサイズ設定")]
     [SerializeField, Tooltip("直線弾のプールサイズ")] private int _straightBulletPoolSize;
     [SerializeField, Tooltip("ホーミング弾のプールサイズ")] private int _homingBulletPoolSize;
+    [SerializeField, Tooltip("爆発エフェクトのプールサイズ")] private int _smallExplosionPoolSize;
+    [SerializeField, Tooltip("爆発エフェクトのプールサイズ")] private int _bigeExplosionPoolSize;
 
     private ObjectPool<EnemyStraightBullet> _straightPool;
     private ObjectPool<EnemyHomingBullet> _homingPool;
+    private ObjectPool<ExplosionFx> _smallExplosionPool;
+    private ObjectPool<ExplosionFx> _bigExplosionPool;
 
     /// <summary>
     ///     直線弾をスポーンする
@@ -53,6 +61,33 @@ public class ProjectileService : MonoBehaviour
     }
 
     /// <summary>
+    ///     爆発エフェクトをスポーンする
+    /// </summary>
+    /// <param name="point"> 銃口 </param>
+    /// <param name="shooter"> 撃ち手 </param>
+    /// <param name="dir"> ターゲット </param>
+    /// <returns></returns>
+    public ExplosionFx SpawnExplosion(ExplosionType type,Transform point)
+    {
+        ExplosionFx explosion = type switch
+        {
+            ExplosionType.Small => _smallExplosionPool.Get(),
+            ExplosionType.Big => _bigExplosionPool.Get(),
+            _ => null
+        };
+
+        explosion.transform.SetPositionAndRotation(point.position, point.rotation);
+        explosion.Play(type switch
+        {
+            ExplosionType.Small => ReturnSmallExplosion,
+            ExplosionType.Big => ReturnBigExplosion,
+            _ => null
+        });
+
+        return explosion;
+    }
+
+    /// <summary>
     ///     直線弾をプールに返す
     /// </summary>
     /// <param name="bullet"></param>
@@ -64,6 +99,16 @@ public class ProjectileService : MonoBehaviour
     private void ReturnHomingBullet(BulletBase bullet)
     {
         _homingPool.Release((EnemyHomingBullet)bullet);
+    }
+
+    private void ReturnSmallExplosion(ExplosionFx explosion)
+    {
+        _smallExplosionPool.Release(explosion);
+    }
+
+    private void ReturnBigExplosion(ExplosionFx explosion)
+    {
+        _bigExplosionPool.Release(explosion);
     }
 
     private void Awake()
@@ -79,5 +124,9 @@ public class ProjectileService : MonoBehaviour
             _straightBulletPrefab, _straightParent, _straightBulletPoolSize);
         _homingPool = new ObjectPool<EnemyHomingBullet>(
             _homingBulletPrefab, _homingParent, _homingBulletPoolSize);
+        _smallExplosionPool = new ObjectPool<ExplosionFx>(
+            _smallExplosionEffectPrefab, _smallExplosionEffectParent, _smallExplosionPoolSize);
+        _bigExplosionPool = new ObjectPool<ExplosionFx>(
+            _bigExplosionEffectPrefab, _bigExplosionEffectParent, _bigeExplosionPoolSize);
     }
 }
