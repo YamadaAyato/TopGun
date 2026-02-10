@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2366824087317873346}
   - component: {fileID: 4234361118989634776}
   - component: {fileID: 2992852720911861200}
-  - component: {fileID: 9126892407844754376}
+  - component: {fileID: 965062310959305591}
   m_Layer: 0
   m_Name: EnemyBullet
   m_TagString: EnemyBullet
@@ -113,7 +113,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9126892407844754376
+--- !u!114 &965062310959305591
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,9 +122,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1373412298393954980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51ae4d41ede66234fa8597e39cf7e343, type: 3}
+  m_Script: {fileID: 11500000, guid: 239396013f5b6f74ab43be9762deadeb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet
-  _bulletSpeed: 30
-  _lifeTime: 5
-  _damage: 2
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStraightBullet
+  _damage: 1
+  _bulletSpeed: 50
+  _lifeTime: 30
