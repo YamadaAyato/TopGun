@@ -33,15 +33,21 @@ public class CameraShakeController : MonoBehaviour
     private readonly Dictionary<int, float> _baseFovMap = new();
     private CinemachineCamera _fovOwner;
 
+    /// <summary>
+    ///     被弾時のカメラシェイクを再生する
+    /// </summary>
+    /// <param name="intensity"> シェイク強度 </param>
     public void PlayHit(float intensity)
     {
         if (_impulseSource == null) return;
 
+        // シェイク強度を計算
         float gain = _hitGain * Mathf.Clamp01(intensity);
 
         var cam = GetMainCamera();
         if (cam == null) return;
 
+        // ランダムな方向にシェイクを発生させる
         float x = Random.Range(-1f, 1f);
         float y = Random.Range(-1f, 1f);
 
@@ -50,6 +56,10 @@ public class CameraShakeController : MonoBehaviour
         _impulseSource.GenerateImpulse(dir * gain);
     }
 
+    /// <summary>
+    ///     爆発時のカメラシェイクを再生する
+    /// </summary>
+    /// <param name="explosionPosition"> 爆発のワールド座標 </param>
     public void PlayExplosion(Vector3 explosionPosition)
     {
         if (_impulseSource == null) return;
@@ -57,21 +67,26 @@ public class CameraShakeController : MonoBehaviour
         var cam = GetMainCamera();
         if (cam == null) return;
 
+        // カメラから爆発位置までの距離
         float distance = Vector3.Distance(cam.transform.position, explosionPosition);
+
+        // 距離を0〜1に正規化し、FallOffカーブで減衰を計算
         float t = Mathf.Clamp01(distance / Mathf.Max(0.001f, _maxDistance));
         float fallOff = Mathf.Clamp01(_fallOffCurve.Evaluate(t));
         float gain = _explosionGain * fallOff;
 
-        if (gain <= 0.001f) return;
-
-        // 爆発は「上＋少し横でやる
+        // 爆発は上方向 + ランダムな左右方向へのシェイクを発生させる
         Vector3 dir = (cam.transform.up + cam.transform.right * Random.Range(-0.35f, 0.35f)).normalized;
 
         _impulseSource.GenerateImpulse(dir * gain);
     }
 
+    /// <summary>
+    ///     FOV変化のアニメーションを再生する
+    /// </summary>
     public void PlayEvadeFovChange()
     {
+        // 現在アクティブなCinemachineカメラを取得
         var cmCam = GetActiveCinemachineCamera();
         if (cmCam == null) return;
 
@@ -95,12 +110,12 @@ public class CameraShakeController : MonoBehaviour
         // 現在値→ブースト→基準へ戻す
         _fovTween = DOTween.Sequence()
             .Append(DOTween.To(
-                () => cmCam.Lens.FieldOfView,
-                fov => SetFov(cmCam, fov),
+                () => cmCam.Lens.FieldOfView, // 現在値取得
+                fov => SetFov(cmCam, fov), // 値設定
                 targetFov,
                 _evadeFovInTime
             ).SetEase(Ease.OutQuad))
-            .Append(DOTween.To(
+            .Append(DOTween.To( // ここから基準へ戻す
                 () => cmCam.Lens.FieldOfView,
                 fov => SetFov(cmCam, fov),
                 baseFov,
@@ -109,12 +124,20 @@ public class CameraShakeController : MonoBehaviour
             .SetUpdate(true);
     }
 
+    /// <summary>
+    ///     現在アクティブなCinemachineカメラを取得する
+    /// </summary>
+    /// <returns></returns>
     private CinemachineCamera GetActiveCinemachineCamera()
     {
         if (_brain == null) return null;
         return _brain.ActiveVirtualCamera as CinemachineCamera;
     }
 
+    /// <summary>
+    ///     メインカメラを取得する
+    /// </summary>
+    /// <returns></returns>
     private Camera GetMainCamera()
     {
         if (_mainCamera != null) return _mainCamera;
@@ -122,6 +145,11 @@ public class CameraShakeController : MonoBehaviour
         return _mainCamera;
     }
 
+    /// <summary>
+    ///     基準FOVを取得する
+    /// </summary>
+    /// <param name="cam"></param>
+    /// <returns></returns>
     private float GetBaseFov(CinemachineCamera cam)
     {
         int id = cam.GetInstanceID();
@@ -132,16 +160,17 @@ public class CameraShakeController : MonoBehaviour
         return baseFov;
     }
 
+    /// <summary>
+    ///     CinemachineカメラのFOVを設定する
+    /// </summary>
+    /// <param name="cam"></param>
+    /// <param name="fov"></param>
     private void SetFov(CinemachineCamera cam, float fov)
     {
         var lens = cam.Lens;
         lens.FieldOfView = fov;
         cam.Lens = lens;
     }
-
-    // --------------------
-    // Unity lifecycle
-    // --------------------
 
     private void Awake()
     {
