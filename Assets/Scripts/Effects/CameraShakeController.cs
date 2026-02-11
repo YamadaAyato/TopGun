@@ -1,4 +1,3 @@
-using System.Xml.Serialization;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -16,8 +15,19 @@ public class CameraShakeController : MonoBehaviour
 
     public void PlayHit(float intensity)
     {
+        if (_impulseSource == null) return;
+
         float gain = _hitGain * Mathf.Clamp01(intensity);
-        _impulseSource.GenerateImpulse(Vector3.up * gain);
+
+        var cam = _mainCamera != null ? _mainCamera : Camera.main;
+        if (cam == null) return;
+
+        float x = Random.Range(-1f, 1f);
+        float y = Random.Range(-1f, 1f);
+
+        Vector3 dir = (cam.transform.right * x + cam.transform.up * y).normalized;
+
+        _impulseSource.GenerateImpulse(dir * gain);
     }
 
     public void PlayExplosion(Vector3 explosionPosition)
@@ -26,7 +36,7 @@ public class CameraShakeController : MonoBehaviour
         float t = Mathf.Clamp01(distance / _maxDistance);
         float fallOff = _fallOffCurve.Evaluate(t);
         float gain = _explosionGain * fallOff;
-        _impulseSource.GenerateImpulse(Vector3.up * gain);
+        _impulseSource.GenerateImpulse(gain);
     }
 
     private void Awake()
