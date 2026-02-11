@@ -18,7 +18,7 @@ public class CameraShakeController : MonoBehaviour
     [SerializeField, Tooltip("爆発シェイクの最大の届く距離")] private float _maxDistance;
     [SerializeField] private AnimationCurve _fallOffCurve;
 
-    [Header("回避FOC変化")]
+    [Header("回避FOV変化")]
     [SerializeField, Tooltip("回避時にどれだけFOVを増やすか")] private float _evadeFovBoost;
     [SerializeField, Tooltip("広がる時間")] private float _evadeFovInTime;
     [SerializeField, Tooltip("戻す時間")] private float _evadeFovOutTime;
