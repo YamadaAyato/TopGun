@@ -13,15 +13,15 @@ public class CameraShakeController : MonoBehaviour
     [SerializeField] private Camera _mainCamera;
 
     [Header("Hit時や爆発時の揺れの設定")]
-    [SerializeField] private float _hitGain;
-    [SerializeField] private float _explosionGain;
-    [SerializeField] private float _maxDistance;
+    [SerializeField, Tooltip("被弾時のシェイク倍率")] private float _hitGain;
+    [SerializeField, Tooltip("爆発シェイク時の倍率")] private float _explosionGain;
+    [SerializeField, Tooltip("爆発シェイクの最大の届く距離")] private float _maxDistance;
     [SerializeField] private AnimationCurve _fallOffCurve;
 
     [Header("回避FOC変化")]
-    [SerializeField] private float _evadeFovBoost;
-    [SerializeField] private float _evadeFovInTime;
-    [SerializeField] private float _evadeFovOutTime;
+    [SerializeField, Tooltip("回避時にどれだけFOVを増やすか")] private float _evadeFovBoost;
+    [SerializeField, Tooltip("広がる時間")] private float _evadeFovInTime;
+    [SerializeField, Tooltip("戻す時間")] private float _evadeFovOutTime;
     [SerializeField] private Ease _evadeEase;
 
     private CinemachineBrain _brain;
