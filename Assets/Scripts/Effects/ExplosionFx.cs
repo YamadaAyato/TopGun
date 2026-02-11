@@ -36,6 +36,7 @@ public class ExplosionFx : MonoBehaviour
             _ps.Play();
         }
 
+        GameEvents.RaiseExplosion(this.transform.position);
         gameObject.SetActive(true);
     }
 
