@@ -27,7 +27,7 @@ public class EvationGauge : MonoBehaviour
     /// <returns></returns>
     public bool TryConsumeCharge()
     {
-        if (_currentCharges > 0)
+        if (_currentCharges >= 1)
         {
             _currentCharges--;
             Raise();
