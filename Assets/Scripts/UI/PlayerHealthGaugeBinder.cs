@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerHealthGaugeBinder : MonoBehaviour
 {
-    [SerializeField] private RadialGaugeView _gaugeView;
+    [SerializeField] private RadialDamageLagGauge _gaugeView;
 
     private PlayerHealth _playerHealth;
 
