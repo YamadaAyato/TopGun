@@ -24,7 +24,12 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
     {
         if (_detonated) return;
         _detonated = true;
+
         GameEvents.RaiseExplosion(transform.position);
+        ProjectileService.Instance.SpawnExplosion(
+           ExplosionType.Big,
+            this.transform
+         );
         Destroy(this.gameObject);
     }
 
@@ -75,6 +80,10 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
         }
 
         GameEvents.RaiseExplosion(transform.position);
+        ProjectileService.Instance.SpawnExplosion(
+            ExplosionType.Big,
+            this.transform
+        );
         Destroy(this.gameObject);
     }
 
