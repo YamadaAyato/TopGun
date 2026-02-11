@@ -50,6 +50,9 @@ public sealed class AudioManager : MonoBehaviour
     private readonly Queue<AudioSource> _se2DPool = new();
     private readonly Queue<AudioSource> _se3DPool = new();
 
+    // BGMのフェードTween管理（Pause/Resume時に競合を防ぐ）
+    private Tween _bgmFadeTween;
+
     /// <summary> 
     ///     2DでSE再生をする(画面固定音源)
     /// </summary>
@@ -119,13 +122,49 @@ public sealed class AudioManager : MonoBehaviour
     }
 
     /// <summary>
+    ///     BGMを一時停止する（再生位置保持）
+    /// </summary>
+    public void PauseBGM()
+    {
+        if (_bgmSource == null) return;
+
+        // フェード中なら止める（音量TweenとPauseがぶつからないように）
+        if (_bgmFadeTween != null && _bgmFadeTween.IsActive())
+            _bgmFadeTween.Kill();
+
+        // 再生中だけPause
+        if (_bgmSource.isPlaying)
+            _bgmSource.Pause();
+    }
+
+    /// <summary>
+    ///     一時停止したBGMを再開する（同じ再生位置から）
+    /// </summary>
+    public void ResumeBGM()
+    {
+        if (_bgmSource == null) return;
+
+        if (_bgmFadeTween != null && _bgmFadeTween.IsActive())
+            _bgmFadeTween.Kill();
+
+        _bgmSource.UnPause();
+    }
+
+
+    /// <summary>
     ///     BGMをフェードアウトする
     /// </summary>
     /// <param name="fadeTime"></param>
     public void FadeOutBGM(float fadeTime)
     {
         if (_bgmSource == null) return;
-        _bgmSource.DOFade(0f, fadeTime);
+
+        if (_bgmFadeTween != null && _bgmFadeTween.IsActive())
+            _bgmFadeTween.Kill();
+
+        _bgmFadeTween = _bgmSource
+            .DOFade(0f, fadeTime)
+            .SetUpdate(true);
     }
 
     /// <summary>
@@ -136,9 +175,17 @@ public sealed class AudioManager : MonoBehaviour
     public void FadeInBGM(float fadeTime, float targetVolume = 1f)
     {
         if (_bgmSource == null) return;
+
+        if (_bgmFadeTween != null && _bgmFadeTween.IsActive())
+            _bgmFadeTween.Kill();
+
         _bgmSource.volume = 0f;
-        _bgmSource.DOFade(Mathf.Clamp01(targetVolume), fadeTime);
+
+        _bgmFadeTween = _bgmSource
+            .DOFade(Mathf.Clamp01(targetVolume), fadeTime)
+            .SetUpdate(true);
     }
+
 
     /// <summary>
     ///     Inspectorで設定されたリストから辞書化する
