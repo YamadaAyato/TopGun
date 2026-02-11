@@ -34,6 +34,9 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        float intensity = Mathf.Clamp01((float)damage / 30f);
+        GameEvents.RaisePlayerHit(intensity);
+
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
         Debug.Log($"プレイヤーに{damage}ダメージ、現在HP{_currentHealth}");
 
