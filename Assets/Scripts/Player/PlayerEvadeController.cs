@@ -35,6 +35,7 @@ public class PlayerEvadeController : MonoBehaviour
     private PlayerInputHandler _inputHandler;
     private PlayerAirCraftController _airCraftController;
     private PlayerHealth _health;
+    private EvationGauge _evasionGauge;
     private Rigidbody _rb;
 
     private bool _prevKinematic;
@@ -94,6 +95,9 @@ public class PlayerEvadeController : MonoBehaviour
 
         if (_inputHandler.ConsumeFlipEvadeInput())
         {
+            if( _evasionGauge != null && !_evasionGauge.TryConsumeCharge())
+                return;
+
             StartEvade(EvadeType.Flipping);
             Debug.Log("Flip回避開始！");
         }
@@ -109,6 +113,10 @@ public class PlayerEvadeController : MonoBehaviour
 
         if (dir == 0) return;
         _sideDir = dir;
+
+        if( _evasionGauge != null && !_evasionGauge.TryConsumeCharge())
+            return;
+
         StartEvade(EvadeType.BallelRolling);
         Debug.Log("Ballel Roll回避開始！");
     }
@@ -123,6 +131,8 @@ public class PlayerEvadeController : MonoBehaviour
         _isEvading = true;
         _evadeTimer = 0f;
         _evadeCooldownTimer = _evadeCooldown;
+
+        _evasionGauge?.StartEvading();
 
         // 通常移動を停止、無敵ON
         _airCraftController.DisableControl = true;
@@ -151,6 +161,8 @@ public class PlayerEvadeController : MonoBehaviour
     {
         _isEvading = false;
 
+        _evasionGauge?.StopEvading();
+
         _airCraftController.DisableControl = false;
         _health.SetInvincible(false);
 
@@ -172,6 +184,8 @@ public class PlayerEvadeController : MonoBehaviour
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
             _counterToken.AddToken(1);
             _targetMemory?.SetBullet(bullet);
+
+            _evasionGauge?.RecorverCharge(1);
 
             // ホーミング弾を回避した場合の特別処理
             bool isHoming = bullet.GetComponent<EnemyHomingBullet>() != null;
@@ -214,6 +228,7 @@ public class PlayerEvadeController : MonoBehaviour
         _inputHandler = GetComponent<PlayerInputHandler>();
         _airCraftController = GetComponent<PlayerAirCraftController>();
         _health = GetComponent<PlayerHealth>();
+        _evasionGauge = GetComponent<EvationGauge>();
         _rb = GetComponent<Rigidbody>();
     }
 
