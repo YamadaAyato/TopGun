@@ -2,15 +2,27 @@ using UnityEngine;
 
 public class PlayerHealthGaugeBinder : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private RadialGaugeView _gaugeView;
+
+    private PlayerHealth _playerHealth;
+
+    private void UpdateGauge(int current, int max)
     {
-        
+        _gaugeView.SetNormalized((float)current / max);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        if (_playerHealth == null)
+        {
+            _playerHealth = PlayerLocator.Instance.PlayerHealth;
+            _playerHealth.OnHealthChanged += UpdateGauge;
+            UpdateGauge(_playerHealth.CurrentHealth, _playerHealth.MaxHealth);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _playerHealth.OnHealthChanged -= UpdateGauge;
     }
 }
