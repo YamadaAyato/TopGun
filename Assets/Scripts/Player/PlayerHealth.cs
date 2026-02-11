@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -5,11 +6,15 @@ using UnityEngine;
 /// </summary>
 public class PlayerHealth : MonoBehaviour,IDamageable
 {
+    public event Action<int,int> OnHealthChanged;
+
     /// <summary>
     /// ダメージを与えられるか返す
     /// 無敵がtrueの時Hitできるため逆を返す
     /// </summary>
     public bool CanBeHit => !_isInvincible;
+    public int CurrentHealth => _currentHealth;
+    public int MaxHealth => _maxHealth;
 
     [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
     [SerializeField, ReadOnly] private int _currentHealth;
@@ -25,6 +30,8 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     public void TakeDamage(int damage)
     {
         _currentHealth -= damage;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
         Debug.Log($"プレイヤーに{damage}ダメージ、現在HP{_currentHealth}");
 
         if (_currentHealth <= 0)
@@ -34,15 +41,17 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     }
 
     public void Die()
-    {        
-        // TODO:死亡時処理
+    {
         _currentHealth = 0;
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
         Debug.Log("プレイヤー死亡");
     }
 
     private void Awake()
     {
         _currentHealth = _maxHealth;
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+
         PlayerLocator.Instance.Register(this);
     }
 
