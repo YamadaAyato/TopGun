@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerHealth : MonoBehaviour,IDamageable
 {
+    /// <summary> HP変化時のイベント </summary>
     public event Action<int,int> OnHealthChanged;
 
     /// <summary>
@@ -13,7 +14,9 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     /// 無敵がtrueの時Hitできるため逆を返す
     /// </summary>
     public bool CanBeHit => !_isInvincible;
+    /// <summary> 現在のHP </summary>
     public int CurrentHealth => _currentHealth;
+    /// <summary> 最大HP </summary>
     public int MaxHealth => _maxHealth;
 
     [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
