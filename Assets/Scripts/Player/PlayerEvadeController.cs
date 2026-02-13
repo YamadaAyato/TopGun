@@ -134,6 +134,7 @@ public class PlayerEvadeController : MonoBehaviour
 
         _evasionGauge?.StartEvading();
         GameEvents.RaiseEvade();
+        GameEvents.RaiseScoreAdd(100, "Evade");
 
         // 通常移動を停止、無敵ON
         _airCraftController.DisableControl = true;
