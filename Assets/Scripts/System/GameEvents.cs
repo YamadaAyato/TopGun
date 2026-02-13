@@ -16,7 +16,7 @@ public static class GameEvents
     public static event Action OnEvade;
 
     /// <summary> スコアが追加されたときのイベント </summary>
-    public static event Action<int,string> OnScoreAdd;
+    public static event Action<int, ScorePopupReason> OnScoreAdd;
 
     /// <summary>
     ///     プレイヤーが被弾したときに発火する
@@ -49,8 +49,8 @@ public static class GameEvents
     /// </summary>
     /// <param name="score"> 追加するスコア </param>
     /// <param name="reason"> 追加理由 </param>
-    public static void RaiseScoreAdd(int score,string reason = "")
+    public static void RaiseScoreAdd(int score, ScorePopupReason reason = default)
     {
-        OnScoreAdd?.Invoke(score,reason);
+        OnScoreAdd?.Invoke(score, reason);
     }
 }
