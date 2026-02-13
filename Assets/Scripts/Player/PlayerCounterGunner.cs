@@ -9,6 +9,7 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField] private TimeDilationController _timeDlicon;
     [SerializeField] private CounterTargetMemory _targetMemory;
     [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
+    [SerializeField] private BulletCameraController _bulletCameraController;
     [SerializeField] private Transform _muzzle;
 
     [Header("反撃設定")]
@@ -72,6 +73,12 @@ public class PlayerCounterGunner : MonoBehaviour
             // 銃弾にターゲットをセット
             bullet.Spawn(ReturnToPool, transform);
             bullet.SetTarget(target, _muzzle.forward);
+
+            if(i == 0)
+            {
+                // 最初の弾だけカメラを追従させる
+                _bulletCameraController.TryShow(bullet.transform);
+            }
         }
 
         // クールダウンタイマーのリセット
