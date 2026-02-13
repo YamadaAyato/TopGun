@@ -14,7 +14,7 @@ public class ProjectileService : MonoBehaviour
     [SerializeField] private ExplosionFx _bigExplosionEffectPrefab;
     [SerializeField, Tooltip("直線弾の親")] private Transform _straightParent;
     [SerializeField, Tooltip("ホーミング弾の親")] private Transform _homingParent;
-    [SerializeField, Tooltip("小さい爆発エフェクトの親")] private Transform _smallExplosionEffectParent;
+    [SerializeField, Tooltip("小さい爆発エフェクトの親")] private Transform _smallExplosionEffectParent;  
     [SerializeField, Tooltip("大きい爆発エフェクトの親")] private Transform _bigExplosionEffectParent;
 
     [Header("プールサイズ設定")]
