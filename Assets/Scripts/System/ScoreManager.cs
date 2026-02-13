@@ -37,6 +37,8 @@ public class ScoreManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+        ResetScore();
     }
 
     private void OnEnable()
