@@ -1,18 +1,29 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+///     スコアの管理を行うシングルトンクラス
+/// </summary>
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance { get; private set; }
 
-    public int Score => _score;
+    /// <summary> 現在のスコア </summary>
+    public int CurrentScore => _score;
 
+    /// <summary> スコアが変化したときのイベント </summary>
     public event Action<int> OnScoreChanged;
 
+    /// <summary> スコアが追加されたときのイベント </summary>
     public event Action<string,int> OnScoreAdded;
 
     private int _score;
 
+    /// <summary>
+    ///     スコアを追加する
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <param name="reason"></param>
     public void AddScore(int amount,string reason)
     {
         _score += amount;
@@ -21,6 +32,9 @@ public class ScoreManager : MonoBehaviour
         OnScoreChanged?.Invoke(_score);
     }
 
+    /// <summary>
+    ///     スコアをリセットする
+    /// </summary>
     public void ResetScore()
     {
         _score = 0;
