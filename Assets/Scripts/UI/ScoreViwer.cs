@@ -1,16 +1,22 @@
+using TMPro;
 using UnityEngine;
 
 public class ScoreViwer : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TMP_Text _scoreText;
+
+    private void UpdateText(int score)
     {
-        
+        _scoreText.text = $"Score: {score}";
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        ScoreManager.Instance.OnScoreChanged += UpdateText;
+    }
+
+    private void OnDisable()
+    {
+        ScoreManager.Instance.OnScoreChanged -= UpdateText;
     }
 }
