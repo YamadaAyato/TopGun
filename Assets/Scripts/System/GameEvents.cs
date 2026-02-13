@@ -15,6 +15,8 @@ public static class GameEvents
     /// <summary> プレイヤーが回避行動をしたときのイベント </summary>
     public static event Action OnEvade;
 
+    public static event Action<int,string> OnScoreAdd;
+
     /// <summary>
     ///     プレイヤーが被弾したときに発火する
     /// </summary>
@@ -39,5 +41,10 @@ public static class GameEvents
     public static void RaiseEvade()
     {
         OnEvade?.Invoke();
+    }
+
+    public static void RaiseScoreAdd(int score,string reason = "")
+    {
+        OnScoreAdd?.Invoke(score,reason);
     }
 }
