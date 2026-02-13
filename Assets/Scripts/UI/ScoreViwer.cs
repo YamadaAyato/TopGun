@@ -1,6 +1,9 @@
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+///     スコアの表示を行うクラス
+/// </summary>
 public class ScoreViwer : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
