@@ -15,7 +15,7 @@ public class ScoreManager : MonoBehaviour
     public event Action<int> OnScoreChanged;
 
     /// <summary> スコアが追加されたときのイベント </summary>
-    public event Action<string,int> OnScoreAdded;
+    public event Action<ScorePopupReason, int> OnScoreAdded;
 
     private int _score;
 
@@ -24,7 +24,7 @@ public class ScoreManager : MonoBehaviour
     /// </summary>
     /// <param name="amount"></param>
     /// <param name="reason"></param>
-    public void AddScore(int amount,string reason)
+    public void AddScore(int amount, ScorePopupReason reason)
     {
         _score += amount;
 
