@@ -2,12 +2,17 @@ using DG.Tweening;
 using Unity.Cinemachine;
 using UnityEngine;
 
+/// <summary>
+///     弾に追従するカメラを制御するクラス
+/// </summary>
 public class BulletCameraController : MonoBehaviour
 {
+    [Header("参照")]
     [SerializeField] private Camera _bulletCamera;
     [SerializeField] private CinemachineCamera _cinemachineCamera;
     [SerializeField] private GameObject _root;
 
+    [Header("ホールド時間")]
     [SerializeField] private float _holdSeconds;
 
     private bool _isShowing;
@@ -15,6 +20,11 @@ public class BulletCameraController : MonoBehaviour
     private Transform _currentTarget;
     private Tween _hideTween;
 
+    /// <summary>
+    ///     カメラを
+    /// </summary>
+    /// <param name="missile"></param>
+    /// <returns></returns>
     public bool TryShow(Transform missile)
     {
         if (_isShowing) return false;
