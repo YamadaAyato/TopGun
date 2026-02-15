@@ -78,6 +78,7 @@ public class PlayerCounterGunner : MonoBehaviour
             {
                 // 最初の弾だけカメラを追従させる
                 _bulletCameraController.TryShow(bullet.transform);
+                AudioManager.Instance.PlaySE3D("PlayerMissile",this.transform);
             }
         }
 
