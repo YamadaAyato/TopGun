@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -6,6 +7,7 @@ using UnityEngine;
 public class PlayerHealthGaugeBinder : MonoBehaviour
 {
     [SerializeField] private RadialDamageLagGauge _gaugeView;
+    [SerializeField] private TMP_Text _hpText;
 
     private PlayerHealth _playerHealth;
 
@@ -17,6 +19,7 @@ public class PlayerHealthGaugeBinder : MonoBehaviour
     private void UpdateGauge(int current, int max)
     {
         _gaugeView.SetNormalized((float)current / max);
+        _hpText.text = $"{current} / {max}";
     }
 
     private void Start()
