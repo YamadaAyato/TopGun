@@ -25,6 +25,8 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
         if (_detonated) return;
         _detonated = true;
 
+        AudioManager.Instance.PlaySE3D("EnemyHit", this.transform);
+
         GameEvents.RaiseExplosion(transform.position);
         ProjectileService.Instance.SpawnExplosion(
            ExplosionType.Big,
@@ -79,6 +81,7 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
             }
         }
 
+        AudioManager.Instance.PlaySE3D("EnemyHit", this.transform);
         GameEvents.RaiseExplosion(transform.position);
         ProjectileService.Instance.SpawnExplosion(
             ExplosionType.Big,
