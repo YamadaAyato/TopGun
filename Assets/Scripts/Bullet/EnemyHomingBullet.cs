@@ -12,6 +12,7 @@ public class EnemyHomingBullet : HomingBulletBase
         if (other.TryGetComponent<IDamageable>(out IDamageable hit))
         {
             hit.TakeDamage(_damage);
+            AudioManager.Instance.PlaySE3D("PlayerDamage", this.transform);
             Release();
             return;
         }
