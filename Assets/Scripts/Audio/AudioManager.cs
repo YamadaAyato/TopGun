@@ -105,12 +105,22 @@ public sealed class AudioManager : MonoBehaviour
     /// </summary>
     public void PlayBGM(string name)
     {
-        if (!TryGetBGM(name, out var bgm)) return;
+        Debug.Log($"AudioManager: Attempting to play BGM '{name}'");
+        if (!TryGetBGM(name, out var bgm))
+        {
+            Debug.LogWarning($"AudioManager: BGM '{name}' not found in the list.");
+            return;
+
+        }
 
         _bgmSource.loop = true;
         _bgmSource.volume = bgm.Volume;
         _bgmSource.clip = bgm.Clip;
         _bgmSource.Play();
+        Debug.Log($"BGM isPlaying={_bgmSource.isPlaying}, time={_bgmSource.time}, volume={_bgmSource.volume}, clip={_bgmSource.clip?.name}");
+        Debug.Log($"AudioListener.pause={AudioListener.pause}, AudioListener.volume={AudioListener.volume}");
+        Debug.Log($"bgmSource: mute={_bgmSource.mute}, pitch={_bgmSource.pitch}, timeSamples={_bgmSource.timeSamples}");
+
     }
     /// <summary> 
     ///     BGMを強制停止する
@@ -326,5 +336,10 @@ public sealed class AudioManager : MonoBehaviour
         }
 
         WarmupPools();
+        if (TryGetBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty, out var bgm))
+        {
+            Debug.Log($"AudioManager: Default BGM '{bgm.Name}' loaded with clip '{bgm.Clip.name}' and volume {bgm.Volume}");
+        }
+        PlayBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty);
     }
 }
