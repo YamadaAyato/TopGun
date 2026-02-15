@@ -1,16 +1,23 @@
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class BlinkingText : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TMP_Text _text;
+    [SerializeField] private float _blinkInterval;
+
+    private Tween _tween;
+
+    private void StartBlink()
     {
-        
+        _tween = _text.DOFade(0.15f, _blinkInterval)
+            .SetEase(Ease.InOutSine)
+            .SetLoops(-1, LoopType.Yoyo);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        StartBlink();
     }
 }
