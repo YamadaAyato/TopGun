@@ -1,16 +1,31 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
 
 public class TitleInputHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public event Action OnClicked;
+    private RideActions _rideActions;
+
+    private void HandleClick(InputAction.CallbackContext context)
     {
-        
+        OnClicked?.Invoke();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        _rideActions = new RideActions();
+    }
+
+    private void OnEnable()
+    {
+        _rideActions.Enable();
+        _rideActions.Title.Click.performed += HandleClick;
+    }
+
+    private void OnDisable()
+    {
+        _rideActions.Title.Click.performed -= HandleClick;
+        _rideActions.Disable();
     }
 }
