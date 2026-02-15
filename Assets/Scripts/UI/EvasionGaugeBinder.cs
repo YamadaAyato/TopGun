@@ -42,6 +42,6 @@ public class EvasionGaugeBinder : MonoBehaviour
 
         // 使える回数をセット
         int usableCount = Mathf.FloorToInt(currentCharges);
-        _usableCountText.text = usableCount.ToString();
+        _usableCountText.text = $"{usableCount} / {maxCharges}";
     }
 }
