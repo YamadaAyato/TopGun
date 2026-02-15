@@ -48,12 +48,12 @@ public class CameraShakeController : MonoBehaviour
         if (cam == null) return;
 
         // ランダムな方向にシェイクを発生させる
-        float x = Random.Range(-1f, 1f);
-        float y = Random.Range(-1f, 1f);
+        //float x = Random.Range(-1f, 1f);
+        //float y = Random.Range(-1f, 1f);
 
-        Vector3 dir = (cam.transform.right * x + cam.transform.up * y).normalized;
+        //Vector3 dir = (cam.transform.right * x + cam.transform.up * y).normalized;
 
-        _impulseSource.GenerateImpulse(dir * gain);
+        _impulseSource.GenerateImpulse(Vector3.up * gain);
     }
 
     /// <summary>
