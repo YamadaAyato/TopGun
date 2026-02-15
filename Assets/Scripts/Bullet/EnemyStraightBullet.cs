@@ -18,21 +18,21 @@ public class EnemyStraightBullet : BulletBase
         transform.rotation = Quaternion.LookRotation(_dir, Vector3.up);
     }
 
-
     protected override void HandleHit(Collider other)
     {
-        if(other.TryGetComponent<PlayerHealth>(out PlayerHealth hit))
+        if (other.TryGetComponent<PlayerHealth>(out PlayerHealth hit))
         {
             if (hit.CanBeHit)
             {
                 hit.TakeDamage(_damage);
+                AudioManager.Instance.PlaySE3D("PlayerDamage", this.transform);
             }
 
             Release();
             return;
         }
 
-        if(other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle"))
         {
             Release();
         }
