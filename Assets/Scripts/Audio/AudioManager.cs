@@ -56,7 +56,7 @@ public sealed class AudioManager : MonoBehaviour
     /// <summary> 
     ///     2DでSE再生をする(画面固定音源)
     /// </summary>
-    public void PlaySE2D(string name, float volumeMul = 1f)
+    public void PlaySE2D(string name, float volumeMul = 0.1f)
     {
         if (!TryGetSE(name, out var se)) return;
 
@@ -75,7 +75,7 @@ public sealed class AudioManager : MonoBehaviour
     /// <summary>
     ///     3DでSE再生をする(ワールド位置指定)
     /// </summary>
-    public void PlaySE3D(string name, Vector3 worldPos, float volumeMul = 1f)
+    public void PlaySE3D(string name, Vector3 worldPos, float volumeMul = 0.1f)
     {
         if (!TryGetSE(name, out var se)) return;
 
@@ -86,6 +86,7 @@ public sealed class AudioManager : MonoBehaviour
         // SoundDataの基準音量 × 呼び出し側の倍率
         src.volume = Mathf.Clamp01(se.Volume * volumeMul);
         src.PlayOneShot(se.Clip);
+        Debug.Log($"Playing SE '{name}' at position {worldPos} with volume {src.volume}");
 
         // 再生時間後にプールへ戻す
         ReturnLater(src, _se3DPool, se.Clip.length);
