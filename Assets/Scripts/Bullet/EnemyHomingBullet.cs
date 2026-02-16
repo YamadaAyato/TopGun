@@ -11,6 +11,7 @@ public class EnemyHomingBullet : HomingBulletBase
 
         if (other.TryGetComponent<IDamageable>(out IDamageable hit))
         {
+            ProjectileService.Instance.SpawnExplosion(ExplosionType.Small, this.transform);
             hit.TakeDamage(_damage);
             AudioManager.Instance.PlaySE3D("PlayerDamage", this.transform);
             Release();
