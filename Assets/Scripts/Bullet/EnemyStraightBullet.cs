@@ -24,6 +24,7 @@ public class EnemyStraightBullet : BulletBase
         {
             if (hit.CanBeHit)
             {
+                ProjectileService.Instance.SpawnExplosion(ExplosionType.Small, this.transform);
                 hit.TakeDamage(_damage);
                 AudioManager.Instance.PlaySE3D("PlayerDamage", this.transform);
             }
