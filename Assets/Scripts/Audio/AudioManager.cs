@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 ///     ゲーム全体の音声管理を行うシングルトンクラス
 /// </summary>
-public sealed class AudioManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
