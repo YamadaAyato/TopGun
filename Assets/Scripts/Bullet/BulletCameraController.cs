@@ -40,6 +40,9 @@ public class BulletCameraController : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    ///     カメラを消す
+    /// </summary>
     public void Hide()
     {
         _hideTween?.Kill();
@@ -53,6 +56,9 @@ public class BulletCameraController : MonoBehaviour
         _bulletCamera.enabled = false;
     }
 
+    /// <summary>
+    ///     カメラをホールドして消す
+    /// </summary>
     private void HideAfterHold()
     {
         if (_isHolding) return;
@@ -61,6 +67,7 @@ public class BulletCameraController : MonoBehaviour
         _hideTween?.Kill();
         _hideTween = DOVirtual.DelayedCall(_holdSeconds, () =>
         {
+            // ホールド時間経過後にターゲットが消えてたら消す
             _bulletCamera.enabled = false;
 
             _cinemachineCamera.Follow = null;
