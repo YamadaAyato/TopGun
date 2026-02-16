@@ -2,6 +2,9 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+///     タイトルシーンからゲームシーンへの遷移を管理するクラス
+/// </summary>
 public class SceneChangeFromTitle : MonoBehaviour
 {
     [SerializeField] private Image _fadeImage;
@@ -9,6 +12,9 @@ public class SceneChangeFromTitle : MonoBehaviour
     [SerializeField] private TitleInputHandler _titleInputHandler;
     [SerializeField] private string _sceneNameToLoad = "";
 
+    /// <summary>
+    ///     フェードアウトしてシーンを遷移するメソッド
+    /// </summary>
     private void SceneChenge()
     {
         if (_sceneNameToLoad == "")
