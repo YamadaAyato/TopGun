@@ -186,6 +186,7 @@ public class PlayerEvadeController : MonoBehaviour
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
             _counterToken.AddToken(1);
             _targetMemory?.SetBullet(bullet);
+            AudioManager.Instance.PlaySE3D("JustEvade", transform.position);
 
             _evasionGauge?.RecorverCharge(1);
 
