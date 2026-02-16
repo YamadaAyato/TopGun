@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+///     カウンターのターターゲットを記憶するクラス
+/// </summary>
 public class CounterTargetMemory : MonoBehaviour
 {
     public Transform CurrentTarget => _currentTarget;
