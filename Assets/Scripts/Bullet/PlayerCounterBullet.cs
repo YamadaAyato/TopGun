@@ -11,6 +11,7 @@ public class PlayerCounterBullet : HomingBulletBase
 
         if (other.TryGetComponent<EnemyBase>(out EnemyBase hit))
         {
+            ProjectileService.Instance.SpawnExplosion(ExplosionType.Small, this.transform);
             hit.TakeDamage(_damage);
             Release();
             return;
