@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHomingBullet
   _damage: 2
-  _bulletSpeed: 50
+  _bulletSpeed: 80
   _lifeTime: 30
   _turnSpeed: 180
   _homingDuration: 30
