@@ -134,7 +134,6 @@ public class PlayerEvadeController : MonoBehaviour
 
         _evasionGauge?.StartEvading();
         GameEvents.RaiseEvade();
-        GameEvents.RaiseScoreAdd(100, ScorePopupReason.JustEvade);
 
         // 通常移動を停止、無敵ON
         _airCraftController.DisableControl = true;
@@ -186,9 +185,12 @@ public class PlayerEvadeController : MonoBehaviour
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
             _counterToken.AddToken(1);
             _targetMemory?.SetBullet(bullet);
+
+            ScoreManager.Instance.AddScore(300, ScorePopupReason.JustEvade);
             AudioManager.Instance.PlaySE3D("JustEvade", transform.position);
 
             _evasionGauge?.RecorverCharge(1);
+            GameEvents.OnJustEvade?.Invoke();
 
             // ホーミング弾を回避した場合の特別処理
             bool isHoming = bullet.GetComponent<EnemyHomingBullet>() != null;
