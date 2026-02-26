@@ -18,6 +18,9 @@ public static class GameEvents
     /// <summary> スコアが追加されたときのイベント </summary>
     public static event Action<int, ScorePopupReason> OnScoreAdd;
 
+    /// <summary> プレイヤーがジャスト回避したときのイベント </summary>
+    public static Action OnJustEvade;
+
     /// <summary>
     ///     プレイヤーが被弾したときに発火する
     /// </summary>
