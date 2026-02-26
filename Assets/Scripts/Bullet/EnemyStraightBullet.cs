@@ -1,4 +1,3 @@
-using Unity.AppUI.Core;
 using UnityEngine;
 
 /// <summary>
