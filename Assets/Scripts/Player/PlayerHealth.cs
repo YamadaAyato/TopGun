@@ -4,10 +4,10 @@ using UnityEngine;
 /// <summary>
 ///     プレイヤーのHP管理をするクラス
 /// </summary>
-public class PlayerHealth : MonoBehaviour,IDamageable
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     /// <summary> HP変化時のイベント </summary>
-    public event Action<int,int> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
 
     /// <summary>
     /// ダメージを与えられるか返す
@@ -19,7 +19,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     /// <summary> 最大HP </summary>
     public int MaxHealth => _maxHealth;
 
-    [SerializeField, ReadOnly,Tooltip("現在無敵がどうか")] private bool _isInvincible;
+    [SerializeField, ReadOnly, Tooltip("現在無敵がどうか")] private bool _isInvincible;
     [SerializeField, ReadOnly] private int _currentHealth;
     [SerializeField] private int _maxHealth;
 
@@ -32,6 +32,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
 
     public void TakeDamage(int damage)
     {
+        if (_isInvincible) return;
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         float intensity = Mathf.Clamp01((float)damage / 30f);
@@ -58,7 +59,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
 
-        PlayerLocator.Instance.Register(this);
+        PlayerLocator.Ensure().Register(this);
     }
 
     private void OnDisable()
