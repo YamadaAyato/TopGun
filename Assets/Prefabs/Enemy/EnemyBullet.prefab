@@ -107,8 +107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStraightBullet
   _damage: 1
-  _bulletSpeed: 50
-  _lifeTime: 30
+  _bulletSpeed: 100
+  _lifeTime: 10
 --- !u!65 &8572113115306540497
 BoxCollider:
   m_ObjectHideFlags: 0
