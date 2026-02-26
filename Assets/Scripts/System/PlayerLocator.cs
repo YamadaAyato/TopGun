@@ -14,6 +14,30 @@ public class PlayerLocator : MonoBehaviour
     public Transform PlayerTransform { get; private set; }
 
     /// <summary>
+    ///     Locatorが存在することを保証する
+    ///     シーンに無い場合は自動でGameObjectを生成して常駐させる
+    /// </summary>
+    public static PlayerLocator Ensure()
+    {
+        if (Instance != null) return Instance;
+
+        // 既にシーン上にあるか探す（手置きしてた場合にも対応）
+        var existing = FindFirstObjectByType<PlayerLocator>();
+        if (existing != null)
+        {
+            Instance = existing;
+            DontDestroyOnLoad(existing.gameObject);
+            return Instance;
+        }
+
+        // 無ければ生成
+        var go = new GameObject(nameof(PlayerLocator));
+        Instance = go.AddComponent<PlayerLocator>();
+        DontDestroyOnLoad(go);
+        return Instance;
+    }
+
+    /// <summary>
     ///     プレイヤーを登録する
     /// </summary>
     /// <param name="playerHealth"></param>
