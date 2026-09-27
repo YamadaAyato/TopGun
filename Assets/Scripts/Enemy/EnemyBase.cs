@@ -33,8 +33,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public virtual void Die()
     {
         _currentHp = 0;
-        Release();
+        //Release();
         ProjectileService.Instance.SpawnExplosion(ExplosionType.Big, this.transform);
+        ScoreManager.Instance.AddScore(1000,ScorePopupReason.EnemyDown);
+        Destroy(gameObject);
     }
 
     /// <summary>

@@ -103,5 +103,13 @@ Assets/Plugins/Demigiant/
 Assets/Plugins/Demigiant.meta
 Assets/Resources/DOTweenSettings.asset
 Assets/Resources/DOTweenSettings.asset.meta
-TopGun.slnx
 
+# Visual Studio
+*.sln
+*.slnx
+*.csproj
+*.user
+*.unityproj
+*.suo
+*.tmp
+*.userprefs
