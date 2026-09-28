@@ -16,6 +16,30 @@ public abstract class TurretEnemyBase : EnemyBase
     protected float _timer;
     protected EnemyShooter _shooter;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        _shooter = GetComponent<EnemyShooter>();
+    }
+
+    protected virtual void Update()
+    {
+        _timer += Time.deltaTime;
+
+        // 一定時間ごとにプレイヤーを探して撃つ
+        if (_timer > _fireInterval)
+        {
+            if (TryGetPlayer(out Transform player) &&
+                IsPlayerInRange(player) &&
+                IsPlayerInFov(player) &&
+                HasLineOfSight(player))
+            {
+                FireAtPlayer(player);
+                _timer = 0f;
+            }
+        }
+    }
+
     protected override void OnSpawned()
     {
         base.OnSpawned();
@@ -82,28 +106,5 @@ public abstract class TurretEnemyBase : EnemyBase
             }
         }
         return true;
-    }
-
-    protected virtual void Awake()
-    {
-        _shooter = GetComponent<EnemyShooter>();
-    }
-
-    protected virtual void Update()
-    {
-        _timer += Time.deltaTime;
-
-        // 一定時間ごとにプレイヤーを探して撃つ
-        if (_timer > _fireInterval)
-        {
-            if (TryGetPlayer(out Transform player) &&
-                IsPlayerInRange(player) &&
-                IsPlayerInFov(player) &&
-                HasLineOfSight(player))
-            {
-                FireAtPlayer(player);
-                _timer = 0f;
-            }
-        }
     }
 }

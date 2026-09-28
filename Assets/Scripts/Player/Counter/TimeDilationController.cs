@@ -5,6 +5,7 @@ using UnityEngine;
 /// </summary>
 public class TimeDilationController : MonoBehaviour
 {
+    /// <summary> スロー演出を再生しているか </summary>
     public bool IsPlaying => _playing;
 
     [Tooltip("元の FixedUpdate の間隔を保存する変数")] private float _baseFixedDeltaTime;
@@ -30,20 +31,23 @@ public class TimeDilationController : MonoBehaviour
     }
 
     /// <summary>
-    ///     スロー演出の適用をする
+    ///     スロー演出を停止し、時間倍率と物理更新間隔を元に戻す
     /// </summary>
-    /// <param name="scale"> 適用させるタイムスケールの値 </param>
-    private void ApplyScale(float scale)
+    public void Stop()
     {
-        Time.timeScale = scale;
-        Time.fixedDeltaTime = _baseFixedDeltaTime * scale;
-
-        Debug.Log($"TimeScale : {Time.timeScale}, FixedDeltaTime : {Time.fixedDeltaTime}");
+        if (!_playing) return;
+        _playing = false;
+        ApplyScale(1f);
     }
 
     private void Awake()
     {
         _baseFixedDeltaTime = Time.fixedDeltaTime;
+    }
+
+    private void OnDisable()
+    {
+        Stop();
     }
 
     private void Update()
@@ -55,8 +59,19 @@ public class TimeDilationController : MonoBehaviour
         // 適用させる時間を超えたら元に戻す
         if (_timerUnscaled >= _durationUnscaled)
         {
-            _playing = false;
-            ApplyScale(1f);
+            Stop();
         }
+    }
+
+    /// <summary>
+    ///     時間倍率と物理更新間隔にスロー演出を適用する
+    /// </summary>
+    /// <param name="scale"> 適用させるタイムスケールの値 </param>
+    private void ApplyScale(float scale)
+    {
+        Time.timeScale = scale;
+        Time.fixedDeltaTime = _baseFixedDeltaTime * scale;
+
+        Debug.Log($"TimeScale : {Time.timeScale}, FixedDeltaTime : {Time.fixedDeltaTime}");
     }
 }
