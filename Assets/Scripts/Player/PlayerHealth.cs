@@ -17,6 +17,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public bool CanBeHit => !_isInvincible && !_isDead;
     /// <summary> 死亡しているか </summary>
     public bool IsDead => _isDead;
+    /// <summary> 現在のフレームでダメージを受けたか </summary>
+    public bool WasDamagedThisFrame => _lastDamageFrame == Time.frameCount;
     /// <summary> 現在のHP </summary>
     public int CurrentHealth => _currentHealth;
     /// <summary> 最大HP </summary>
@@ -26,6 +28,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField, ReadOnly] private int _currentHealth;
     [SerializeField] private int _maxHealth;
     private bool _isDead;
+    private int _lastDamageFrame = -1;
 
     /// <summary>
     ///     無敵判定を切り替える
@@ -43,6 +46,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         if (!CanBeHit || damage <= 0) return;
+        _lastDamageFrame = Time.frameCount;
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         float intensity = Mathf.Clamp01((float)damage / 30f);

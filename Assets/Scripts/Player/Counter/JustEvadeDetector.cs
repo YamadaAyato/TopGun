@@ -10,11 +10,19 @@ public class JustEvadeDetector : MonoBehaviour
 
     private readonly HashSet<BulletBase> _bullets = new();
 
-
+    /// <summary>
+    ///     有効な弾の中からジャスト回避の距離内にある最も近い弾を取得する
+    /// </summary>
+    /// <param name="playerPos"> プレイヤーの位置 </param>
+    /// <param name="closest"> 検出した最も近い弾 </param>
+    /// <returns> 対象の弾が見つかった場合はtrue </returns>
     public bool TryGetClosestBullet(Vector3 playerPos, out BulletBase closest)
     {
         closest = null;
         float bestSqr = float.PositiveInfinity;
+
+        // Pool返却時にTriggerの退出通知が届かなくても、命中済みの弾を除外する。
+        _bullets.RemoveWhere(b => b == null || !b.isActiveAndEnabled);
 
         foreach (var b in _bullets)
         {
@@ -29,6 +37,11 @@ public class JustEvadeDetector : MonoBehaviour
     }
 
     // ======================追加と削除======================
+
+    private void OnDisable()
+    {
+        _bullets.Clear();
+    }
 
     private void OnTriggerEnter(Collider other)
     {

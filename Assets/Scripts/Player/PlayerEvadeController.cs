@@ -135,9 +135,8 @@ public class PlayerEvadeController : MonoBehaviour
         _evasionGauge?.StartEvading();
         GameEvents.RaiseEvade();
 
-        // 通常移動を停止、無敵ON
+        // 通常移動を停止する。通常回避では無敵にしない。
         _airCraftController.DisableControl = true;
-        _health.SetInvincible(true);
 
         // スプラインをワールド化するための基準を保存
         _startPos = _rb.position;
@@ -177,10 +176,17 @@ public class PlayerEvadeController : MonoBehaviour
         Debug.Log("Flip回避終了！");
     }
 
+    /// <summary>
+    ///     被弾していないフレームでジャスト回避を判定し、成功時の報酬を与える
+    /// </summary>
     private void TryJustEvade()
     {
+        if (_health.IsDead || _health.WasDamagedThisFrame) return;
+
         if (_justEvadeDetector.TryGetClosestBullet(transform.position, out var bullet))
         {
+            // ジャスト回避が成功した場合だけ、回避終了まで無敵にする。
+            _health.SetInvincible(true);
             Debug.Log("ジャスト回避成功！");
             _timeDilationController.Play(_justEvadeTimeDilationScale, _justEvadeTimeDilationDuration);
             _counterToken.AddToken(1);
