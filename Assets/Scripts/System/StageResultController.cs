@@ -1,12 +1,13 @@
 using UnityEngine;
 
 /// <summary>
-///     死亡・時間切れの通知を受け、リザルトシーンへの遷移を管理するクラス
+///     ゴール・死亡・時間切れの通知を受け、リザルトシーンへの遷移を管理するクラス
 /// </summary>
 public class StageResultController : MonoBehaviour
 {
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private StageCountDownTimer _timer;
+    [SerializeField] private StageGoal _goal;
     [SerializeField] private TimeDilationController _timeDilation;
     [SerializeField] private string _resultSceneName = "Result";
 
@@ -17,6 +18,7 @@ public class StageResultController : MonoBehaviour
     {
         _playerHealth.OnDied += HandleDeath;
         _timer.OnTimeUp += HandleTimeUp;
+        if (_goal != null) _goal.OnReached += HandleGoalReached;
     }
 
     private void Start()
@@ -31,6 +33,7 @@ public class StageResultController : MonoBehaviour
     {
         if (_playerHealth != null) _playerHealth.OnDied -= HandleDeath;
         if (_timer != null) _timer.OnTimeUp -= HandleTimeUp;
+        if (_goal != null) _goal.OnReached -= HandleGoalReached;
     }
 
     private void LateUpdate()
@@ -38,7 +41,7 @@ public class StageResultController : MonoBehaviour
         if (_isTransitioning || _pendingOutcome == GameRunOutcome.None) return;
         _isTransitioning = true;
 
-        // 同じフレームの時間切れと死亡は、死亡を優先する。
+        // ゴールと死亡・時間切れが重なった場合は、失敗を優先する。
         var outcome = _playerHealth.IsDead ? GameRunOutcome.Failure : _pendingOutcome;
         _timer.StopCountDown();
         if (_timeDilation != null) _timeDilation.Stop();
@@ -55,10 +58,21 @@ public class StageResultController : MonoBehaviour
     }
 
     /// <summary>
-    ///     時間切れ通知を受け、結果が未設定の場合に成功の結果を保持する
+    ///     時間切れ通知を受け、失敗の結果を保持する
     /// </summary>
     private void HandleTimeUp()
     {
+        _pendingOutcome = GameRunOutcome.Failure;
+    }
+
+    /// <summary>
+    ///     対象プレイヤーのゴール通知を受け、未確定の場合に成功の結果を保持する
+    /// </summary>
+    /// <param name="player"> ゴールを通過したプレイヤー </param>
+    private void HandleGoalReached(PlayerHealth player)
+    {
+        if (player != _playerHealth || player.IsDead || _isTransitioning) return;
+
         if (_pendingOutcome == GameRunOutcome.None)
             _pendingOutcome = GameRunOutcome.Success;
     }
