@@ -42,6 +42,7 @@ public class PlayerEvadeController : MonoBehaviour
     private bool _isEvading;
     private float _evadeTimer;
     private float _evadeCooldownTimer;
+    private float _evadeForwardSpeed;
     private int _sideDir;
 
     private Vector3 _startPos;
@@ -49,6 +50,49 @@ public class PlayerEvadeController : MonoBehaviour
     private Quaternion _startRbRot;
     private Quaternion _visualBaseLocalRot;
     private EvadeType _currntEvadeType;
+
+    private void Awake()
+    {
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        _airCraftController = GetComponent<PlayerAirCraftController>();
+        _health = GetComponent<PlayerHealth>();
+        _evasionGauge = GetComponent<EvationGauge>();
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        // タイマー処理
+        if (_evadeCooldownTimer > 0f)
+            _evadeCooldownTimer -= Time.deltaTime;
+
+        if (_isEvading)
+        {
+            // 横回避の時間は、位置更新と同じ物理更新で進める。
+            if (_currntEvadeType != EvadeType.BallelRolling)
+                _evadeTimer += Time.deltaTime;
+            if (_evadeTimer >= _evadeDuration)
+                EndEvade();
+            return;
+        }
+
+        if (_evadeCooldownTimer > 0f) return;
+
+        TryStartFlipEvade();
+        TryStartBallelRollEvade();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_isEvading) return;
+
+        if (_currntEvadeType == EvadeType.BallelRolling)
+            _evadeTimer = Mathf.Min(_evadeTimer + Time.fixedDeltaTime, _evadeDuration);
+
+        UpdateEvadePosition();
+        _rb.MoveRotation(_startRbRot);
+        UpdateVisualSpin();
+    }
 
     /// <summary>
     ///     回避の進度を求めて移動させる
@@ -142,6 +186,7 @@ public class PlayerEvadeController : MonoBehaviour
         _startPos = _rb.position;
         _startRot = transform.rotation;
         _startRbRot = _rb.rotation;
+        _evadeForwardSpeed = _airCraftController.CurrentSpeed;
         _visualBaseLocalRot = _visual != null ? _visual.localRotation : Quaternion.identity;
 
         // 回避中は物理の影響受けないように
@@ -168,6 +213,10 @@ public class PlayerEvadeController : MonoBehaviour
 
         if (_useKinematicDuringEvade)
             _rb.isKinematic = _prevKinematic;
+
+        // 横回避終了後も、回避開始時の前進速度を引き継ぐ。
+        if (_currntEvadeType == EvadeType.BallelRolling && !_rb.isKinematic)
+            _rb.linearVelocity = _startRot * Vector3.forward * _evadeForwardSpeed;
 
         if (_visual != null)
             _visual.localRotation = _visualBaseLocalRot;
@@ -226,6 +275,9 @@ public class PlayerEvadeController : MonoBehaviour
         {
             localPos = _ballelRollSpline.Spline.EvaluatePosition(t);
 
+            // 前進分は飛行速度から求める。
+            localPos.z = _evadeForwardSpeed * _evadeTimer;
+
             if (_sideDir < 0)
                 localPos.x *= -1f;
         }
@@ -234,41 +286,4 @@ public class PlayerEvadeController : MonoBehaviour
         return _startPos + (_startRot * localPos);
     }
 
-    private void Awake()
-    {
-        _inputHandler = GetComponent<PlayerInputHandler>();
-        _airCraftController = GetComponent<PlayerAirCraftController>();
-        _health = GetComponent<PlayerHealth>();
-        _evasionGauge = GetComponent<EvationGauge>();
-        _rb = GetComponent<Rigidbody>();
-    }
-
-    private void Update()
-    {
-        // タイマー処理
-        if (_evadeCooldownTimer > 0f)
-            _evadeCooldownTimer -= Time.deltaTime;
-
-        if (_isEvading)
-        {
-            _evadeTimer += Time.deltaTime;
-            if (_evadeTimer >= _evadeDuration)
-                EndEvade();
-            return;
-        }
-
-        if (_evadeCooldownTimer > 0f) return;
-
-        TryStartFlipEvade();
-        TryStartBallelRollEvade();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_isEvading) return;
-
-        UpdateEvadePosition();
-        _rb.MoveRotation(_startRbRot);
-        UpdateVisualSpin();
-    }
 }

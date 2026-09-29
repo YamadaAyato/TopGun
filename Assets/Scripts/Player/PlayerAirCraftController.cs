@@ -9,6 +9,11 @@ public class PlayerAirCraftController : MonoBehaviour
 {
     public bool DisableControl { get; set; }
 
+    /// <summary>
+    ///     現在の前進速度を取得する
+    /// </summary>
+    public float CurrentSpeed => _currentSpeed;
+
     [Header("表示用")]
     [ReadOnly, SerializeField] private float _currentSpeed;
 
@@ -32,6 +37,21 @@ public class PlayerAirCraftController : MonoBehaviour
 
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
+
+    private void Awake()
+    {
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        _rb = GetComponent<Rigidbody>();
+        _currentSpeed = _baseSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        if (DisableControl) return;
+
+        FowardMovement();
+        Rotation();
+    }
 
     /// <summary>
     ///     前進移動の処理をする
@@ -110,18 +130,4 @@ public class PlayerAirCraftController : MonoBehaviour
         return angle;
     }
 
-    private void Awake()
-    {
-        _inputHandler = GetComponent<PlayerInputHandler>();
-        _rb = GetComponent<Rigidbody>();
-        _currentSpeed = _baseSpeed;
-    }
-
-    private void FixedUpdate()
-    {
-        if (DisableControl) return;
-
-        FowardMovement();
-        Rotation();
-    }
 }
