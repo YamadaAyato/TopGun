@@ -68,9 +68,6 @@ public class PlayerEvadeController : MonoBehaviour
 
         if (_isEvading)
         {
-            // 横回避の時間は、位置更新と同じ物理更新で進める。
-            if (_currntEvadeType != EvadeType.BallelRolling)
-                _evadeTimer += Time.deltaTime;
             if (_evadeTimer >= _evadeDuration)
                 EndEvade();
             return;
@@ -86,8 +83,8 @@ public class PlayerEvadeController : MonoBehaviour
     {
         if (!_isEvading) return;
 
-        if (_currntEvadeType == EvadeType.BallelRolling)
-            _evadeTimer = Mathf.Min(_evadeTimer + Time.fixedDeltaTime, _evadeDuration);
+        // 回避の時間は、位置更新と同じ物理更新で進める。
+        _evadeTimer = Mathf.Min(_evadeTimer + Time.fixedDeltaTime, _evadeDuration);
 
         UpdateEvadePosition();
         _rb.MoveRotation(_startRbRot);
@@ -214,8 +211,8 @@ public class PlayerEvadeController : MonoBehaviour
         if (_useKinematicDuringEvade)
             _rb.isKinematic = _prevKinematic;
 
-        // 横回避終了後も、回避開始時の前進速度を引き継ぐ。
-        if (_currntEvadeType == EvadeType.BallelRolling && !_rb.isKinematic)
+        // 回避終了後も、回避開始時の前進速度を引き継ぐ。
+        if (!_rb.isKinematic)
             _rb.linearVelocity = _startRot * Vector3.forward * _evadeForwardSpeed;
 
         if (_visual != null)
@@ -270,6 +267,8 @@ public class PlayerEvadeController : MonoBehaviour
         if (_currntEvadeType == EvadeType.Flipping)
         {
             localPos = _flipSpline.Spline.EvaluatePosition(t);
+            // Splineの移動はそのままに、飛行速度による前進を加える。
+            localPos.z += _evadeForwardSpeed * _evadeTimer;
         }
         else
         {
