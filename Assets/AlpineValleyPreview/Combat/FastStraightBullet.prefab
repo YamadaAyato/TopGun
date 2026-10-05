@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4234361118989634776}
   - component: {fileID: 965062310959305591}
   - component: {fileID: 8572113115306540497}
-  - component: {fileID: 6662766246078170942}
+  - component: {fileID: 4533028900017349500}
   m_Layer: 0
-  m_Name: EnemyBullet
+  m_Name: FastStraightBullet
   m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,7 +131,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6662766246078170942
+--- !u!114 &4533028900017349500
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -21,6 +21,9 @@ public static class GameEvents
     /// <summary> プレイヤーがジャスト回避したときのイベント </summary>
     public static Action OnJustEvade;
 
+    /// <summary> フレアの迎撃爆発を通知する </summary>
+    public static Action<ExplosionFx> OnFlareExplosion;
+
     /// <summary>
     ///     プレイヤーが被弾したときに発火する
     /// </summary>
@@ -57,3 +60,4 @@ public static class GameEvents
         OnScoreAdd?.Invoke(score, reason);
     }
 }
+

@@ -28,10 +28,8 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
         AudioManager.Instance.PlaySE3D("EnemyHit", this.transform);
 
         GameEvents.RaiseExplosion(transform.position);
-        ProjectileService.Instance.SpawnExplosion(
-           ExplosionType.Big,
-            this.transform
-         );
+        var explosion = ProjectileService.Instance.SpawnExplosion(ExplosionType.Big, transform);
+        GameEvents.OnFlareExplosion?.Invoke(explosion);
         Destroy(this.gameObject);
     }
 
@@ -83,10 +81,8 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
 
         AudioManager.Instance.PlaySE3D("EnemyHit", this.transform);
         GameEvents.RaiseExplosion(transform.position);
-        ProjectileService.Instance.SpawnExplosion(
-            ExplosionType.Big,
-            this.transform
-        );
+        var explosion = ProjectileService.Instance.SpawnExplosion(ExplosionType.Big, transform);
+        GameEvents.OnFlareExplosion?.Invoke(explosion);
         Destroy(this.gameObject);
     }
 
@@ -105,3 +101,4 @@ public class FlareDecoyRoot : MonoBehaviour, IFlareKillable
         Gizmos.DrawWireSphere(transform.position, _blastRadius);
     }
 }
+
