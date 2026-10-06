@@ -1041,7 +1041,7 @@ MonoBehaviour:
   _fadeImage: {fileID: 1421305714}
   _fadeDuration: 1
   _titleInputHandler: {fileID: 1965384169}
-  _sceneNameToLoad: TestGameScene
+  _sceneNameToLoad: AlpineValleyPreview
 --- !u!114 &1965384169
 MonoBehaviour:
   m_ObjectHideFlags: 0
