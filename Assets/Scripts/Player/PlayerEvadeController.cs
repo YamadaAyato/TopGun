@@ -51,6 +51,9 @@ public class PlayerEvadeController : MonoBehaviour
     private Quaternion _visualBaseLocalRot;
     private EvadeType _currntEvadeType;
 
+    /// <summary> 回避動作中かどうかを取得する </summary>
+    public bool IsEvading => _isEvading;
+
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();

@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCounterBullet
   _damage: 3
-  _bulletSpeed: 100
+  _bulletSpeed: 200
   _lifeTime: 20
   _turnSpeed: 180
   _homingDuration: 20
