@@ -1,13 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-///     ゴール・死亡・時間切れの通知を受け、リザルトシーンへの遷移を管理するクラス
+///     ゴール・死亡・時間切れ・防空圏の通知を受け、リザルトシーンへの遷移を管理するクラス
 /// </summary>
 public class StageResultController : MonoBehaviour
 {
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private StageCountDownTimer _timer;
     [SerializeField] private StageGoal _goal;
+    [SerializeField] private AirDefenseZone _airDefenseZone;
     [SerializeField] private TimeDilationController _timeDilation;
     [SerializeField] private string _resultSceneName = "Result";
 
@@ -18,6 +19,7 @@ public class StageResultController : MonoBehaviour
     {
         _playerHealth.OnDied += HandleDeath;
         _timer.OnTimeUp += HandleTimeUp;
+        if (_airDefenseZone != null) _airDefenseZone.OnTimeExceeded += HandleAirDefenseFailure;
         if (_goal != null) _goal.OnReached += HandleGoalReached;
     }
 
@@ -33,6 +35,7 @@ public class StageResultController : MonoBehaviour
     {
         if (_playerHealth != null) _playerHealth.OnDied -= HandleDeath;
         if (_timer != null) _timer.OnTimeUp -= HandleTimeUp;
+        if (_airDefenseZone != null) _airDefenseZone.OnTimeExceeded -= HandleAirDefenseFailure;
         if (_goal != null) _goal.OnReached -= HandleGoalReached;
     }
 
@@ -65,6 +68,13 @@ public class StageResultController : MonoBehaviour
         _pendingOutcome = GameRunOutcome.Failure;
     }
 
+    /// <summary>
+    ///     防空圏の滞在時間超過を受け、失敗の結果を保持する
+    /// </summary>
+    private void HandleAirDefenseFailure()
+    {
+        _pendingOutcome = GameRunOutcome.Failure;
+    }
     /// <summary>
     ///     対象プレイヤーのゴール通知を受け、未確定の場合に成功の結果を保持する
     /// </summary>
