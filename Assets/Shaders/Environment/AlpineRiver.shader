@@ -5,7 +5,8 @@ Shader "TopGun/Alpine/FlowingRiver"
         _ShallowColor ("Shallow water", Color) = (0.12,0.34,0.32,1)
         _DeepColor ("Deep water", Color) = (0.025,0.095,0.12,1)
         _FoamColor ("Foam", Color) = (0.72,0.82,0.8,1)
-        _FlowSpeed ("Flow speed", Range(0,3)) = 0.65
+        _FlowSpeed ("Flow speed (meters/sec)", Range(0,12)) = 4
+        _FlowDirection ("Flow direction (world XZ)", Vector) = (0,-1,0,0)
         _WaveStrength ("Wave strength", Range(0,0.4)) = 0.12
         _DepthFade ("Depth color distance", Range(0.1,12)) = 4
         _FoamWidth ("Shore foam width", Range(0.05,3)) = 0.75
@@ -33,6 +34,7 @@ Shader "TopGun/Alpine/FlowingRiver"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             CBUFFER_START(UnityPerMaterial)
             half4 _ShallowColor, _DeepColor, _FoamColor;
+            float4 _FlowDirection;
             float _FlowSpeed, _WaveStrength, _DepthFade, _FoamWidth, _Reflection, _Opacity;
             CBUFFER_END
             struct Attributes { float4 positionOS:POSITION; float2 uv:TEXCOORD0; };
@@ -58,7 +60,9 @@ Shader "TopGun/Alpine/FlowingRiver"
                 float surfaceDepth=-TransformWorldToView(i.positionWS).z;
                 float depth=max(0,sceneDepth-surfaceDepth)*max(0.1,abs(GetWorldSpaceNormalizeViewDir(i.positionWS).y));
                 float t=_Time.y*_FlowSpeed;
-                float2 flow=float2(i.uv.x*22,i.uv.y*25+t*3);
+                // Sample against the flow vector so visible ripples travel downstream.
+                float2 direction=_FlowDirection.xy/max(length(_FlowDirection.xy),0.001);
+                float2 flow=(i.positionWS.xz-direction*t)*float2(.22,.65);
                 float ripple=Noise(flow*float2(.8,1.8))+Noise(flow*float2(1.9,3.1)+float2(t*.3,7))*.45;
                 float2 waveUV=flow*float2(.55,.8); float nx=(Noise(waveUV+float2(.25,0))-Noise(waveUV-float2(.25,0)))*3;
                 float nz=(Noise(waveUV+float2(0,.25))-Noise(waveUV-float2(0,.25)))*3; float filter=1/(1+length(fwidth(flow))*2); nx*=filter; nz*=filter;
@@ -73,11 +77,11 @@ Shader "TopGun/Alpine/FlowingRiver"
                 half specular=pow(saturate(dot(n,normalize(view+light.direction))),180)*0.45;
                 water+=specular*light.color*light.shadowAttenuation;
                 float edge=min(i.uv.x,1-i.uv.x);
-                float shoreline=max(1-saturate(depth/_FoamWidth),1-smoothstep(0.008,0.045,edge));
+                float shoreline=(1-smoothstep(0.008,0.07,edge))*(0.4+0.6*(1-saturate(depth/_FoamWidth)));
                 float foam=shoreline*smoothstep(.48,.85,ripple);
-                float streak=smoothstep(1.18,1.38,ripple)*.07;
+                float streak=smoothstep(1.08,1.38,ripple)*.12;
                 water=lerp(water,_FoamColor.rgb,saturate(foam*.7+streak));
-                float alpha=saturate((.16+(1-exp(-depth*.32))*.65+fresnel*.18)*_Opacity+foam*.24)*smoothstep(0,.025,edge);
+                float alpha=saturate((.36+(1-exp(-depth*.45))*.42+fresnel*.2)*_Opacity+foam*.24)*smoothstep(0,.025,edge);
                 return half4(MixFog(water,i.fog),alpha);
             }
             ENDHLSL

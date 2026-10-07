@@ -21,6 +21,13 @@ public class ProjectileDirectionView : UnityEngine.UI.MaskableGraphic
     [SerializeField] private int _maxIndicators = 8;
     [SerializeField] private Color _missileColor = new Color(1f, 0.35f, 0.12f);
     [SerializeField] private Color _bulletColor = new Color(1f, 0.85f, 0.25f);
+    [Header("近距離の点滅")]
+    [SerializeField, Min(0f), Tooltip("ミサイルの矢印が点滅し始める距離")]
+    private float _blinkDistance = 40f;
+    [SerializeField, Min(0.1f), Tooltip("1秒あたりの点滅回数")]
+    private float _blinkFrequency = 3f;
+    [SerializeField, Range(0f, 1f), Tooltip("点滅で暗くなる瞬間の不透明度倍率")]
+    private float _blinkMinAlpha = 0.2f;
     private readonly List<EnemyProjectileSignal> _signals = new List<EnemyProjectileSignal>();
     private readonly List<Vector2> _directions = new List<Vector2>();
     private Vector2 _aircraftPoint;
@@ -76,10 +83,26 @@ public class ProjectileDirectionView : UnityEngine.UI.MaskableGraphic
             float proximity = 1f - Mathf.InverseLerp(_nearDistance, _range, distance);
             float scale = Mathf.Lerp(_farArrowScale, _nearArrowScale, proximity * proximity * (3f - 2f * proximity));
             Triangle(vh, tip + d * (9 * scale), tip - d * (5 * scale) + side * (7 * scale), tip - d * (5 * scale) - side * (7 * scale),
-                _signals[i].IsMissile ? _missileColor : _bulletColor);
+                GetIndicatorColor(_signals[i].IsMissile, distance, Time.unscaledTime));
         }
     }
 
+    /// <summary>
+    ///     近距離のミサイル矢印だけを実時間で点滅させる
+    /// </summary>
+    /// <param name="isMissile"> ミサイルかどうか </param>
+    /// <param name="distance"> プレイヤーからの距離 </param>
+    /// <param name="time"> 点滅に使う経過時間 </param>
+    private Color GetIndicatorColor(bool isMissile, float distance, float time)
+    {
+        Color tint = isMissile ? _missileColor : _bulletColor;
+        if (isMissile && _blinkDistance > 0f && distance <= _blinkDistance)
+        {
+            bool dimmed = Mathf.Repeat(time * _blinkFrequency, 1f) >= 0.5f;
+            if (dimmed) tint.a *= _blinkMinAlpha;
+        }
+        return tint;
+    }
     /// <summary>
     ///     三角形を描画する
     /// </summary>
