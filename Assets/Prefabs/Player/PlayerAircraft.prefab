@@ -396,6 +396,7 @@ MonoBehaviour:
   _timeDlicon: {fileID: 0}
   _targetMemory: {fileID: 0}
   _counterBulletPrefab: {fileID: 5542356620062231549, guid: 4606db101c0d6334cb9f37d29e86c1e9, type: 3}
+  _bulletCameraController: {fileID: 0}
   _muzzle: {fileID: 2529495213675249973}
   _counterCost: 1
   _counterColdown: 2
@@ -522,8 +523,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4452501004702911982}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

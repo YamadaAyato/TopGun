@@ -39142,8 +39142,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0988426, y: 0.000000012021642, z: -0.0000000011940977, w: 0.9951031}
-  m_LocalPosition: {x: 42.618923, y: 50.6, z: 129.3}
+  m_LocalRotation: {x: 0.015862366, y: -0.0000000060839787, z: 9.6518425e-11, w: 0.99987423}
+  m_LocalPosition: {x: 42.618923, y: 47.95, z: 129.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -44166,6 +44166,10 @@ PrefabInstance:
     - target: {fileID: 8021046295062383284, guid: a291aefae66cb7e4eac5d0de774e21eb, type: 3}
       propertyPath: m_Name
       value: HomindTurretEnemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8021046295062383284, guid: a291aefae66cb7e4eac5d0de774e21eb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -86980,8 +86984,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 651060505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09884258, y: 0.000000012021641, z: -0.0000000011940972, w: 0.9951031}
-  m_LocalPosition: {x: 42.618923, y: 50.6, z: 129.3}
+  m_LocalRotation: {x: 0.01586236, y: -0.0000000060839778, z: 9.6518384e-11, w: 0.99987423}
+  m_LocalPosition: {x: 42.618923, y: 47.95, z: 129.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87000,12 +87004,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
-    BindingMode: 1
+    BindingMode: 3
     PositionDamping: {x: 0.5, y: 0, z: 0.8}
     AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
+    RotationDamping: {x: 1, y: 0.3, z: 0.3}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -12}
+  FollowOffset: {x: 0, y: 1, z: -12}
 --- !u!114 &651060510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87029,7 +87033,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 2, z: 0}
-  Damping: {x: 1.5, y: 1.5}
+  Damping: {x: 1.5, y: 0.7}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -193485,7 +193489,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1309794692
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -248160,12 +248164,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
-    BindingMode: 1
+    BindingMode: 3
     PositionDamping: {x: 0.5, y: 0, z: 0}
     AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
+    RotationDamping: {x: 1, y: 0.3, z: 0.3}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: 12}
+  FollowOffset: {x: 0, y: 1, z: 12}
 --- !u!114 &1688198774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248217,8 +248221,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688198772}
   serializedVersion: 2
-  m_LocalRotation: {x: -1.1213645e-15, y: 0.9998134, z: -0.019318802, w: 1.6267387e-15}
-  m_LocalPosition: {x: 42.618923, y: 50.6, z: 153.3}
+  m_LocalRotation: {x: 0.0000000015933129, y: 0.99810076, z: 0.06160274, w: -0.000000025815195}
+  m_LocalPosition: {x: 42.618923, y: 47.95, z: 153.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -248247,7 +248251,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0.02, z: 0}
-  Damping: {x: 1.5, y: 1.5}
+  Damping: {x: 1.5, y: 0.7}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -321871,6 +321875,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HomindTurretEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 8021046295062383284, guid: a291aefae66cb7e4eac5d0de774e21eb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -321947,6 +321955,10 @@ PrefabInstance:
     - target: {fileID: 7550936101585699689, guid: 1e6d671d88624d4428d368d03e98f3f1, type: 3}
       propertyPath: m_Name
       value: BurstTurretEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7550936101585699689, guid: 1e6d671d88624d4428d368d03e98f3f1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -322170,6 +322182,10 @@ PrefabInstance:
     - target: {fileID: 2795881509100055556, guid: 31e09a197990ca048994a7905bc6e1df, type: 3}
       propertyPath: m_Name
       value: TurretEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795881509100055556, guid: 31e09a197990ca048994a7905bc6e1df, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3863948792033982588, guid: 31e09a197990ca048994a7905bc6e1df, type: 3}
       propertyPath: m_LocalScale.x
