@@ -10,7 +10,7 @@ public class EnemyStraightBullet : BulletBase
     /// <summary>
     ///     方向を設定する
     /// </summary>
-    /// <param name="dir"></param>
+    /// <param name="dir"> 方向ベクトル </param>
     public void SetDirection(Vector3 dir)
     {
         _dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;

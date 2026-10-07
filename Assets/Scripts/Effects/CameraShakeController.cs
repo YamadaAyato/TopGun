@@ -155,7 +155,8 @@ public class CameraShakeController : MonoBehaviour
         int id = cam.GetInstanceID();
         if (_baseFovMap.TryGetValue(id, out var baseFov)) return baseFov;
 
-        baseFov = cam.Lens.FieldOfView; // 初回だけ記録
+        // 初回だけ記録
+        baseFov = cam.Lens.FieldOfView; 
         _baseFovMap[id] = baseFov;
         return baseFov;
     }

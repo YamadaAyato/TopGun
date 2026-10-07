@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+/// <summary>
+///     ジャスト回避時の「視野がぼやける」演出を制御するクラス
+/// </summary>
 public sealed class JustEvadeBlurController : MonoBehaviour
 {
     [Header("Volume")]

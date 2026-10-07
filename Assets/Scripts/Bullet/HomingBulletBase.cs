@@ -12,7 +12,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
     [SerializeField, Tooltip("前方へ発射する時間")] private float _initialForwardTime;
 
     [Header("デコイ吸い込み")]
-    [SerializeField, Tooltip("デコイ中は移動方向もターゲットへ向けるか")]
+    [SerializeField, Tooltip("デコイが移動方向もターゲットへ向けるか")]
     private bool _decoySnapMoveToTarget = true;
 
     private Transform _defaultTarget;
@@ -142,7 +142,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
         {
             moveDir = dir;
         }
-        else
+        else　
         {
             moveDir = nextRot * Vector3.forward;
         }

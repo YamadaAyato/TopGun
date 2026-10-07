@@ -4,9 +4,9 @@ using UnityEngine;
 /// <summary>
 ///     銃弾の基底クラス
 /// </summary>
-public abstract class BulletBase : MonoBehaviour,IKillableBullet
+public abstract class BulletBase : MonoBehaviour, IKillableBullet
 {
-    /// <summary> 撃ちてのTransformを取得する </summary>
+    /// <summary> 射手のTransformを取得する </summary>
     public Transform Shooter => _shooter;
 
     [Header("弾設定")]

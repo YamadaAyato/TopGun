@@ -21,10 +21,10 @@ public class BulletCameraController : MonoBehaviour
     private Tween _hideTween;
 
     /// <summary>
-    ///     カメラを
+    ///     カメラの表示を試みる
     /// </summary>
-    /// <param name="missile"></param>
-    /// <returns></returns>
+    /// <param name="missile"> 追従する対象のTransform </param>
+    /// <returns> カメラの表示に成功したかどうか </returns>
     public bool TryShow(Transform missile)
     {
         if (_isShowing) return false;
@@ -87,7 +87,7 @@ public class BulletCameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        // 表示してないなら監視しない（ここが超重要）
+        // カメラが表示されていない場合は早期リターン
         if (!_isShowing) return;
 
         // ターゲットが消えたら「ホールドして閉じる」

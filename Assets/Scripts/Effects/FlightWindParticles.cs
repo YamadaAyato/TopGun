@@ -6,14 +6,17 @@ using UnityEngine;
 [RequireComponent(typeof(ParticleSystem))]
 public class FlightWindParticles : MonoBehaviour
 {
+    [Header("参照")]
     [SerializeField] private PlayerAirCraftController _aircraft;
     [SerializeField] private Camera _camera;
+
+    [Header("演出設定")]
     [SerializeField, Tooltip("風が出始める速度")] private float _startSpeed = 20f;
     [SerializeField, Tooltip("演出が最大になる速度")] private float _fullSpeed = 160f;
     [SerializeField, Min(0f), Tooltip("最大速度で1秒間に出す粒子数")] private float _maxEmission = 180f;
-    [SerializeField, Min(1f)] private float _spawnDistance = 12f;
+    [SerializeField, Min(1f), Tooltip("粒子を生成する距離")] private float _spawnDistance = 12f;
     [SerializeField, Range(0.5f, 0.95f), Tooltip("中央を空ける範囲")] private float _innerRadius = 0.58f;
-    [SerializeField] private Color _color = new Color(0.85f, 0.94f, 1f, 0.65f);
+    [SerializeField, Tooltip("風の色")] private Color _color = new Color(0.85f, 0.94f, 1f, 0.65f);
 
     [SerializeField, Tooltip("風の筋の太さの最小値・最大値")]
     private Vector2 _widthRange = new Vector2(0.08f, 0.14f);
