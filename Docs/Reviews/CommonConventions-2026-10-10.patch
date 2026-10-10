@@ -1,0 +1,705 @@
+diff --git a/Assets/Scripts/Effects/FlightWindParticles.cs b/Assets/Scripts/Effects/FlightWindParticles.cs
+index d6ecdc2..97678d4 100644
+--- a/Assets/Scripts/Effects/FlightWindParticles.cs
++++ b/Assets/Scripts/Effects/FlightWindParticles.cs
+@@ -21,24 +21,41 @@ public class FlightWindParticles : MonoBehaviour
+     [SerializeField, Tooltip("風の筋の太さの最小値・最大値")]
+     private Vector2 _widthRange = new Vector2(0.08f, 0.14f);
+ 
++    [SerializeField, Min(1), Tooltip("同時に表示できる風の粒子数。ParticleSystemの最大数を上書きする")]
++    private int _maxParticles = 160;
++    [SerializeField, Min(1), Tooltip("処理落ち後に粒子が集中しないようにする1フレームの発生上限")]
++    private int _maxEmissionPerFrame = 16;
++    [SerializeField, Tooltip("演出が最小・最大のときの粒子速度")]
++    private Vector2 _particleSpeedRange = new Vector2(22f, 75f);
++    [SerializeField, Range(0f, 1f), Tooltip("画面周辺に粒子を生成する外側の範囲")]
++    private float _outerRadius = 0.9f;
++    [SerializeField, Min(0f), Tooltip("カメラの手前で粒子を消す距離。生成距離より小さく設定する")]
++    private float _despawnDistance = 1f;
++
+     private ParticleSystem _particles;
+     private float _emissionRemainder;
+ 
+     private void Awake()
+     {
+         _particles = GetComponent<ParticleSystem>();
+-        var main = _particles.main;
++        ParticleSystem.MainModule main = _particles.main;
++
++        // カメラを基準に手動発生させるため、自動発生とShapeによる配置は使わない。
+         main.simulationSpace = ParticleSystemSimulationSpace.Local;
+-        main.maxParticles = 160;
++        main.maxParticles = _maxParticles;
+         main.startSpeed = 0f;
+         main.playOnAwake = false;
+         main.useUnscaledTime = false;
+         main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+-        var emission = _particles.emission;
++
++        ParticleSystem.EmissionModule emission = _particles.emission;
+         emission.enabled = false;
+-        var shape = _particles.shape;
++
++        ParticleSystem.ShapeModule shape = _particles.shape;
+         shape.enabled = false;
+-        var fade = _particles.colorOverLifetime;
++
++        // 現状は再現用の固定フェード。ここはParticleSystem側へ移せる見た目の設定。
++        ParticleSystem.ColorOverLifetimeModule fade = _particles.colorOverLifetime;
+         fade.enabled = true;
+         var gradient = new Gradient();
+         gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+@@ -60,6 +77,7 @@ public class FlightWindParticles : MonoBehaviour
+     private void LateUpdate()
+     {
+         if (_aircraft == null || _camera == null || !_camera.isActiveAndEnabled) return;
++
+         transform.SetPositionAndRotation(_camera.transform.position, _camera.transform.rotation);
+         float intensity = Mathf.InverseLerp(_startSpeed, _fullSpeed, _aircraft.CurrentSpeed);
+         EmitWind(intensity, Time.deltaTime);
+@@ -73,23 +91,25 @@ public class FlightWindParticles : MonoBehaviour
+     private void EmitWind(float intensity, float deltaTime)
+     {
+         _emissionRemainder += _maxEmission * intensity * deltaTime;
+-        int count = Mathf.Min(Mathf.FloorToInt(_emissionRemainder), 16);
++        int count = Mathf.Min(Mathf.FloorToInt(_emissionRemainder), _maxEmissionPerFrame);
+         _emissionRemainder -= Mathf.Floor(_emissionRemainder);
++
+         float height = Mathf.Tan(_camera.fieldOfView * Mathf.Deg2Rad * 0.5f) * _spawnDistance;
+-        float speed = Mathf.Lerp(22f, 75f, intensity);
++        float speed = Mathf.Lerp(_particleSpeedRange.x, _particleSpeedRange.y, intensity);
++
+         for (int i = 0; i < count; i++)
+         {
+             float angle = Random.value * Mathf.PI * 2f;
+-            float radius = Random.Range(_innerRadius, Mathf.Max(_innerRadius, 0.9f));
++            float radius = Random.Range(_innerRadius, Mathf.Max(_innerRadius, _outerRadius));
+             var particle = new ParticleSystem.EmitParams
+             {
+                 position = new Vector3(Mathf.Cos(angle) * height * _camera.aspect * radius, Mathf.Sin(angle) * height * radius, _spawnDistance),
+                 velocity = Vector3.back * speed,
+-                startLifetime = (_spawnDistance - 1f) / speed,
++                startLifetime = (_spawnDistance - _despawnDistance) / speed,
+                 startSize = Random.Range(_widthRange.x, _widthRange.y),
+                 startColor = _color
+             };
+             _particles.Emit(particle, 1);
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/Assets/Scripts/Effects/JustEvadeMonochrome.cs b/Assets/Scripts/Effects/JustEvadeMonochrome.cs
+index 3f25e94..db6e058 100644
+--- a/Assets/Scripts/Effects/JustEvadeMonochrome.cs
++++ b/Assets/Scripts/Effects/JustEvadeMonochrome.cs
+@@ -7,11 +7,15 @@ using UnityEngine.Rendering.Universal;
+ /// </summary>
+ public class JustEvadeMonochrome : MonoBehaviour
+ {
+-    [SerializeField] private Camera _camera;
+-    [SerializeField] private TimeDilationController _timeDilation;
+-    [SerializeField] private int _explosionLayer = 30;
+-    [SerializeField] private float _fadeOutDuration = 0.3f;
+-    [SerializeField] private Camera _explosionCamera;
++    [SerializeField, Tooltip("白黒にする主カメラ")] private Camera _camera;
++    [SerializeField, Tooltip("演出終了のタイミングを参照する時間制御")] private TimeDilationController _timeDilation;
++    [SerializeField, Tooltip("色を残す爆発専用のレイヤー番号")] private int _explosionLayer = 30;
++    [SerializeField, Tooltip("元の色へ戻す時間（秒）")] private float _fadeOutDuration = 0.3f;
++    [SerializeField, Tooltip("爆発だけを色付きで重ねるカメラ")] private Camera _explosionCamera;
++
++    [SerializeField, Tooltip("白黒演出のVolume優先度。他の画面演出との重なりに合わせて調整する")]
++    private float _volumePriority = 1000f;
++
+     private UniversalAdditionalCameraData _cameraData;
+     private Volume _volume;
+     private VolumeProfile _profile;
+@@ -19,6 +23,9 @@ public class JustEvadeMonochrome : MonoBehaviour
+     private bool _originalPost;
+     private bool _active;
+ 
++    private const float MONOCHROME_SATURATION = -100f;
++    private const float MIN_FADE_DURATION = 0.01f;
++
+     private void Awake()
+     {
+         _cameraData = _camera.GetUniversalAdditionalCameraData();
+@@ -29,15 +36,15 @@ public class JustEvadeMonochrome : MonoBehaviour
+         volumeObject.layer = gameObject.layer;
+         _volume = volumeObject.AddComponent<Volume>();
+         _volume.isGlobal = true;
+-        _volume.priority = 1000;
++        _volume.priority = _volumePriority;
+         _volume.weight = 0;
+         _profile = ScriptableObject.CreateInstance<VolumeProfile>();
+-        _profile.Add<ColorAdjustments>().saturation.Override(-100);
++        _profile.Add<ColorAdjustments>().saturation.Override(MONOCHROME_SATURATION);
+         _volume.sharedProfile = _profile;
+ 
+         _explosionCamera.CopyFrom(_camera);
+         _explosionCamera.cullingMask = 1 << _explosionLayer;
+-        var data = _explosionCamera.GetUniversalAdditionalCameraData();
++        UniversalAdditionalCameraData data = _explosionCamera.GetUniversalAdditionalCameraData();
+         data.renderType = CameraRenderType.Overlay;
+ 
+         data.renderPostProcessing = false;
+@@ -62,7 +69,7 @@ public class JustEvadeMonochrome : MonoBehaviour
+         if (!_active) return;
+         if (_timeDilation != null && _timeDilation.IsPlaying) return;
+         _volume.weight = Mathf.MoveTowards(_volume.weight, 0,
+-            Time.unscaledDeltaTime / Mathf.Max(0.01f, _fadeOutDuration));
++            Time.unscaledDeltaTime / Mathf.Max(MIN_FADE_DURATION, _fadeOutDuration));
+         if (_volume.weight <= 0) _active = false;
+     }
+ 
+@@ -72,7 +79,12 @@ public class JustEvadeMonochrome : MonoBehaviour
+         GameEvents.OnFlareExplosion -= HandleFlareExplosion;
+         if (_volume != null) _volume.weight = 0;
+         _active = false;
+-        foreach (var effect in FindObjectsByType<SelectiveExplosionColor>(FindObjectsSortMode.None)) effect.Restore();
++
++        foreach (SelectiveExplosionColor effect in FindObjectsByType<SelectiveExplosionColor>(FindObjectsSortMode.None))
++        {
++            effect.Restore();
++        }
++
+         if (_camera == null) return;
+         _camera.cullingMask = _originalMask;
+         _cameraData.renderPostProcessing = _originalPost;
+@@ -83,7 +95,6 @@ public class JustEvadeMonochrome : MonoBehaviour
+     private void OnDestroy()
+     {
+         if (_profile != null) Destroy(_profile);
+-
+     }
+ 
+     /// <summary>
+@@ -101,9 +112,11 @@ public class JustEvadeMonochrome : MonoBehaviour
+     private void HandleFlareExplosion(ExplosionFx explosion)
+     {
+         if (explosion == null) return;
+-        var effect = explosion.GetComponent<SelectiveExplosionColor>();
+-        if (effect == null) effect = explosion.gameObject.AddComponent<SelectiveExplosionColor>();
++        if (!explosion.TryGetComponent(out SelectiveExplosionColor effect))
++        {
++            effect = explosion.gameObject.AddComponent<SelectiveExplosionColor>();
++        }
++
+         effect.Apply(_explosionLayer);
+     }
+ }
+-
+diff --git a/Assets/Scripts/Effects/WingtipCondensation.cs b/Assets/Scripts/Effects/WingtipCondensation.cs
+index d82d7d9..466f80b 100644
+--- a/Assets/Scripts/Effects/WingtipCondensation.cs
++++ b/Assets/Scripts/Effects/WingtipCondensation.cs
+@@ -5,6 +5,7 @@ using UnityEngine;
+ /// </summary>
+ public class WingtipCondensation : MonoBehaviour
+ {
++    [Header("参照")]
+     [SerializeField] private PlayerAirCraftController _aircraft;
+     [SerializeField] private PlayerEvadeController _evade;
+     [SerializeField] private TrailRenderer[] _trails;
+@@ -13,6 +14,11 @@ public class WingtipCondensation : MonoBehaviour
+     [SerializeField, Min(0f), Tooltip("飛行機雲を発生させる最低速度")]
+     private float _minimumSpeed = 30f;
+ 
++    [SerializeField, Min(0f), Tooltip("旋回速度の変化へ追従する強さ")]
++    private float _turnSmoothing = 12f;
++    [SerializeField, Range(0f, 1f), Tooltip("雲を消す旋回速度の比率。開始閾値との差で点滅を防ぐ")]
++    private float _turnReleaseRatio = 0.65f;
++
+     private Vector3 _previousForward;
+     private float _turnRate;
+     private bool _turning;
+@@ -23,15 +29,13 @@ public class WingtipCondensation : MonoBehaviour
+         _turnRate = 0f;
+         _turning = false;
+         SetEmission(false);
+-        foreach (var trail in _trails)
+-            if (trail != null) trail.Clear();
++        ClearTrails();
+     }
+ 
+     private void OnDisable()
+     {
+         SetEmission(false);
+-        foreach (var trail in _trails)
+-            if (trail != null) trail.Clear();
++        ClearTrails();
+     }
+ 
+     private void LateUpdate()
+@@ -40,18 +44,31 @@ public class WingtipCondensation : MonoBehaviour
+         Vector3 forward = _aircraft.transform.forward;
+         float rate = Vector3.Angle(_previousForward, forward) / Time.deltaTime;
+         _previousForward = forward;
+-        _turnRate = Mathf.Lerp(_turnRate, rate, 1f - Mathf.Exp(-12f * Time.deltaTime));
+-        _turning = _turnRate >= _turnThreshold * (_turning ? 0.65f : 1f);
++        _turnRate = Mathf.Lerp(_turnRate, rate, 1f - Mathf.Exp(-_turnSmoothing * Time.deltaTime));
++        _turning = _turnRate >= _turnThreshold * (_turning ? _turnReleaseRatio : 1f);
+         SetEmission(_aircraft.CurrentSpeed >= _minimumSpeed && (_turning || (_evade != null && _evade.IsEvading)));
+     }
+ 
++    /// <summary>
++    ///     再有効化や停止の際に残っている軌跡を消す。
++    /// </summary>
++    private void ClearTrails()
++    {
++        foreach (TrailRenderer trail in _trails)
++        {
++            if (trail != null) trail.Clear();
++        }
++    }
++
+     /// <summary>
+     ///     左右の翼端で雲の発生を切り替える
+     /// </summary>
+     /// <param name="active"> 発生させるかどうか </param>
+     private void SetEmission(bool active)
+     {
+-        foreach (var trail in _trails)
++        foreach (TrailRenderer trail in _trails)
++        {
+             if (trail != null) trail.emitting = active;
++        }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/Assets/Scripts/Player/AircraftCollisionGuard.cs b/Assets/Scripts/Player/AircraftCollisionGuard.cs
+index 2b5f948..80219da 100644
+--- a/Assets/Scripts/Player/AircraftCollisionGuard.cs
++++ b/Assets/Scripts/Player/AircraftCollisionGuard.cs
+@@ -10,21 +10,25 @@ public class AircraftCollisionGuard : MonoBehaviour
+     /// <summary> 地形への墜落が確定した時のイベント </summary>
+     public event Action OnCrashed;
+ 
+-    [SerializeField] private LayerMask _obstacleLayers = ~0;
++    [SerializeField, Tooltip("地形・障害物として移動経路を検査するレイヤー")] private LayerMask _obstacleLayers = ~0;
+     [SerializeField, Min(0f), Tooltip("壁へ向かう速度がこの値以上なら墜落")]
+     private float _fatalNormalSpeed = 12f;
+     [SerializeField, Range(0f, 1f), Tooltip("浅い接触を許容する角度の内積閾値")]
+     private float _fatalApproachDot = 0.2f;
+     [SerializeField, Min(0.01f), Tooltip("許容するめり込み距離")]
+     private float _fatalPenetration = 0.4f;
+-    [SerializeField, Min(0.001f)] private float _skin = 0.03f;
++    [SerializeField, Min(0.001f), Tooltip("接触面との間に確保する余白")] private float _skin = 0.03f;
+ 
+     private Rigidbody _body;
+     private BoxCollider _box;
+     private PlayerHealth _health;
+     private bool _crashed;
+-    private readonly RaycastHit[] _hits = new RaycastHit[32];
+-    private readonly Collider[] _overlaps = new Collider[32];
++    private readonly RaycastHit[] _hits = new RaycastHit[QUERY_CAPACITY];
++    private readonly Collider[] _overlaps = new Collider[QUERY_CAPACITY];
++
++    private const int QUERY_CAPACITY = 32;
++    private const int MAX_SLIDE_STEPS = 3;
++    private const float MIN_MOVEMENT_SQUARED = 0.000001f;
+ 
+     /// <summary>
+     ///     移動経路で衝突を検査し、接触面に沿った移動先へ補正する
+@@ -36,54 +40,118 @@ public class AircraftCollisionGuard : MonoBehaviour
+     {
+         safePosition = _body.position;
+         if (_crashed || _health.IsDead) return false;
++
+         Quaternion rotation = _body.rotation;
+         Vector3 scale = transform.lossyScale;
+-        Vector3 half = Vector3.Scale(_box.size * 0.5f, new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
++        Vector3 half = Vector3.Scale(
++            _box.size * 0.5f,
++            new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
+         Vector3 centerOffset = rotation * Vector3.Scale(_box.center, scale);
+         Vector3 remaining = destination - safePosition;
+-        int count = Physics.OverlapBoxNonAlloc(safePosition + centerOffset, half, _overlaps, rotation, _obstacleLayers, QueryTriggerInteraction.Ignore);
+-        Collider[] overlaps = count == _overlaps.Length ? Physics.OverlapBox(safePosition + centerOffset, half, rotation, _obstacleLayers, QueryTriggerInteraction.Ignore) : _overlaps;
++        if (!ResolvePenetration(rotation, half, centerOffset, ref safePosition, ref remaining))
++            return false;
++
++        return SweepMovement(rotation, half, centerOffset, remaining, ref safePosition);
++    }
++
++    private void Awake()
++    {
++        _body = GetComponent<Rigidbody>();
++        _box = GetComponent<BoxCollider>();
++        _health = GetComponent<PlayerHealth>();
++    }
++
++    /// <summary>
++    ///     移動前のめり込みを解消し、深い侵入は墜落として扱う。
++    /// </summary>
++    private bool ResolvePenetration(Quaternion rotation, Vector3 half, Vector3 centerOffset,
++        ref Vector3 safePosition, ref Vector3 remaining)
++    {
++        int count = Physics.OverlapBoxNonAlloc(
++            safePosition + centerOffset, half, _overlaps, rotation,
++            _obstacleLayers, QueryTriggerInteraction.Ignore);
++
++        // バッファが埋まった場合は再取得し、未検査の障害物を残さない。
++        Collider[] overlaps = count == _overlaps.Length
++            ? Physics.OverlapBox(safePosition + centerOffset, half, rotation,
++                _obstacleLayers, QueryTriggerInteraction.Ignore)
++            : _overlaps;
+         if (overlaps != _overlaps) count = overlaps.Length;
++
+         for (int i = 0; i < count; i++)
+         {
+-            var other = overlaps[i];
++            Collider other = overlaps[i];
+             if (!IsObstacle(other)) continue;
+-            if (!Physics.ComputePenetration(_box, safePosition, rotation, other, other.transform.position, other.transform.rotation, out Vector3 direction, out float depth)) continue;
+-            if (depth >= _fatalPenetration) { Crash(safePosition); return false; }
++            if (!Physics.ComputePenetration(
++                _box, safePosition, rotation, other,
++                other.transform.position, other.transform.rotation,
++                out Vector3 direction, out float depth)) continue;
++
++            if (depth >= _fatalPenetration)
++            {
++                Crash(safePosition);
++                return false;
++            }
++
+             safePosition += direction * (depth + _skin);
+             if (Vector3.Dot(remaining, direction) < 0f) remaining = Vector3.ProjectOnPlane(remaining, direction);
+         }
+-        for (int step = 0; step < 3 && remaining.sqrMagnitude > 0.000001f; step++)
++
++        return true;
++    }
++
++    /// <summary>
++    ///     移動経路を掃引し、浅い接触では面に沿って残りの移動を続ける。
++    /// </summary>
++    private bool SweepMovement(Quaternion rotation, Vector3 half, Vector3 centerOffset,
++        Vector3 remaining, ref Vector3 safePosition)
++    {
++        for (int step = 0; step < MAX_SLIDE_STEPS && remaining.sqrMagnitude > MIN_MOVEMENT_SQUARED; step++)
+         {
+             float length = remaining.magnitude;
+             Vector3 direction = remaining / length;
+-            count = Physics.BoxCastNonAlloc(safePosition + centerOffset, half, direction, _hits, rotation, length + _skin, _obstacleLayers, QueryTriggerInteraction.Ignore);
+-            RaycastHit[] hits = count == _hits.Length ? Physics.BoxCastAll(safePosition + centerOffset, half, direction, rotation, length + _skin, _obstacleLayers, QueryTriggerInteraction.Ignore) : _hits;
++            int count = Physics.BoxCastNonAlloc(
++                safePosition + centerOffset, half, direction, _hits, rotation,
++                length + _skin, _obstacleLayers, QueryTriggerInteraction.Ignore);
++
++            // 密集した場所でも、配列に入りきらない衝突を見落とさない。
++            RaycastHit[] hits = count == _hits.Length
++                ? Physics.BoxCastAll(safePosition + centerOffset, half, direction, rotation,
++                    length + _skin, _obstacleLayers, QueryTriggerInteraction.Ignore)
++                : _hits;
+             if (hits != _hits) count = hits.Length;
+             float nearest = float.MaxValue;
+             RaycastHit hit = default;
++
+             for (int i = 0; i < count; i++)
+             {
+                 if (IsObstacle(hits[i].collider) && hits[i].distance < nearest)
+-                { nearest = hits[i].distance; hit = hits[i]; }
++                {
++                    nearest = hits[i].distance;
++                    hit = hits[i];
++                }
++            }
++
++            if (nearest == float.MaxValue)
++            {
++                safePosition += remaining;
++                break;
+             }
+-            if (nearest == float.MaxValue) { safePosition += remaining; break; }
++
+             float travel = Mathf.Clamp(nearest - _skin, 0f, length);
+             safePosition += direction * travel;
+             float approach = Mathf.Max(0f, -Vector3.Dot(direction, hit.normal));
+             float normalSpeed = length / Time.fixedDeltaTime * approach;
+             if (approach >= _fatalApproachDot && normalSpeed >= _fatalNormalSpeed)
+-            { Crash(safePosition); return false; }
++            {
++                Crash(safePosition);
++                return false;
++            }
++
+             remaining = Vector3.ProjectOnPlane(direction * (length - travel), hit.normal);
+         }
+-        return true;
+-    }
+ 
+-    private void Awake()
+-    {
+-        _body = GetComponent<Rigidbody>();
+-        _box = GetComponent<BoxCollider>();
+-        _health = GetComponent<PlayerHealth>();
++        return true;
+     }
+ 
+     /// <summary>
+@@ -104,12 +172,20 @@ public class AircraftCollisionGuard : MonoBehaviour
+         if (_crashed) return;
+         _crashed = true;
+         _body.position = position;
+-        if (!_body.isKinematic) { _body.linearVelocity = Vector3.zero; _body.angularVelocity = Vector3.zero; }
+-        var mover = GetComponent<PlayerAirCraftController>();
+-        if (mover != null) { mover.DisableControl = true; mover.enabled = false; }
+-        var evade = GetComponent<PlayerEvadeController>();
+-        if (evade != null) evade.enabled = false;
++        if (!_body.isKinematic)
++        {
++            _body.linearVelocity = Vector3.zero;
++            _body.angularVelocity = Vector3.zero;
++        }
++
++        if (TryGetComponent(out PlayerAirCraftController mover))
++        {
++            mover.DisableControl = true;
++            mover.enabled = false;
++        }
++
++        if (TryGetComponent(out PlayerEvadeController evade)) evade.enabled = false;
+         OnCrashed?.Invoke();
+         _health.Die();
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/Assets/Scripts/Player/PlayerAirCraftController.cs b/Assets/Scripts/Player/PlayerAirCraftController.cs
+index 5b5079f..6a34532 100644
+--- a/Assets/Scripts/Player/PlayerAirCraftController.cs
++++ b/Assets/Scripts/Player/PlayerAirCraftController.cs
+@@ -51,7 +51,7 @@ public class PlayerAirCraftController : MonoBehaviour
+     {
+         if (DisableControl) return;
+ 
+-        FowardMovement();
++        ForwardMovement();
+         if (enabled) Rotation();
+     }
+ 
+@@ -59,7 +59,7 @@ public class PlayerAirCraftController : MonoBehaviour
+     ///     前進移動の処理をする
+     ///     加速や減速の入力を受け取り、Rigidbodyの速度を更新する
+     /// </summary>
+-    private void FowardMovement()
++    private void ForwardMovement()
+     {
+         // 入力からの速度を計算して更新
+         _currentSpeed += _inputHandler.Throttle * _acceleration * Time.fixedDeltaTime;
+@@ -71,6 +71,7 @@ public class PlayerAirCraftController : MonoBehaviour
+             if (!_collisionGuard.ConstrainMove(_rb.position + forwardMovement * Time.fixedDeltaTime, out Vector3 safePosition)) return;
+             forwardMovement = (safePosition - _rb.position) / Time.fixedDeltaTime;
+         }
++
+         _rb.linearVelocity = forwardMovement;
+     }
+ 
+@@ -134,6 +135,7 @@ public class PlayerAirCraftController : MonoBehaviour
+         {
+             angle -= 360f;
+         }
++
+         return angle;
+     }
+ 
+diff --git a/Assets/Scripts/System/AirDefenseZone.cs b/Assets/Scripts/System/AirDefenseZone.cs
+index 063a620..88da920 100644
+--- a/Assets/Scripts/System/AirDefenseZone.cs
++++ b/Assets/Scripts/System/AirDefenseZone.cs
+@@ -9,7 +9,7 @@ public class AirDefenseZone : MonoBehaviour
+     /// <summary> 防空圏の滞在時間を超えた時のイベント </summary>
+     public event Action OnTimeExceeded;
+ 
+-    [SerializeField] private Transform _player;
++    [SerializeField, Tooltip("高度を監視するプレイヤー")] private Transform _player;
+     [SerializeField, Tooltip("防空圏が始まるワールド座標の高度")]
+     private float _altitudeLimit = 200f;
+     [SerializeField, Min(0.1f), Tooltip("防空圏に連続して滞在できる秒数")]
+@@ -51,4 +51,4 @@ public class AirDefenseZone : MonoBehaviour
+         _hasFailed = true;
+         OnTimeExceeded?.Invoke();
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/Assets/Scripts/System/StageCountDownTimer.cs b/Assets/Scripts/System/StageCountDownTimer.cs
+index c18bfb4..c91bfce 100644
+--- a/Assets/Scripts/System/StageCountDownTimer.cs
++++ b/Assets/Scripts/System/StageCountDownTimer.cs
+@@ -13,7 +13,7 @@ public class StageCountDownTimer : MonoBehaviour
+ 
+     private float _remainingTime;
+     private bool _isCountingDown;
+-    private bool _isfinished;
++    private bool _isFinished;
+ 
+     /// <summary>
+     ///     カウントダウンを開始する
+@@ -23,7 +23,7 @@ public class StageCountDownTimer : MonoBehaviour
+         _remainingTime = _stageTime;
+ 
+         _isCountingDown = true;
+-        _isfinished = false;
++        _isFinished = false;
+         RaiseChanged();
+     }
+ 
+@@ -40,7 +40,7 @@ public class StageCountDownTimer : MonoBehaviour
+     /// </summary>
+     public void ResumeTimer()
+     {
+-        if (_isfinished) return;
++        if (_isFinished) return;
+         _isCountingDown = true;
+     }
+ 
+@@ -49,21 +49,13 @@ public class StageCountDownTimer : MonoBehaviour
+     /// </summary>
+     public void ResetCountDown()
+     {
+-        _isfinished = false;
++        _isFinished = false;
+         _isCountingDown = false;
+ 
+         _remainingTime = _stageTime;
+         RaiseChanged();
+     }
+ 
+-    /// <summary>
+-    ///     時間の変化を通知する
+-    /// </summary>
+-    private void RaiseChanged()
+-    {
+-        OnRemainingTimeChanged?.Invoke(_remainingTime);
+-    }
+-
+     private void Start()
+     {
+         ResetCountDown();
+@@ -74,7 +66,7 @@ public class StageCountDownTimer : MonoBehaviour
+     {
+         // カウントダウンが終了しているか、停止している場合は処理しない
+         if (!_isCountingDown) return;
+-        if (_isfinished) return;
++        if (_isFinished) return;
+ 
+         // 時間を減らす
+         _remainingTime -= Time.unscaledDeltaTime;
+@@ -84,11 +76,19 @@ public class StageCountDownTimer : MonoBehaviour
+         if (_remainingTime <= 0f)
+         {
+             _remainingTime = 0f;
+-            _isfinished = true;
++            _isFinished = true;
+             _isCountingDown = false;
+ 
+             RaiseChanged();
+             OnTimeUp?.Invoke();
+         }
+     }
++
++    /// <summary>
++    ///     時間の変化を通知する
++    /// </summary>
++    private void RaiseChanged()
++    {
++        OnRemainingTimeChanged?.Invoke(_remainingTime);
++    }
+ }
+diff --git a/Assets/Scripts/System/StageResultController.cs b/Assets/Scripts/System/StageResultController.cs
+index b9475fb..cabd44b 100644
+--- a/Assets/Scripts/System/StageResultController.cs
++++ b/Assets/Scripts/System/StageResultController.cs
+@@ -5,12 +5,13 @@ using UnityEngine;
+ /// </summary>
+ public class StageResultController : MonoBehaviour
+ {
++    [Header("参照")]
+     [SerializeField] private PlayerHealth _playerHealth;
+     [SerializeField] private StageCountDownTimer _timer;
+     [SerializeField] private StageGoal _goal;
+     [SerializeField] private AirDefenseZone _airDefenseZone;
+     [SerializeField] private TimeDilationController _timeDilation;
+-    [SerializeField] private string _resultSceneName = "Result";
++    [SerializeField, Tooltip("結果を表示するシーン名")] private string _resultSceneName = "Result";
+ 
+     private GameRunOutcome _pendingOutcome;
+     private bool _isTransitioning;
+@@ -26,6 +27,7 @@ public class StageResultController : MonoBehaviour
+     private void Start()
+     {
+         GameRunResult.Clear();
++
+         // 常駐するScoreManagerも、次のプレイでは0点から始める。
+         if (ScoreManager.Instance != null)
+             ScoreManager.Instance.ResetScore();
+@@ -45,7 +47,7 @@ public class StageResultController : MonoBehaviour
+         _isTransitioning = true;
+ 
+         // ゴールと死亡・時間切れが重なった場合は、失敗を優先する。
+-        var outcome = _playerHealth.IsDead ? GameRunOutcome.Failure : _pendingOutcome;
++        GameRunOutcome outcome = _playerHealth.IsDead ? GameRunOutcome.Failure : _pendingOutcome;
+         _timer.StopCountDown();
+         if (_timeDilation != null) _timeDilation.Stop();
+         GameRunResult.Set(outcome);
+@@ -75,6 +77,7 @@ public class StageResultController : MonoBehaviour
+     {
+         _pendingOutcome = GameRunOutcome.Failure;
+     }
++
+     /// <summary>
+     ///     対象プレイヤーのゴール通知を受け、未確定の場合に成功の結果を保持する
+     /// </summary>
+diff --git a/Assets/Scripts/UI/EnemyProjectileSignal.cs b/Assets/Scripts/UI/EnemyProjectileSignal.cs
+index 03b51c2..2d68366 100644
+--- a/Assets/Scripts/UI/EnemyProjectileSignal.cs
++++ b/Assets/Scripts/UI/EnemyProjectileSignal.cs
+@@ -6,12 +6,16 @@ using UnityEngine;
+ /// </summary>
+ public class EnemyProjectileSignal : MonoBehaviour
+ {
+-    public static readonly HashSet<EnemyProjectileSignal> Active = new HashSet<EnemyProjectileSignal>();
++    /// <summary> 方向表示の対象となる有効な敵弾。 </summary>
++    public static IReadOnlyCollection<EnemyProjectileSignal> Active => _active;
++    /// <summary> ミサイル用の表示を使用するかどうか。 </summary>
+     public bool IsMissile => _isMissile;
+-    [SerializeField] private bool _isMissile;
+ 
+-    private void OnEnable() => Active.Add(this);
+-    private void OnDisable() => Active.Remove(this);
+-    private void OnDestroy() => Active.Remove(this);
+-}
++    [SerializeField, Tooltip("ミサイル用の色と近距離点滅を使用する")] private bool _isMissile;
++
++    private static readonly HashSet<EnemyProjectileSignal> _active = new HashSet<EnemyProjectileSignal>();
+ 
++    private void OnEnable() => _active.Add(this);
++    private void OnDisable() => _active.Remove(this);
++    private void OnDestroy() => _active.Remove(this);
++}
+diff --git a/Assets/Scripts/UI/ResultScreenController.cs b/Assets/Scripts/UI/ResultScreenController.cs
+index 7fa8acb..c00ca17 100644
+--- a/Assets/Scripts/UI/ResultScreenController.cs
++++ b/Assets/Scripts/UI/ResultScreenController.cs
+@@ -12,14 +12,14 @@ public class ResultScreenController : MonoBehaviour
+     [SerializeField] private UnityEngine.UI.Button _titleButton;
+ 
+     [Header("シーン設定")]
+-    [SerializeField] private string _titleSceneName = "Title";
++    [SerializeField, Tooltip("タイトルへ戻る際のシーン名")] private string _titleSceneName = "Title";
+ 
+     [Header("表示設定")]
+     [SerializeField, Tooltip("成功時に表示する文字")] private string _successText = "成功";
+     [SerializeField, Tooltip("失敗時に表示する文字")] private string _failureText = "失敗";
+     [SerializeField, Tooltip("結果が未設定の場合に表示する文字")] private string _defaultText = "リザルト";
+-    [SerializeField] private Color _successColor = new Color(0.35f, 0.9f, 0.75f);
+-    [SerializeField] private Color _failureColor = new Color(1f, 0.4f, 0.4f);
++    [SerializeField, Tooltip("成功時の文字色")] private Color _successColor = new Color(0.35f, 0.9f, 0.75f);
++    [SerializeField, Tooltip("失敗時の文字色")] private Color _failureColor = new Color(1f, 0.4f, 0.4f);
+ 
+     private bool _isLeaving;
+ 

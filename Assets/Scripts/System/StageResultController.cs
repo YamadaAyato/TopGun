@@ -5,12 +5,13 @@ using UnityEngine;
 /// </summary>
 public class StageResultController : MonoBehaviour
 {
+    [Header("参照")]
     [SerializeField] private PlayerHealth _playerHealth;
     [SerializeField] private StageCountDownTimer _timer;
     [SerializeField] private StageGoal _goal;
     [SerializeField] private AirDefenseZone _airDefenseZone;
     [SerializeField] private TimeDilationController _timeDilation;
-    [SerializeField] private string _resultSceneName = "Result";
+    [SerializeField, Tooltip("結果を表示するシーン名")] private string _resultSceneName = "Result";
 
     private GameRunOutcome _pendingOutcome;
     private bool _isTransitioning;
@@ -26,6 +27,7 @@ public class StageResultController : MonoBehaviour
     private void Start()
     {
         GameRunResult.Clear();
+
         // 常駐するScoreManagerも、次のプレイでは0点から始める。
         if (ScoreManager.Instance != null)
             ScoreManager.Instance.ResetScore();
@@ -45,7 +47,7 @@ public class StageResultController : MonoBehaviour
         _isTransitioning = true;
 
         // ゴールと死亡・時間切れが重なった場合は、失敗を優先する。
-        var outcome = _playerHealth.IsDead ? GameRunOutcome.Failure : _pendingOutcome;
+        GameRunOutcome outcome = _playerHealth.IsDead ? GameRunOutcome.Failure : _pendingOutcome;
         _timer.StopCountDown();
         if (_timeDilation != null) _timeDilation.Stop();
         GameRunResult.Set(outcome);
@@ -75,6 +77,7 @@ public class StageResultController : MonoBehaviour
     {
         _pendingOutcome = GameRunOutcome.Failure;
     }
+
     /// <summary>
     ///     対象プレイヤーのゴール通知を受け、未確定の場合に成功の結果を保持する
     /// </summary>

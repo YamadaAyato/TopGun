@@ -6,12 +6,16 @@ using UnityEngine;
 /// </summary>
 public class EnemyProjectileSignal : MonoBehaviour
 {
-    public static readonly HashSet<EnemyProjectileSignal> Active = new HashSet<EnemyProjectileSignal>();
+    /// <summary> 方向表示の対象となる有効な敵弾。 </summary>
+    public static IReadOnlyCollection<EnemyProjectileSignal> Active => _active;
+    /// <summary> ミサイル用の表示を使用するかどうか。 </summary>
     public bool IsMissile => _isMissile;
-    [SerializeField] private bool _isMissile;
 
-    private void OnEnable() => Active.Add(this);
-    private void OnDisable() => Active.Remove(this);
-    private void OnDestroy() => Active.Remove(this);
+    [SerializeField, Tooltip("ミサイル用の色と近距離点滅を使用する")] private bool _isMissile;
+
+    private static readonly HashSet<EnemyProjectileSignal> _active = new HashSet<EnemyProjectileSignal>();
+
+    private void OnEnable() => _active.Add(this);
+    private void OnDisable() => _active.Remove(this);
+    private void OnDestroy() => _active.Remove(this);
 }
-

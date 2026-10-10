@@ -12,14 +12,14 @@ public class ResultScreenController : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button _titleButton;
 
     [Header("シーン設定")]
-    [SerializeField] private string _titleSceneName = "Title";
+    [SerializeField, Tooltip("タイトルへ戻る際のシーン名")] private string _titleSceneName = "Title";
 
     [Header("表示設定")]
     [SerializeField, Tooltip("成功時に表示する文字")] private string _successText = "成功";
     [SerializeField, Tooltip("失敗時に表示する文字")] private string _failureText = "失敗";
     [SerializeField, Tooltip("結果が未設定の場合に表示する文字")] private string _defaultText = "リザルト";
-    [SerializeField] private Color _successColor = new Color(0.35f, 0.9f, 0.75f);
-    [SerializeField] private Color _failureColor = new Color(1f, 0.4f, 0.4f);
+    [SerializeField, Tooltip("成功時の文字色")] private Color _successColor = new Color(0.35f, 0.9f, 0.75f);
+    [SerializeField, Tooltip("失敗時の文字色")] private Color _failureColor = new Color(1f, 0.4f, 0.4f);
 
     private bool _isLeaving;
 

@@ -13,7 +13,7 @@ public class StageCountDownTimer : MonoBehaviour
 
     private float _remainingTime;
     private bool _isCountingDown;
-    private bool _isfinished;
+    private bool _isFinished;
 
     /// <summary>
     ///     カウントダウンを開始する
@@ -23,7 +23,7 @@ public class StageCountDownTimer : MonoBehaviour
         _remainingTime = _stageTime;
 
         _isCountingDown = true;
-        _isfinished = false;
+        _isFinished = false;
         RaiseChanged();
     }
 
@@ -40,7 +40,7 @@ public class StageCountDownTimer : MonoBehaviour
     /// </summary>
     public void ResumeTimer()
     {
-        if (_isfinished) return;
+        if (_isFinished) return;
         _isCountingDown = true;
     }
 
@@ -49,19 +49,11 @@ public class StageCountDownTimer : MonoBehaviour
     /// </summary>
     public void ResetCountDown()
     {
-        _isfinished = false;
+        _isFinished = false;
         _isCountingDown = false;
 
         _remainingTime = _stageTime;
         RaiseChanged();
-    }
-
-    /// <summary>
-    ///     時間の変化を通知する
-    /// </summary>
-    private void RaiseChanged()
-    {
-        OnRemainingTimeChanged?.Invoke(_remainingTime);
     }
 
     private void Start()
@@ -74,7 +66,7 @@ public class StageCountDownTimer : MonoBehaviour
     {
         // カウントダウンが終了しているか、停止している場合は処理しない
         if (!_isCountingDown) return;
-        if (_isfinished) return;
+        if (_isFinished) return;
 
         // 時間を減らす
         _remainingTime -= Time.unscaledDeltaTime;
@@ -84,11 +76,19 @@ public class StageCountDownTimer : MonoBehaviour
         if (_remainingTime <= 0f)
         {
             _remainingTime = 0f;
-            _isfinished = true;
+            _isFinished = true;
             _isCountingDown = false;
 
             RaiseChanged();
             OnTimeUp?.Invoke();
         }
+    }
+
+    /// <summary>
+    ///     時間の変化を通知する
+    /// </summary>
+    private void RaiseChanged()
+    {
+        OnRemainingTimeChanged?.Invoke(_remainingTime);
     }
 }

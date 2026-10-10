@@ -21,24 +21,41 @@ public class FlightWindParticles : MonoBehaviour
     [SerializeField, Tooltip("風の筋の太さの最小値・最大値")]
     private Vector2 _widthRange = new Vector2(0.08f, 0.14f);
 
+    [SerializeField, Min(1), Tooltip("同時に表示できる風の粒子数。ParticleSystemの最大数を上書きする")]
+    private int _maxParticles = 160;
+    [SerializeField, Min(1), Tooltip("処理落ち後に粒子が集中しないようにする1フレームの発生上限")]
+    private int _maxEmissionPerFrame = 16;
+    [SerializeField, Tooltip("演出が最小・最大のときの粒子速度")]
+    private Vector2 _particleSpeedRange = new Vector2(22f, 75f);
+    [SerializeField, Range(0f, 1f), Tooltip("画面周辺に粒子を生成する外側の範囲")]
+    private float _outerRadius = 0.9f;
+    [SerializeField, Min(0f), Tooltip("カメラの手前で粒子を消す距離。生成距離より小さく設定する")]
+    private float _despawnDistance = 1f;
+
     private ParticleSystem _particles;
     private float _emissionRemainder;
 
     private void Awake()
     {
         _particles = GetComponent<ParticleSystem>();
-        var main = _particles.main;
+        ParticleSystem.MainModule main = _particles.main;
+
+        // カメラを基準に手動発生させるため、自動発生とShapeによる配置は使わない。
         main.simulationSpace = ParticleSystemSimulationSpace.Local;
-        main.maxParticles = 160;
+        main.maxParticles = _maxParticles;
         main.startSpeed = 0f;
         main.playOnAwake = false;
         main.useUnscaledTime = false;
         main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
-        var emission = _particles.emission;
+
+        ParticleSystem.EmissionModule emission = _particles.emission;
         emission.enabled = false;
-        var shape = _particles.shape;
+
+        ParticleSystem.ShapeModule shape = _particles.shape;
         shape.enabled = false;
-        var fade = _particles.colorOverLifetime;
+
+        // 現状は再現用の固定フェード。ここはParticleSystem側へ移せる見た目の設定。
+        ParticleSystem.ColorOverLifetimeModule fade = _particles.colorOverLifetime;
         fade.enabled = true;
         var gradient = new Gradient();
         gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
@@ -60,6 +77,7 @@ public class FlightWindParticles : MonoBehaviour
     private void LateUpdate()
     {
         if (_aircraft == null || _camera == null || !_camera.isActiveAndEnabled) return;
+
         transform.SetPositionAndRotation(_camera.transform.position, _camera.transform.rotation);
         float intensity = Mathf.InverseLerp(_startSpeed, _fullSpeed, _aircraft.CurrentSpeed);
         EmitWind(intensity, Time.deltaTime);
@@ -73,19 +91,21 @@ public class FlightWindParticles : MonoBehaviour
     private void EmitWind(float intensity, float deltaTime)
     {
         _emissionRemainder += _maxEmission * intensity * deltaTime;
-        int count = Mathf.Min(Mathf.FloorToInt(_emissionRemainder), 16);
+        int count = Mathf.Min(Mathf.FloorToInt(_emissionRemainder), _maxEmissionPerFrame);
         _emissionRemainder -= Mathf.Floor(_emissionRemainder);
+
         float height = Mathf.Tan(_camera.fieldOfView * Mathf.Deg2Rad * 0.5f) * _spawnDistance;
-        float speed = Mathf.Lerp(22f, 75f, intensity);
+        float speed = Mathf.Lerp(_particleSpeedRange.x, _particleSpeedRange.y, intensity);
+
         for (int i = 0; i < count; i++)
         {
             float angle = Random.value * Mathf.PI * 2f;
-            float radius = Random.Range(_innerRadius, Mathf.Max(_innerRadius, 0.9f));
+            float radius = Random.Range(_innerRadius, Mathf.Max(_innerRadius, _outerRadius));
             var particle = new ParticleSystem.EmitParams
             {
                 position = new Vector3(Mathf.Cos(angle) * height * _camera.aspect * radius, Mathf.Sin(angle) * height * radius, _spawnDistance),
                 velocity = Vector3.back * speed,
-                startLifetime = (_spawnDistance - 1f) / speed,
+                startLifetime = (_spawnDistance - _despawnDistance) / speed,
                 startSize = Random.Range(_widthRange.x, _widthRange.y),
                 startColor = _color
             };

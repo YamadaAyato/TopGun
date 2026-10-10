@@ -51,7 +51,7 @@ public class PlayerAirCraftController : MonoBehaviour
     {
         if (DisableControl) return;
 
-        FowardMovement();
+        ForwardMovement();
         if (enabled) Rotation();
     }
 
@@ -59,7 +59,7 @@ public class PlayerAirCraftController : MonoBehaviour
     ///     前進移動の処理をする
     ///     加速や減速の入力を受け取り、Rigidbodyの速度を更新する
     /// </summary>
-    private void FowardMovement()
+    private void ForwardMovement()
     {
         // 入力からの速度を計算して更新
         _currentSpeed += _inputHandler.Throttle * _acceleration * Time.fixedDeltaTime;
@@ -71,6 +71,7 @@ public class PlayerAirCraftController : MonoBehaviour
             if (!_collisionGuard.ConstrainMove(_rb.position + forwardMovement * Time.fixedDeltaTime, out Vector3 safePosition)) return;
             forwardMovement = (safePosition - _rb.position) / Time.fixedDeltaTime;
         }
+
         _rb.linearVelocity = forwardMovement;
     }
 
@@ -134,6 +135,7 @@ public class PlayerAirCraftController : MonoBehaviour
         {
             angle -= 360f;
         }
+
         return angle;
     }
 

@@ -9,7 +9,7 @@ public class AirDefenseZone : MonoBehaviour
     /// <summary> 防空圏の滞在時間を超えた時のイベント </summary>
     public event Action OnTimeExceeded;
 
-    [SerializeField] private Transform _player;
+    [SerializeField, Tooltip("高度を監視するプレイヤー")] private Transform _player;
     [SerializeField, Tooltip("防空圏が始まるワールド座標の高度")]
     private float _altitudeLimit = 200f;
     [SerializeField, Min(0.1f), Tooltip("防空圏に連続して滞在できる秒数")]

@@ -7,17 +7,24 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class JustEvadeMonochrome : MonoBehaviour
 {
-    [SerializeField] private Camera _camera;
-    [SerializeField] private TimeDilationController _timeDilation;
-    [SerializeField] private int _explosionLayer = 30;
-    [SerializeField] private float _fadeOutDuration = 0.3f;
-    [SerializeField] private Camera _explosionCamera;
+    [SerializeField, Tooltip("白黒にする主カメラ")] private Camera _camera;
+    [SerializeField, Tooltip("演出終了のタイミングを参照する時間制御")] private TimeDilationController _timeDilation;
+    [SerializeField, Tooltip("色を残す爆発専用のレイヤー番号")] private int _explosionLayer = 30;
+    [SerializeField, Tooltip("元の色へ戻す時間（秒）")] private float _fadeOutDuration = 0.3f;
+    [SerializeField, Tooltip("爆発だけを色付きで重ねるカメラ")] private Camera _explosionCamera;
+
+    [SerializeField, Tooltip("白黒演出のVolume優先度。他の画面演出との重なりに合わせて調整する")]
+    private float _volumePriority = 1000f;
+
     private UniversalAdditionalCameraData _cameraData;
     private Volume _volume;
     private VolumeProfile _profile;
     private int _originalMask;
     private bool _originalPost;
     private bool _active;
+
+    private const float MONOCHROME_SATURATION = -100f;
+    private const float MIN_FADE_DURATION = 0.01f;
 
     private void Awake()
     {
@@ -29,15 +36,15 @@ public class JustEvadeMonochrome : MonoBehaviour
         volumeObject.layer = gameObject.layer;
         _volume = volumeObject.AddComponent<Volume>();
         _volume.isGlobal = true;
-        _volume.priority = 1000;
+        _volume.priority = _volumePriority;
         _volume.weight = 0;
         _profile = ScriptableObject.CreateInstance<VolumeProfile>();
-        _profile.Add<ColorAdjustments>().saturation.Override(-100);
+        _profile.Add<ColorAdjustments>().saturation.Override(MONOCHROME_SATURATION);
         _volume.sharedProfile = _profile;
 
         _explosionCamera.CopyFrom(_camera);
         _explosionCamera.cullingMask = 1 << _explosionLayer;
-        var data = _explosionCamera.GetUniversalAdditionalCameraData();
+        UniversalAdditionalCameraData data = _explosionCamera.GetUniversalAdditionalCameraData();
         data.renderType = CameraRenderType.Overlay;
 
         data.renderPostProcessing = false;
@@ -62,7 +69,7 @@ public class JustEvadeMonochrome : MonoBehaviour
         if (!_active) return;
         if (_timeDilation != null && _timeDilation.IsPlaying) return;
         _volume.weight = Mathf.MoveTowards(_volume.weight, 0,
-            Time.unscaledDeltaTime / Mathf.Max(0.01f, _fadeOutDuration));
+            Time.unscaledDeltaTime / Mathf.Max(MIN_FADE_DURATION, _fadeOutDuration));
         if (_volume.weight <= 0) _active = false;
     }
 
@@ -72,7 +79,12 @@ public class JustEvadeMonochrome : MonoBehaviour
         GameEvents.OnFlareExplosion -= HandleFlareExplosion;
         if (_volume != null) _volume.weight = 0;
         _active = false;
-        foreach (var effect in FindObjectsByType<SelectiveExplosionColor>(FindObjectsSortMode.None)) effect.Restore();
+
+        foreach (SelectiveExplosionColor effect in FindObjectsByType<SelectiveExplosionColor>(FindObjectsSortMode.None))
+        {
+            effect.Restore();
+        }
+
         if (_camera == null) return;
         _camera.cullingMask = _originalMask;
         _cameraData.renderPostProcessing = _originalPost;
@@ -83,7 +95,6 @@ public class JustEvadeMonochrome : MonoBehaviour
     private void OnDestroy()
     {
         if (_profile != null) Destroy(_profile);
-
     }
 
     /// <summary>
@@ -101,9 +112,11 @@ public class JustEvadeMonochrome : MonoBehaviour
     private void HandleFlareExplosion(ExplosionFx explosion)
     {
         if (explosion == null) return;
-        var effect = explosion.GetComponent<SelectiveExplosionColor>();
-        if (effect == null) effect = explosion.gameObject.AddComponent<SelectiveExplosionColor>();
+        if (!explosion.TryGetComponent(out SelectiveExplosionColor effect))
+        {
+            effect = explosion.gameObject.AddComponent<SelectiveExplosionColor>();
+        }
+
         effect.Apply(_explosionLayer);
     }
 }
-
