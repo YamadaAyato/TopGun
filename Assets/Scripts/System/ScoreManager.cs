@@ -6,16 +6,14 @@ using UnityEngine;
 /// </summary>
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager Instance { get; private set; }
-
-    /// <summary> 現在のスコア </summary>
-    public int CurrentScore => _score;
-
     /// <summary> スコアが変化したときのイベント </summary>
     public event Action<int> OnScoreChanged;
-
     /// <summary> スコアが追加されたときのイベント </summary>
     public event Action<ScorePopupReason, int> OnScoreAdded;
+
+    public static ScoreManager Instance { get; private set; }
+    /// <summary> 現在のスコア </summary>
+    public int CurrentScore => _score;
 
     private int _score;
 

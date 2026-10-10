@@ -12,16 +12,15 @@ public enum ScorePopupReason
 /// <summary>
 ///     スポーン地点からスコアポップアップを生成するクラス
 /// </summary>
-public class ScorePopupSpawer : MonoBehaviour
+[UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "ScorePopupSpawer")]
+public class ScorePopupSpawner : MonoBehaviour
 {
     [Header("参照")]
     [SerializeField] private GameObject _popupPrefab;
     [SerializeField] private RectTransform _spawnAnchor;
-
     [Header("ポップアップ移動設定")]
     [SerializeField] private float _moveY;
     [SerializeField] private float _duration;
-
     [Header("タイプごとのカラー設定")]
     [SerializeField] private Color _enemyDownColor;
     [SerializeField] private Color _JustEvadeColor;
@@ -64,6 +63,16 @@ public class ScorePopupSpawer : MonoBehaviour
         seq.OnComplete(() => Destroy(popup));
     }
 
+    private void OnEnable()
+    {
+        ScoreManager.Instance.OnScoreAdded += SpawnPopup;
+    }
+
+    private void OnDisable()
+    {
+        ScoreManager.Instance.OnScoreAdded -= SpawnPopup;
+    }
+
     private Color GetColorByReason(ScorePopupReason type)
     {
         switch (type)
@@ -75,16 +84,5 @@ public class ScorePopupSpawer : MonoBehaviour
             default:
                 return _defaultColor;
         }
-    }
-
-
-    private void OnEnable()
-    {
-        ScoreManager.Instance.OnScoreAdded += SpawnPopup;
-    }
-
-    private void OnDisable()
-    {
-        ScoreManager.Instance.OnScoreAdded -= SpawnPopup;
     }
 }

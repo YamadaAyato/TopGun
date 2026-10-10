@@ -6,12 +6,8 @@ using UnityEngine.Splines;
 /// </summary>
 public class PlayerEvadeController : MonoBehaviour
 {
-    private enum EvadeType
-    {
-        None,
-        Flipping,
-        BallelRolling
-    }
+    /// <summary> 回避動作中かどうかを取得する </summary>
+    public bool IsEvading => _isEvading;
 
     [Header("参照")]
     [SerializeField] private JustEvadeDetector _justEvadeDetector;
@@ -22,45 +18,38 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField, Tooltip("モデル")] private Transform _visual;
     [SerializeField, Tooltip("フリップ用のスプライン")] private SplineContainer _flipSpline;
     [SerializeField, Tooltip("バレルロール用のスプライン")] private SplineContainer _ballelRollSpline;
-
     [Header("回転動作設定")]
     [SerializeField, Tooltip("1回避での回転回数")] private float _turns;
     [SerializeField, Tooltip("回避時間")] private float _evadeDuration;
     [SerializeField, Tooltip("次の回避までのクールダウン")] private float _evadeCooldown;
     [SerializeField, Tooltip("回避中に物理影響を使うか")] private bool _useKinematicDuringEvade;
-
     [SerializeField] private float _justEvadeTimeDilationScale;
     [SerializeField] private float _justEvadeTimeDilationDuration;
 
     private PlayerInputHandler _inputHandler;
-    private PlayerAirCraftController _airCraftController;
+    private PlayerAircraftController _airCraftController;
     private PlayerHealth _health;
-    private EvationGauge _evasionGauge;
+    private EvasionGauge _evasionGauge;
     private Rigidbody _rb;
     private AircraftCollisionGuard _collisionGuard;
-
     private bool _prevKinematic;
     private bool _isEvading;
     private float _evadeTimer;
     private float _evadeCooldownTimer;
     private float _evadeForwardSpeed;
     private int _sideDir;
-
     private Vector3 _startPos;
     private Quaternion _startRot;
     private Quaternion _startRbRot;
     private Quaternion _visualBaseLocalRot;
-    private EvadeType _currntEvadeType;
-
-    /// <summary> 回避動作中かどうかを取得する </summary>
-    public bool IsEvading => _isEvading;
+    private EvadeType _currentEvadeType;
 
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();
-        _airCraftController = GetComponent<PlayerAirCraftController>();
+        _airCraftController = GetComponent<PlayerAircraftController>();
         _health = GetComponent<PlayerHealth>();
-        _evasionGauge = GetComponent<EvationGauge>();
+        _evasionGauge = GetComponent<EvasionGauge>();
         _rb = GetComponent<Rigidbody>();
         _collisionGuard = GetComponent<AircraftCollisionGuard>();
     }
@@ -81,7 +70,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (_evadeCooldownTimer > 0f) return;
 
         TryStartFlipEvade();
-        TryStartBallelRollEvade();
+        TryStartBarrelRollEvade();
     }
 
     private void FixedUpdate()
@@ -107,6 +96,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (_collisionGuard != null)
         {
             if (!_collisionGuard.ConstrainMove(pos, out Vector3 safePosition)) return;
+
             // 軽い接触で補正した分だけ、以降の回避経路も壁から離す。
             _startPos += safePosition - pos;
             pos = safePosition;
@@ -123,13 +113,13 @@ public class PlayerEvadeController : MonoBehaviour
 
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
 
-        if (_currntEvadeType == EvadeType.Flipping)
+        if (_currentEvadeType == EvadeType.Flipping)
         {
             // X軸回転（宙返り）
             float angle = 360f * _turns * t;
             _visual.localRotation = _visualBaseLocalRot * Quaternion.Euler(-angle, 0f, 0f);
         }
-        else if (_currntEvadeType == EvadeType.BallelRolling)
+        else if (_currentEvadeType == EvadeType.BarrelRolling)
         {
             // Z軸回転（ロール）
             float angle = 360f * _turns * t;
@@ -160,7 +150,7 @@ public class PlayerEvadeController : MonoBehaviour
     /// <summary>
     ///     バレルロール回避が実行できるか確認と呼び出しをする
     /// </summary>
-    private void TryStartBallelRollEvade()
+    private void TryStartBarrelRollEvade()
     {
         if (_ballelRollSpline == null) return;
         int dir = _inputHandler.ConsumeSideEvadeInput();
@@ -171,7 +161,7 @@ public class PlayerEvadeController : MonoBehaviour
         if( _evasionGauge != null && !_evasionGauge.TryConsumeCharge())
             return;
 
-        StartEvade(EvadeType.BallelRolling);
+        StartEvade(EvadeType.BarrelRolling);
         Debug.Log("Ballel Roll回避開始！");
     }
 
@@ -181,7 +171,7 @@ public class PlayerEvadeController : MonoBehaviour
     /// <param name="type"></param>
     private void StartEvade(EvadeType type)
     {
-        _currntEvadeType = type;
+        _currentEvadeType = type;
         _isEvading = true;
         _evadeTimer = 0f;
         _evadeCooldownTimer = _evadeCooldown;
@@ -231,7 +221,7 @@ public class PlayerEvadeController : MonoBehaviour
         if (_visual != null)
             _visual.localRotation = _visualBaseLocalRot;
 
-        _currntEvadeType = EvadeType.None;
+        _currentEvadeType = EvadeType.None;
         Debug.Log("Flip回避終了！");
     }
 
@@ -254,7 +244,7 @@ public class PlayerEvadeController : MonoBehaviour
             ScoreManager.Instance.AddScore(300, ScorePopupReason.JustEvade);
             AudioManager.Instance.PlaySE3D("JustEvade", transform.position);
 
-            _evasionGauge?.RecorverCharge(1);
+            _evasionGauge?.RecoverCharge(1);
             GameEvents.OnJustEvade?.Invoke();
 
             // ホーミング弾を回避した場合の特別処理
@@ -277,9 +267,10 @@ public class PlayerEvadeController : MonoBehaviour
         Vector3 localPos;
 
         // EvaluatePosition(t) は、そのSpline上の t地点の位置を返す
-        if (_currntEvadeType == EvadeType.Flipping)
+        if (_currentEvadeType == EvadeType.Flipping)
         {
             localPos = _flipSpline.Spline.EvaluatePosition(t);
+
             // Splineの移動はそのままに、飛行速度による前進を加える。
             localPos.z += _evadeForwardSpeed * _evadeTimer;
         }
@@ -296,6 +287,13 @@ public class PlayerEvadeController : MonoBehaviour
 
         // 回避開始位置＋回避開始姿勢で回したローカル位置
         return _startPos + (_startRot * localPos);
+    }
+
+    private enum EvadeType
+    {
+        None,
+        Flipping,
+        BarrelRolling
     }
 
 }

@@ -11,7 +11,6 @@ public class BulletCameraController : MonoBehaviour
     [SerializeField] private Camera _bulletCamera;
     [SerializeField] private CinemachineCamera _cinemachineCamera;
     [SerializeField] private GameObject _root;
-
     [Header("ホールド時間")]
     [SerializeField] private float _holdSeconds;
 
@@ -56,6 +55,23 @@ public class BulletCameraController : MonoBehaviour
         _bulletCamera.enabled = false;
     }
 
+    private void Awake()
+    {
+        Hide();
+    }
+
+    private void LateUpdate()
+    {
+        // カメラが表示されていない場合は早期リターン
+        if (!_isShowing) return;
+
+        // ターゲットが消えたら「ホールドして閉じる」
+        if (_currentTarget == null || !_currentTarget.gameObject.activeInHierarchy)
+        {
+            HideAfterHold();
+        }
+    }
+
     /// <summary>
     ///     カメラをホールドして消す
     /// </summary>
@@ -78,22 +94,5 @@ public class BulletCameraController : MonoBehaviour
             _isShowing = false;
             _root.SetActive(false);
         });
-    }
-
-    private void Awake()
-    {
-        Hide();
-    }
-
-    private void LateUpdate()
-    {
-        // カメラが表示されていない場合は早期リターン
-        if (!_isShowing) return;
-
-        // ターゲットが消えたら「ホールドして閉じる」
-        if (_currentTarget == null || !_currentTarget.gameObject.activeInHierarchy)
-        {
-            HideAfterHold();
-        }
     }
 }

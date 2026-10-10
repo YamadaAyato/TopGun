@@ -5,12 +5,13 @@ using UnityEngine;
 /// </summary>
 public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
 {
+    private Transform _currentTarget => _decoyTarget != null ? _decoyTarget : _defaultTarget;
+
     [Header("ホーミング設定")]
     [SerializeField, Tooltip("追尾旋回速度")] private float _turnSpeed;
     [SerializeField, Tooltip("ホーミングする最大時間")] private float _homingDuration;
     [SerializeField, Tooltip("追尾できる角度制限")] private float _maxSeekAngle;
     [SerializeField, Tooltip("前方へ発射する時間")] private float _initialForwardTime;
-
     [Header("デコイ吸い込み")]
     [SerializeField, Tooltip("デコイが移動方向もターゲットへ向けるか")]
     private bool _decoySnapMoveToTarget = true;
@@ -43,20 +44,6 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
     {
         if (_decoyTarget == decoyTransform)
             _decoyTarget = null;
-    }
-
-    private Transform _currentTarget => _decoyTarget != null ? _decoyTarget : _defaultTarget;
-
-    protected override void OnSpawned()
-    {
-        _homingTimer = 0f;
-        _forwardTimer = 0f;
-
-        if (_rb == null) _rb = GetComponent<Rigidbody>();
-        _rb.isKinematic = true;
-
-        _launchRotation = _rb.rotation;
-        _launchForward = transform.forward;
     }
 
     private void FixedUpdate()
@@ -133,6 +120,7 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
         _rb.MoveRotation(nextRot);
 
         Vector3 moveDir;
+
         // フェーズによって移動方向を決定
         if (isForwardPhase)
         {
@@ -152,4 +140,16 @@ public abstract class HomingBulletBase : BulletBase, IDecoyAttractable
     }
 
     protected override void Update() { }
+
+    protected override void OnSpawned()
+    {
+        _homingTimer = 0f;
+        _forwardTimer = 0f;
+
+        if (_rb == null) _rb = GetComponent<Rigidbody>();
+        _rb.isKinematic = true;
+
+        _launchRotation = _rb.rotation;
+        _launchForward = transform.forward;
+    }
 }

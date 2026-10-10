@@ -11,7 +11,6 @@ public class PlayerCounterGunner : MonoBehaviour
     [SerializeField] private PlayerCounterBullet _counterBulletPrefab;
     [SerializeField] private BulletCameraController _bulletCameraController;
     [SerializeField] private Transform _muzzle;
-
     [Header("反撃設定")]
     [SerializeField, Tooltip("反撃に使うコスト")] private int _counterCost;
     [SerializeField, Tooltip("反撃のクールダウン(連続攻撃防止)")] private float _counterColdown;
@@ -22,8 +21,33 @@ public class PlayerCounterGunner : MonoBehaviour
     private CounterToken _counterToken;
     private PlayerInputHandler _inputHandler;
     private float _counterCooldownTimer;
-
     private ObjectPool<PlayerCounterBullet> _bulletPool;
+
+    private void Awake()
+    {
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        _counterToken = GetComponent<CounterToken>();
+
+        _bulletPool = new ObjectPool<PlayerCounterBullet>(_counterBulletPrefab, _muzzle, _poolInitCount);
+    }
+
+    private void Update()
+    {
+        if (_counterCooldownTimer > 0f)
+        {
+            _counterCooldownTimer -= Time.unscaledDeltaTime;
+        }
+    }
+
+    private void OnEnable()
+    {
+        _inputHandler.FirePerformed += OnFirePerformed;
+    }
+
+    private void OnDisable()
+    {
+        _inputHandler.FirePerformed -= OnFirePerformed;
+    }
 
     /// <summary>
     ///     反撃入力があったときの処理をする
@@ -43,6 +67,7 @@ public class PlayerCounterGunner : MonoBehaviour
     private void TryCounterAttack()
     {
         if (_counterToken.CurrentToken < _counterCost) return;
+
         // ターゲットを取得
         Transform target = _targetMemory.CurrentTarget;
 
@@ -94,31 +119,5 @@ public class PlayerCounterGunner : MonoBehaviour
     private void ReturnToPool(BulletBase bullet)
     {
         _bulletPool.Release((PlayerCounterBullet)bullet);
-    }
-
-    private void Awake()
-    {
-        _inputHandler = GetComponent<PlayerInputHandler>();
-        _counterToken = GetComponent<CounterToken>();
-
-        _bulletPool = new ObjectPool<PlayerCounterBullet>(_counterBulletPrefab, _muzzle, _poolInitCount);
-    }
-
-    private void Update()
-    {
-        if (_counterCooldownTimer > 0f)
-        {
-            _counterCooldownTimer -= Time.unscaledDeltaTime;
-        }
-    }
-
-    private void OnEnable()
-    {
-        _inputHandler.FirePerformed += OnFirePerformed;
-    }
-
-    private void OnDisable()
-    {
-        _inputHandler.FirePerformed -= OnFirePerformed;
     }
 }

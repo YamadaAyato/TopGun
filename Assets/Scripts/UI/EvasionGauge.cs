@@ -4,7 +4,8 @@ using UnityEngine;
 /// <summary>
 ///     回避ゲージを管理するクラス
 /// </summary>
-public class EvationGauge : MonoBehaviour
+[UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "EvationGauge")]
+public class EvasionGauge : MonoBehaviour
 {
     /// <summary> 回避のチャージ数が変化したときに発火するイベント / </summary>
     public event Action<float, int> OnChargesChanged;
@@ -41,7 +42,7 @@ public class EvationGauge : MonoBehaviour
     ///     ジャスト回避時などに呼ばれる
     /// </summary>
     /// <param name="amount"></param>
-    public void RecorverCharge(int amount)
+    public void RecoverCharge(int amount)
     {
         _currentCharges = Mathf.Min(_currentCharges + amount, _maxCharges);
         Raise();
@@ -55,11 +56,6 @@ public class EvationGauge : MonoBehaviour
     public void StopEvading()
     {
         _isEvading = false;
-    }
-
-    private void Raise()
-    {
-        OnChargesChanged?.Invoke(_currentCharges, _maxCharges);
     }
 
     private void Awake()
@@ -77,5 +73,10 @@ public class EvationGauge : MonoBehaviour
 
             Raise();
         }
+    }
+
+    private void Raise()
+    {
+        OnChargesChanged?.Invoke(_currentCharges, _maxCharges);
     }
 }

@@ -11,13 +11,11 @@ public class CameraShakeController : MonoBehaviour
 {
     [Header("参照")]
     [SerializeField] private Camera _mainCamera;
-
     [Header("Hit時や爆発時の揺れの設定")]
     [SerializeField, Tooltip("被弾時のシェイク倍率")] private float _hitGain;
     [SerializeField, Tooltip("爆発シェイク時の倍率")] private float _explosionGain;
     [SerializeField, Tooltip("爆発シェイクの最大の届く距離")] private float _maxDistance;
     [SerializeField] private AnimationCurve _fallOffCurve;
-
     [Header("回避FOV変化")]
     [SerializeField, Tooltip("回避時にどれだけFOVを増やすか")] private float _evadeFovBoost;
     [SerializeField, Tooltip("広がる時間")] private float _evadeFovInTime;
@@ -26,7 +24,6 @@ public class CameraShakeController : MonoBehaviour
 
     private CinemachineBrain _brain;
     private CinemachineImpulseSource _impulseSource;
-
     private Tween _fovTween;
 
     // 連打/カメラ切替でも「戻り先」を固定するためのキャッシュ
@@ -50,7 +47,6 @@ public class CameraShakeController : MonoBehaviour
         // ランダムな方向にシェイクを発生させる
         //float x = Random.Range(-1f, 1f);
         //float y = Random.Range(-1f, 1f);
-
         //Vector3 dir = (cam.transform.right * x + cam.transform.up * y).normalized;
 
         _impulseSource.GenerateImpulse(Vector3.up * gain);
@@ -124,6 +120,38 @@ public class CameraShakeController : MonoBehaviour
             .SetUpdate(true);
     }
 
+    private void Awake()
+    {
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+
+        if (_mainCamera == null) _mainCamera = Camera.main;
+        _brain = _mainCamera != null ? _mainCamera.GetComponent<CinemachineBrain>() : null;
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnPlayerHit += PlayHit;
+        GameEvents.OnExplosion += PlayExplosion;
+        GameEvents.OnEvade += PlayEvadeFovChange;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerHit -= PlayHit;
+        GameEvents.OnExplosion -= PlayExplosion;
+        GameEvents.OnEvade -= PlayEvadeFovChange;
+
+        _fovTween?.Kill();
+        _fovTween = null;
+
+        // 念のため、無効化時に前回弄ってたカメラを基準に戻す
+        if (_fovOwner != null)
+        {
+            SetFov(_fovOwner, GetBaseFov(_fovOwner));
+            _fovOwner = null;
+        }
+    }
+
     /// <summary>
     ///     現在アクティブなCinemachineカメラを取得する
     /// </summary>
@@ -156,7 +184,7 @@ public class CameraShakeController : MonoBehaviour
         if (_baseFovMap.TryGetValue(id, out var baseFov)) return baseFov;
 
         // 初回だけ記録
-        baseFov = cam.Lens.FieldOfView; 
+        baseFov = cam.Lens.FieldOfView;
         _baseFovMap[id] = baseFov;
         return baseFov;
     }
@@ -171,37 +199,5 @@ public class CameraShakeController : MonoBehaviour
         var lens = cam.Lens;
         lens.FieldOfView = fov;
         cam.Lens = lens;
-    }
-
-    private void Awake()
-    {
-        _impulseSource = GetComponent<CinemachineImpulseSource>();
-
-        if (_mainCamera == null) _mainCamera = Camera.main;
-        _brain = _mainCamera != null ? _mainCamera.GetComponent<CinemachineBrain>() : null;
-    }
-
-    private void OnEnable()
-    {
-        GameEvents.OnPlayerHit += PlayHit;
-        GameEvents.OnExplosion += PlayExplosion;
-        GameEvents.OnEvade += PlayEvadeFovChange;
-    }
-
-    private void OnDisable()
-    {
-        GameEvents.OnPlayerHit -= PlayHit;
-        GameEvents.OnExplosion -= PlayExplosion;
-        GameEvents.OnEvade -= PlayEvadeFovChange;
-
-        _fovTween?.Kill();
-        _fovTween = null;
-
-        // 念のため、無効化時に前回弄ってたカメラを基準に戻す
-        if (_fovOwner != null)
-        {
-            SetFov(_fovOwner, GetBaseFov(_fovOwner));
-            _fovOwner = null;
-        }
     }
 }

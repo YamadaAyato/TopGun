@@ -4,14 +4,10 @@ using UnityEngine;
 /// <summary>
 ///     スコアの表示を行うクラス
 /// </summary>
-public class ScoreViwer : MonoBehaviour
+[UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "ScoreViwer")]
+public class ScoreViewer : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
-
-    private void UpdateText(int score)
-    {
-        _scoreText.text = $"Score: {score}";
-    }
 
     private void OnEnable()
     {
@@ -21,5 +17,10 @@ public class ScoreViwer : MonoBehaviour
     private void OnDisable()
     {
         ScoreManager.Instance.OnScoreChanged -= UpdateText;
+    }
+
+    private void UpdateText(int score)
+    {
+        _scoreText.text = $"Score: {score}";
     }
 }

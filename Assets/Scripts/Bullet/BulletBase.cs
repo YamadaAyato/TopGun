@@ -31,22 +31,6 @@ public abstract class BulletBase : MonoBehaviour, IKillableBullet
         Release();
     }
 
-    /// <summary> 各クラスでのスポーン時処理をする </summary>
-    protected virtual void OnSpawned() { }
-
-    /// <summary> 銃弾HIt時の処理をする。 </summary>
-    protected abstract void HandleHit(Collider other);
-
-    /// <summary> 銃弾消滅処理 </summary>
-    protected void Release()
-    {
-        _onRelease?.Invoke(this);
-
-        _onRelease = null;
-        _shooter = null;
-        _timer = 0;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         HandleHit(other);
@@ -61,5 +45,21 @@ public abstract class BulletBase : MonoBehaviour, IKillableBullet
         {
             Release();
         }
+    }
+
+    /// <summary> 銃弾HIt時の処理をする。 </summary>
+    protected abstract void HandleHit(Collider other);
+
+    /// <summary> 各クラスでのスポーン時処理をする </summary>
+    protected virtual void OnSpawned() { }
+
+    /// <summary> 銃弾消滅処理 </summary>
+    protected void Release()
+    {
+        _onRelease?.Invoke(this);
+
+        _onRelease = null;
+        _shooter = null;
+        _timer = 0;
     }
 }

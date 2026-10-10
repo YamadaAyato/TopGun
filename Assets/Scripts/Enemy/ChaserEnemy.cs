@@ -7,13 +7,10 @@ public class ChaserEnemy : EnemyBase
 {
     [Header("現在の移動速度")]
     [SerializeField, ReadOnly] private float _currentSpeed;
-
     [Header("参照")]
     [SerializeField] private EnemyShooter _shooter;
-
     [Header("回転設定")]
     [SerializeField, Tooltip("1秒あたりの最大旋回角度")] private float _turnSpeedDeg;
-
     [Header("速度制御")]
     [SerializeField, Tooltip("最低移動速度")] private float _minSpeed;
     [SerializeField, Tooltip("最高移動速度")] private float _maxSpeed ;
@@ -21,24 +18,20 @@ public class ChaserEnemy : EnemyBase
     [SerializeField, Tooltip("この距離以下で最低速度に近づく")] private float _speedMinDistance;
     [SerializeField, Tooltip("旋回中にどれだけ減速するか（0=減速なし）")] private float _turnSlowdown;
     [SerializeField, Tooltip("速度変化のなめらかさ")] private float _speedResponse;
-
     [Header("回り込み挙動")]
     [SerializeField, Tooltip("この距離以内で回り込みを強める")] private float _orbitDistance;
     [SerializeField, Tooltip("横方向への最大オフセット量")] private float _orbitRadius;
     [SerializeField, Tooltip("上方向へのオフセット量（下から来ないため）")] private float _liftAmount    ;
     [SerializeField, Tooltip("回り込み方向を更新する間隔")] private float _rerollInterval;
     [SerializeField, Tooltip("プレイヤーに近づきすぎないための最小距離")] private float _minSeparation;
-
     [Header("障害物回避")]
     [SerializeField, Tooltip("前方に障害物を検知する距離")] private float _avoidDistance;
     [SerializeField, Tooltip("回避オフセットの強さ")] private float _avoidStrength;
     [SerializeField, Tooltip("障害物として扱うレイヤー")] private LayerMask _obstacleLayer;
-
     [Header("ロール演出（見た目）")]
     [SerializeField, Tooltip("ロール演出を適用する見た目用Transform")] private Transform _visual;
     [SerializeField, Tooltip("最大ロール角度")] private float _rollMaxAngle;
     [SerializeField, Tooltip("ロールの追従速度")] private float _rollResponse;
-
     [Header("攻撃")]
     [SerializeField, Tooltip("射撃可能な最大距離")] private float _attackRange;
     [SerializeField, Tooltip("射撃可能な視野角")] private float _fovAngle;
@@ -48,8 +41,42 @@ public class ChaserEnemy : EnemyBase
     private Vector3 _orbitDirLocal = new Vector3(1f, 0.3f, 0f);
     private float _rerollTimer;
     private float _cooldownTimer;
+
     // 見た目用の基準回転
     private Quaternion _visualBaseLocalRot = Quaternion.identity;
+
+    private void Start()
+    {
+        if (_visual != null)
+            _visualBaseLocalRot = _visual.localRotation;
+
+        RerollOrbitDirection();
+        _rerollTimer = _rerollInterval;
+
+        _currentSpeed = _minSpeed;
+    }
+
+    private void Update()
+    {
+        // プレイヤー取得
+        Transform player = PlayerLocator.Instance?.PlayerTransform;
+        if (player == null) return;
+
+        UpdateTimers();
+        UpdateOrbitDirectionTimer();
+
+        Vector3 aimPoint = ComputeAimPoint(player);
+        ApplyObstacleAvoidance(ref aimPoint);
+
+        RotateTowardsAimPoint(aimPoint);
+        UpdateMovementSpeed(player, aimPoint);
+        MoveForward();
+        ResolveTooClose(player);
+
+        UpdateRollVisual(aimPoint);
+
+        TryShoot(player);
+    }
 
     /// <summary>
     ///     タイマー更新をする
@@ -80,6 +107,7 @@ public class ChaserEnemy : EnemyBase
     private Vector3 ComputeAimPoint(Transform player)
     {
         float dist = Vector3.Distance(transform.position, player.position);
+
         // 近いほど回り込みを強くする係数を作る
         float near01 = Mathf.Clamp01(1f - dist / _orbitDistance);
 
@@ -235,38 +263,5 @@ public class ChaserEnemy : EnemyBase
     {
         if (angle > 180f) angle -= 360f;
         return angle;
-    }
-
-    private void Start()
-    {
-        if (_visual != null)
-            _visualBaseLocalRot = _visual.localRotation;
-
-        RerollOrbitDirection();
-        _rerollTimer = _rerollInterval;
-
-        _currentSpeed = _minSpeed;
-    }
-
-    private void Update()
-    {
-        // プレイヤー取得
-        Transform player = PlayerLocator.Instance?.PlayerTransform;
-        if (player == null) return;
-
-        UpdateTimers();
-        UpdateOrbitDirectionTimer();
-
-        Vector3 aimPoint = ComputeAimPoint(player);
-        ApplyObstacleAvoidance(ref aimPoint);
-
-        RotateTowardsAimPoint(aimPoint);
-        UpdateMovementSpeed(player, aimPoint);
-        MoveForward();
-        ResolveTooClose(player);
-
-        UpdateRollVisual(aimPoint);
-
-        TryShoot(player);
     }
 }

@@ -27,18 +27,14 @@ public class AudioManager : MonoBehaviour
 
     [Header("BGM")]
     [SerializeField] private AudioSource _bgmSource;
-
     [Header("SE設定")]
     [SerializeField] private int _sePoolSize = 16;
-
     [Header("3DSE デフォルト設定")]
     [SerializeField] private AudioRolloffMode _rolloffMode = AudioRolloffMode.Logarithmic;
     [SerializeField] private float _minDistance = 3f;
     [SerializeField] private float _maxDistance = 30f;
-
     [Header("SEリスト")]
     [SerializeField] private List<SoundData> _seList = new();
-
     [Header("BGMリスト")]
     [SerializeField] private List<SoundData> _bgmList = new();
 
@@ -53,7 +49,7 @@ public class AudioManager : MonoBehaviour
     // BGMのフェードTween管理（Pause/Resume時に競合を防ぐ）
     private Tween _bgmFadeTween;
 
-    /// <summary> 
+    /// <summary>
     ///     2DでSE再生をする(画面固定音源)
     /// </summary>
     public void PlaySE2D(string name, float volumeMul = 0.1f)
@@ -92,8 +88,8 @@ public class AudioManager : MonoBehaviour
         ReturnLater(src, _se3DPool, se.Clip.length);
     }
 
-    /// <summary> 
-    ///     3DでSE再生をする(Transform追従) 
+    /// <summary>
+    ///     3DでSE再生をする(Transform追従)
     /// </summary>
     public void PlaySE3D(string name, Transform follow, float volumeMul = 1f)
     {
@@ -123,7 +119,8 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"bgmSource: mute={_bgmSource.mute}, pitch={_bgmSource.pitch}, timeSamples={_bgmSource.timeSamples}");
 
     }
-    /// <summary> 
+
+    /// <summary>
     ///     BGMを強制停止する
     /// </summary>
     public void StopBGM()
@@ -161,7 +158,6 @@ public class AudioManager : MonoBehaviour
         _bgmSource.UnPause();
     }
 
-
     /// <summary>
     ///     BGMをフェードアウトする
     /// </summary>
@@ -197,6 +193,38 @@ public class AudioManager : MonoBehaviour
             .SetUpdate(true);
     }
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        BuildMaps();
+
+        // BGM source が未設定なら自動作成
+        if (_bgmSource == null)
+        {
+            var bgmGo = new GameObject("BGM_Source");
+            bgmGo.transform.SetParent(transform);
+            _bgmSource = bgmGo.AddComponent<AudioSource>();
+
+            // BGMは2D固定
+            _bgmSource.spatialBlend = 0f;
+            _bgmSource.loop = true;
+        }
+
+        WarmupPools();
+        if (TryGetBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty, out var bgm))
+        {
+            Debug.Log($"AudioManager: Default BGM '{bgm.Name}' loaded with clip '{bgm.Clip.name}' and volume {bgm.Volume}");
+        }
+        PlayBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty);
+    }
 
     /// <summary>
     ///     Inspectorで設定されたリストから辞書化する
@@ -273,6 +301,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="sound"></param>
     /// <returns></returns>
     private bool TryGetSE(string name, out SoundData sound) => _seMap.TryGetValue(name, out sound);
+
     /// <summary>
     ///     BGM名からSoundDataを取得する
     /// </summary>
@@ -293,6 +322,7 @@ public class AudioManager : MonoBehaviour
         if (pool.Count > 0) return pool.Dequeue();
         return CreateSESource(is3D);
     }
+
     /// <summary>
     ///     AudioSourceを指定時間後にプールへ戻す
     /// </summary>
@@ -309,38 +339,5 @@ public class AudioManager : MonoBehaviour
             src.Stop();
             pool.Enqueue(src);
         });
-    }
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        BuildMaps();
-
-        // BGM source が未設定なら自動作成
-        if (_bgmSource == null)
-        {
-            var bgmGo = new GameObject("BGM_Source");
-            bgmGo.transform.SetParent(transform);
-            _bgmSource = bgmGo.AddComponent<AudioSource>();
-
-            // BGMは2D固定
-            _bgmSource.spatialBlend = 0f;
-            _bgmSource.loop = true;
-        }
-
-        WarmupPools();
-        if (TryGetBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty, out var bgm))
-        {
-            Debug.Log($"AudioManager: Default BGM '{bgm.Name}' loaded with clip '{bgm.Clip.name}' and volume {bgm.Volume}");
-        }
-        PlayBGM(_bgmList.Count > 0 ? _bgmList[0].Name : string.Empty);
     }
 }

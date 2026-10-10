@@ -6,17 +6,17 @@ using System;
 /// </summary>
 public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
+    /// <summary> 現在のHP </summary>
+    public int CurrentHealth => _currentHp;
+    /// <summary> 最大HP </summary>
+    public int MaxHealth => _maxHp;
+
     [Header("HP設定")]
     [SerializeField, ReadOnly] private int _currentHp;
     [SerializeField] private int _maxHp;
 
     private Action<EnemyBase> _onRelease;
     private bool _isDead;
-
-    /// <summary> 現在のHP </summary>
-    public int CurrentHealth => _currentHp;
-    /// <summary> 最大HP </summary>
-    public int MaxHealth => _maxHp;
 
     /// <summary>
     ///     スポーン時にHPと死亡状態を初期化する
@@ -53,6 +53,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (_isDead) return;
         _isDead = true;
         _currentHp = 0;
+
         //Release();
         ProjectileService.Instance.SpawnExplosion(ExplosionType.Big, this.transform);
         ScoreManager.Instance.AddScore(1000,ScorePopupReason.EnemyDown);

@@ -8,16 +8,8 @@ using System;
 public class TitleInputHandler : MonoBehaviour
 {
     public event Action OnClicked;
-    private RideActions _rideActions;
 
-    /// <summary>
-    ///     クリック時に呼び出される関数
-    /// </summary>
-    /// <param name="context"></param>
-    private void HandleClick(InputAction.CallbackContext context)
-    {
-        OnClicked?.Invoke();
-    }
+    private RideActions _rideActions;
 
     private void Awake()
     {
@@ -34,5 +26,14 @@ public class TitleInputHandler : MonoBehaviour
     {
         _rideActions.Title.Click.performed -= HandleClick;
         _rideActions.Disable();
+    }
+
+    /// <summary>
+    ///     クリック時に呼び出される関数
+    /// </summary>
+    /// <param name="context"></param>
+    private void HandleClick(InputAction.CallbackContext context)
+    {
+        OnClicked?.Invoke();
     }
 }

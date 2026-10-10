@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class EvasionGaugeBinder : MonoBehaviour
 {
-    [SerializeField] private EvationGauge _evasionGauge;
+    [SerializeField] private EvasionGauge _evasionGauge;
     [SerializeField] private RadialGaugeView _gaugeView;
     [SerializeField] private ThresholdLinesView _thresholdLinesView;
 

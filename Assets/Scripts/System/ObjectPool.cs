@@ -3,13 +3,9 @@ using UnityEngine;
 
 public class ObjectPool<T> where T : MonoBehaviour
 {
-    private readonly Queue<T> _pool = new();
-    private readonly T _instance;
-    private readonly Transform _parent;
-
     public ObjectPool(T instance, Transform parent, int initCount)
     {
-        _instance = instance; 
+        _instance = instance;
         _parent = parent;
 
         for (int i = 0; i < initCount; i++)
@@ -17,6 +13,10 @@ public class ObjectPool<T> where T : MonoBehaviour
             Create();
         }
     }
+
+    private readonly Queue<T> _pool = new();
+    private readonly T _instance;
+    private readonly Transform _parent;
 
     public T Get()
     {

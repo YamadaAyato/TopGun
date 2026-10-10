@@ -3,7 +3,8 @@ using UnityEngine;
 /// <summary>
 ///     弾を検知してデコイターゲットを設定するコライダー
 /// </summary>
-public class BulletDetectingFlareColider : MonoBehaviour
+[UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "BulletDetectingFlareColider")]
+public class BulletDetectingFlareCollider : MonoBehaviour
 {
     private FlareDecoyRoot _flareDecoyRoot;
 

@@ -1,11 +1,12 @@
 using UnityEngine;
 
-/// <summary> 
+/// <summary>
 ///     プレイヤーの航空機の実態制御をするクラス
 /// </summary>
 [RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerAirCraftController : MonoBehaviour
+[UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "PlayerAirCraftController")]
+public class PlayerAircraftController : MonoBehaviour
 {
     public bool DisableControl { get; set; }
 

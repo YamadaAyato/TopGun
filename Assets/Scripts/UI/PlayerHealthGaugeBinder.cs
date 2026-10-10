@@ -11,17 +11,6 @@ public class PlayerHealthGaugeBinder : MonoBehaviour
 
     private PlayerHealth _playerHealth;
 
-    /// <summary>
-    ///     ゲージ更新
-    /// </summary>
-    /// <param name="current"></param>
-    /// <param name="max"></param>
-    private void UpdateGauge(int current, int max)
-    {
-        _gaugeView.SetNormalized((float)current / max);
-        _hpText.text = $"{current} / {max}";
-    }
-
     private void Start()
     {
         // AwakeでPlayerLocatorが初期化されるのでここでとってくる
@@ -36,5 +25,16 @@ public class PlayerHealthGaugeBinder : MonoBehaviour
     private void OnDestroy()
     {
         _playerHealth.OnHealthChanged -= UpdateGauge;
+    }
+
+    /// <summary>
+    ///     ゲージ更新
+    /// </summary>
+    /// <param name="current"></param>
+    /// <param name="max"></param>
+    private void UpdateGauge(int current, int max)
+    {
+        _gaugeView.SetNormalized((float)current / max);
+        _hpText.text = $"{current} / {max}";
     }
 }

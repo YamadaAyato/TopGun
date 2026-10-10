@@ -17,6 +17,17 @@ public class EnemyStraightBullet : BulletBase
         transform.rotation = Quaternion.LookRotation(_dir, Vector3.up);
     }
 
+    protected override void Update()
+    {
+        transform.position += _dir * _bulletSpeed * Time.deltaTime;
+
+        _timer += Time.deltaTime;
+        if (_timer >= _lifeTime)
+        {
+            Release();
+        }
+    }
+
     protected override void HandleHit(Collider other)
     {
         if (other.TryGetComponent<PlayerHealth>(out PlayerHealth hit))
@@ -33,17 +44,6 @@ public class EnemyStraightBullet : BulletBase
         }
 
         if (other.CompareTag("Obstacle"))
-        {
-            Release();
-        }
-    }
-
-    protected override void Update()
-    {
-        transform.position += _dir * _bulletSpeed * Time.deltaTime;
-
-        _timer += Time.deltaTime;
-        if (_timer >= _lifeTime)
         {
             Release();
         }

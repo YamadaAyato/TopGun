@@ -14,9 +14,8 @@ public class ProjectileService : MonoBehaviour
     [SerializeField] private ExplosionFx _bigExplosionEffectPrefab;
     [SerializeField, Tooltip("直線弾の親")] private Transform _straightParent;
     [SerializeField, Tooltip("ホーミング弾の親")] private Transform _homingParent;
-    [SerializeField, Tooltip("小さい爆発エフェクトの親")] private Transform _smallExplosionEffectParent;  
+    [SerializeField, Tooltip("小さい爆発エフェクトの親")] private Transform _smallExplosionEffectParent;
     [SerializeField, Tooltip("大きい爆発エフェクトの親")] private Transform _bigExplosionEffectParent;
-
     [Header("プールサイズ設定")]
     [SerializeField, Tooltip("直線弾のプールサイズ")] private int _straightBulletPoolSize;
     [SerializeField, Tooltip("ホーミング弾のプールサイズ")] private int _homingBulletPoolSize;
@@ -87,6 +86,25 @@ public class ProjectileService : MonoBehaviour
         return explosion;
     }
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
+
+        _straightPool = new ObjectPool<EnemyStraightBullet>(
+            _straightBulletPrefab, _straightParent, _straightBulletPoolSize);
+        _homingPool = new ObjectPool<EnemyHomingBullet>(
+            _homingBulletPrefab, _homingParent, _homingBulletPoolSize);
+        _smallExplosionPool = new ObjectPool<ExplosionFx>(
+            _smallExplosionEffectPrefab, _smallExplosionEffectParent, _smallExplosionPoolSize);
+        _bigExplosionPool = new ObjectPool<ExplosionFx>(
+            _bigExplosionEffectPrefab, _bigExplosionEffectParent, _bigeExplosionPoolSize);
+    }
+
     /// <summary>
     ///     直線弾をプールに返す
     /// </summary>
@@ -109,24 +127,5 @@ public class ProjectileService : MonoBehaviour
     private void ReturnBigExplosion(ExplosionFx explosion)
     {
         _bigExplosionPool.Release(explosion);
-    }
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
-        Instance = this;
-
-        _straightPool = new ObjectPool<EnemyStraightBullet>(
-            _straightBulletPrefab, _straightParent, _straightBulletPoolSize);
-        _homingPool = new ObjectPool<EnemyHomingBullet>(
-            _homingBulletPrefab, _homingParent, _homingBulletPoolSize);
-        _smallExplosionPool = new ObjectPool<ExplosionFx>(
-            _smallExplosionEffectPrefab, _smallExplosionEffectParent, _smallExplosionPoolSize);
-        _bigExplosionPool = new ObjectPool<ExplosionFx>(
-            _bigExplosionEffectPrefab, _bigExplosionEffectParent, _bigeExplosionPoolSize);
     }
 }

@@ -178,7 +178,7 @@ public class AircraftCollisionGuard : MonoBehaviour
             _body.angularVelocity = Vector3.zero;
         }
 
-        if (TryGetComponent(out PlayerAirCraftController mover))
+        if (TryGetComponent(out PlayerAircraftController mover))
         {
             mover.DisableControl = true;
             mover.enabled = false;

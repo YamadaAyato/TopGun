@@ -9,15 +9,15 @@ public class BlinkingText : MonoBehaviour
 
     private Tween _tween;
 
+    private void Start()
+    {
+        StartBlink();
+    }
+
     private void StartBlink()
     {
         _tween = _text.DOFade(0.15f, _blinkInterval)
             .SetEase(Ease.InOutSine)
             .SetLoops(-1, LoopType.Yoyo);
-    }
-
-    private void Start()
-    {
-        StartBlink();
     }
 }
