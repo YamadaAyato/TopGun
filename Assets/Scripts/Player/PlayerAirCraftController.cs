@@ -37,11 +37,13 @@ public class PlayerAirCraftController : MonoBehaviour
 
     private PlayerInputHandler _inputHandler;
     private Rigidbody _rb;
+    private AircraftCollisionGuard _collisionGuard;
 
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();
         _rb = GetComponent<Rigidbody>();
+        _collisionGuard = GetComponent<AircraftCollisionGuard>();
         _currentSpeed = _baseSpeed;
     }
 
@@ -50,7 +52,7 @@ public class PlayerAirCraftController : MonoBehaviour
         if (DisableControl) return;
 
         FowardMovement();
-        Rotation();
+        if (enabled) Rotation();
     }
 
     /// <summary>
@@ -64,6 +66,11 @@ public class PlayerAirCraftController : MonoBehaviour
         _currentSpeed = Mathf.Clamp(_currentSpeed, _minSpeed, _maxSpeed);
 
         Vector3 forwardMovement = transform.forward * _currentSpeed;
+        if (_collisionGuard != null)
+        {
+            if (!_collisionGuard.ConstrainMove(_rb.position + forwardMovement * Time.fixedDeltaTime, out Vector3 safePosition)) return;
+            forwardMovement = (safePosition - _rb.position) / Time.fixedDeltaTime;
+        }
         _rb.linearVelocity = forwardMovement;
     }
 

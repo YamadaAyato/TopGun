@@ -22353,6 +22353,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 197657694}
   m_Mesh: {fileID: 4300000, guid: e17a253999e7e294981e5ed8ce32646f, type: 3}
+--- !u!1 &198178492 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3208383679940933132, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+  m_PrefabInstance: {fileID: 4850310086636503335}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &198178764
 GameObject:
   m_ObjectHideFlags: 0
@@ -311734,14 +311739,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3208383679940933132, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4850310086636503356}
   m_SourcePrefab: {fileID: 100100000, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
 --- !u!114 &4850310086636503336 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3321294601839018229, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
   m_PrefabInstance: {fileID: 4850310086636503335}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 198178492}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f43674dd95b81054fbd3995ea1782f22, type: 3}
@@ -311752,7 +311760,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1295982126601702362, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
   m_PrefabInstance: {fileID: 4850310086636503335}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 198178492}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2adb11ff40e6b214780caf67cc5b989a, type: 3}
@@ -311768,12 +311776,31 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4101384962271015075, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
   m_PrefabInstance: {fileID: 4850310086636503335}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 198178492}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5a7ccd5af7ad1d479336f1395c8038a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAirCraftController
+--- !u!114 &4850310086636503356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198178492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abfcd5e3e53e44ad7110299e538d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AircraftCollisionGuard
+  _obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _fatalNormalSpeed: 12
+  _fatalApproachDot: 0.2
+  _fatalPenetration: 0.4
+  _skin: 0.03
 --- !u!1001 &6915188072653124488
 PrefabInstance:
   m_ObjectHideFlags: 0

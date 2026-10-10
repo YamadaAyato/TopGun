@@ -37,6 +37,7 @@ public class PlayerEvadeController : MonoBehaviour
     private PlayerHealth _health;
     private EvationGauge _evasionGauge;
     private Rigidbody _rb;
+    private AircraftCollisionGuard _collisionGuard;
 
     private bool _prevKinematic;
     private bool _isEvading;
@@ -61,6 +62,7 @@ public class PlayerEvadeController : MonoBehaviour
         _health = GetComponent<PlayerHealth>();
         _evasionGauge = GetComponent<EvationGauge>();
         _rb = GetComponent<Rigidbody>();
+        _collisionGuard = GetComponent<AircraftCollisionGuard>();
     }
 
     private void Update()
@@ -90,6 +92,7 @@ public class PlayerEvadeController : MonoBehaviour
         _evadeTimer = Mathf.Min(_evadeTimer + Time.fixedDeltaTime, _evadeDuration);
 
         UpdateEvadePosition();
+        if (!enabled) return;
         _rb.MoveRotation(_startRbRot);
         UpdateVisualSpin();
     }
@@ -101,6 +104,13 @@ public class PlayerEvadeController : MonoBehaviour
     {
         float t = Mathf.Clamp01(_evadeTimer / _evadeDuration);
         Vector3 pos = EvaluateWorldPos(t);
+        if (_collisionGuard != null)
+        {
+            if (!_collisionGuard.ConstrainMove(pos, out Vector3 safePosition)) return;
+            // 軽い接触で補正した分だけ、以降の回避経路も壁から離す。
+            _startPos += safePosition - pos;
+            pos = safePosition;
+        }
         _rb.MovePosition(pos);
     }
 
