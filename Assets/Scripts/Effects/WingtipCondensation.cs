@@ -6,7 +6,7 @@ using UnityEngine;
 public class WingtipCondensation : MonoBehaviour
 {
     [Header("参照")]
-    [SerializeField] private PlayerAircraftController _aircraft;
+    [SerializeField] private PlayerFlightController _aircraft;
     [SerializeField] private PlayerEvadeController _evade;
     [SerializeField] private TrailRenderer[] _trails;
     [SerializeField, Min(0f), Tooltip("飛行機雲が出始める旋回速度（度/秒）")]

@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(Rigidbody))]
 [UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "", sourceAssembly: "Assembly-CSharp", sourceClassName: "PlayerAirCraftController")]
-public class PlayerAircraftController : MonoBehaviour
+public class PlayerFlightController : MonoBehaviour
 {
     public bool DisableControl { get; set; }
 

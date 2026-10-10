@@ -7,7 +7,7 @@ using UnityEngine;
 public class FlightWindParticles : MonoBehaviour
 {
     [Header("参照")]
-    [SerializeField] private PlayerAircraftController _aircraft;
+    [SerializeField] private PlayerFlightController _aircraft;
     [SerializeField] private Camera _camera;
 
     [Header("演出設定")]

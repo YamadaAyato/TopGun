@@ -31008,6 +31008,7 @@ MonoBehaviour:
   _explosionLayer: 30
   _fadeOutDuration: 0.3
   _explosionCamera: {fileID: 1804714307}
+  _volumePriority: 1000
 --- !u!4 &266386303
 Transform:
   m_ObjectHideFlags: 0
@@ -38933,7 +38934,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.015862368, y: 0.0000000094504315, z: -1.4992507e-10, w: 0.99987423}
-  m_LocalPosition: {x: 42.618923, y: 48.95, z: 129.3}
+  m_LocalPosition: {x: 42.618923, y: 48.95, z: 133.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -81939,7 +81940,7 @@ Transform:
   m_GameObject: {fileID: 651060505}
   serializedVersion: 2
   m_LocalRotation: {x: 0.015862362, y: 0.00000000945043, z: -1.49925e-10, w: 0.99987423}
-  m_LocalPosition: {x: 42.618923, y: 48.95, z: 129.3}
+  m_LocalPosition: {x: 42.618923, y: 48.95, z: 133.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -238138,7 +238139,7 @@ Transform:
   m_GameObject: {fileID: 1688198772}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000015933129, y: 0.99810076, z: 0.06160274, w: -0.000000025815195}
-  m_LocalPosition: {x: 42.618923, y: 47.95, z: 153.3}
+  m_LocalPosition: {x: 42.618923, y: 47.95, z: 157.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -244669,7 +244670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00135f70cb26dc0468806be93db7e89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlightWindParticles
-  _aircraft: {fileID: 4850310086636503347}
+  _aircraft: {fileID: 0}
   _camera: {fileID: 330585545}
   _startSpeed: 20
   _fullSpeed: 160
@@ -244678,6 +244679,11 @@ MonoBehaviour:
   _innerRadius: 0.58
   _color: {r: 0.85, g: 0.94, b: 1, a: 0.65}
   _widthRange: {x: 0.08, y: 0.14}
+  _maxParticles: 160
+  _maxEmissionPerFrame: 16
+  _particleSpeedRange: {x: 22, y: 75}
+  _outerRadius: 0.9
+  _despawnDistance: 1
 --- !u!199 &1738939100
 ParticleSystemRenderer:
   serializedVersion: 7
@@ -311656,6 +311662,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 122228635151244273, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+      propertyPath: _aircraft
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 435967466559893693, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
       propertyPath: _flipSpline
       value: 
@@ -311684,6 +311694,10 @@ PrefabInstance:
       propertyPath: _bulletCameraController
       value: 
       objectReference: {fileID: 2042415283}
+    - target: {fileID: 1134949952552075543, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3208383679940933132, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
       propertyPath: m_Name
       value: PlayerAircraft
@@ -311771,17 +311785,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8638521208331954471, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
   m_PrefabInstance: {fileID: 4850310086636503335}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4850310086636503347 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4101384962271015075, guid: 0c1ccb28019971f41a5f9dd0c27b99e2, type: 3}
-  m_PrefabInstance: {fileID: 4850310086636503335}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 198178492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5a7ccd5af7ad1d479336f1395c8038a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAirCraftController
 --- !u!114 &4850310086636503356
 MonoBehaviour:
   m_ObjectHideFlags: 0

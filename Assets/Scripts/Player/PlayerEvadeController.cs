@@ -27,7 +27,7 @@ public class PlayerEvadeController : MonoBehaviour
     [SerializeField] private float _justEvadeTimeDilationDuration;
 
     private PlayerInputHandler _inputHandler;
-    private PlayerAircraftController _airCraftController;
+    private PlayerFlightController _airCraftController;
     private PlayerHealth _health;
     private EvasionGauge _evasionGauge;
     private Rigidbody _rb;
@@ -47,7 +47,7 @@ public class PlayerEvadeController : MonoBehaviour
     private void Awake()
     {
         _inputHandler = GetComponent<PlayerInputHandler>();
-        _airCraftController = GetComponent<PlayerAircraftController>();
+        _airCraftController = GetComponent<PlayerFlightController>();
         _health = GetComponent<PlayerHealth>();
         _evasionGauge = GetComponent<EvasionGauge>();
         _rb = GetComponent<Rigidbody>();
